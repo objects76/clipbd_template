@@ -2,6 +2,7 @@
 import subprocess
 import sys
 import re
+from extract_article import extract_article_content
 
 def clear_lastest_clipboard(n=3):
     text_cmd = ["copyq", "remove", *map(str, range(n))]
@@ -71,7 +72,8 @@ def get_youtube_content():
         if item['type'] != 'text': continue
         text = item['data']
         if ('youtube.com/watch' in text or 'youtu.be/' in text) and len(text) < 100:
-            result['video_id'] = re.search(r'(?:v=|youtu\.be/)([^&?]+)', text).group(1) if re.search(r'(?:v=|youtu\.be/)([^&?]+)', text) else text
+            m = re.search(r'(?:v=|youtu\.be/)([^&?]+)', text)
+            result['video_id'] = m.group(1) if m else text
         elif len(text) > 300:
             timestamps = re.findall(r'\n\d+:\d+\n', text)
             if len(timestamps) > 10:
@@ -79,19 +81,37 @@ def get_youtube_content():
     if result.get('video_id') and result.get('transcript'):
         return result
 
-    raise ValueError("No valid clipboard data for youtube.")
+    raise ValueError("No valid clipboard data.")
 
 def get_prompt():
-    result = dict()
     items = get_lastest_clipboard(n=1, include_images=False)
     for i, item in enumerate(items, start=1):
         if item['type'] != 'text': continue
         text = item['data'].strip()
         if len(text) > 10:
-            return {"prompt": text}
+            return { "source_prompt": text }
 
     raise ValueError("No valid clipboard data for youtube.")
 
+def get_QandA():
+    items = get_lastest_clipboard(n=1, include_images=False)
+    for i, item in enumerate(items, start=1):
+        if item['type'] != 'text': continue
+        text = item['data'].strip()
+        if len(text) > 10:
+            return { "context": text }
+
+    raise ValueError("No valid clipboard data for youtube.")
+
+def get_html():
+    items = get_lastest_clipboard(n=1, include_images=False)
+    for i, item in enumerate(items, start=1):
+        if item['type'] != 'text': continue
+        text = item['data'].strip()
+        if text := extract_article_content(text, "meteredContent"):
+            return { "html_content": text }
+
+    raise ValueError("No valid clipboard data.")
+
 if __name__ == '__main__':
-    result = get_youtube_content()
-    print(result)
+    print( get_html() )

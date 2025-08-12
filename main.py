@@ -6,6 +6,8 @@ import sys
 import yaml
 import clipbd
 
+DEBUG = True
+
 def resource_path(name: str) -> Path:
     ''' get file path from packed executable '''
     try:
@@ -44,7 +46,6 @@ def get_template(template_path):
     )
 
     choice = (rofi.stdout or '').strip()
-    print(f'You picked: {choice}')
     if not choice or choice not in templates:
         return "", ""
     return choice, templates[choice]
@@ -56,13 +57,22 @@ def main(args) -> int:
         choice, template  = get_template(args.template)
         if choice == 'youtube summary':
             formatted = template.format( **clipbd.get_youtube_content() )
-        elif choice == 'convert prompt':
+        elif choice == 'article summary':
+            formatted = template.format( **clipbd.get_html() )
+        elif choice == 'meta prompt':
             formatted = template.format( **clipbd.get_prompt() )
+        elif choice == 'q&a on context':
+            formatted = template.format( **clipbd.get_QandA() )
+
+        if DEBUG: print(f'{choice=}')
+        if DEBUG: print(f'{template=}')
+        if DEBUG: print(f'{formatted=}')
 
         if formatted:
+
             pyperclip.copy(formatted)
             subprocess.run(['bash', '-c', 'sleep 0.3; xdotool key --clearmodifiers ctrl+v'])
-            clipbd.clear_lastest_clipboard(n=1)
+            # clipbd.clear_lastest_clipboard(n=1)
 
         return 0
     except Exception as e:
