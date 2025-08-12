@@ -1,0 +1,43 @@
+# Byte-compiled / optimized / DLL files
+**/__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info
+tmp/
+.vscode/
+.venv/
+
+.env
+# Visual Studio Code files
+.vscode
+.vs
+
+# Sublime Text settings
+*.sublime-workspace
+*.sublime-project
+
+# Editor temporaries
+*.swn
+*.swo
+*.swp
+*.swm
+*~
+
+# IPython notebook checkpoints
+.ipynb_checkpoints
+
+# macOS dir files
+.DS_Store
+
+exp
+data
+raw_wav
+tensorboard
+**/*build*
+
+*.onnx
+external_tools
+pretrained_models
+s3prl_hub
+whisper_hub
+testdata
