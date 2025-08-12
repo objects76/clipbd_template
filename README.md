@@ -12,6 +12,7 @@ uv pip install pyinstaller
 # export(pyinstaller)
 ```bash
 --add-data other static file.
+
 uv run pyinstaller --onefile \
     --name template_paste \
     --distpath  ~/.local/bin/ \
