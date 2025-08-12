@@ -6,8 +6,11 @@
 tmp/
 .vscode/
 .venv/
-
 .env
+
+# export
+*.spec
+
 # Visual Studio Code files
 .vscode
 .vs
