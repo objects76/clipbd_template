@@ -6,6 +6,7 @@
 tmp/
 .vscode/
 .venv/
+temp/
 .env
 
 # export

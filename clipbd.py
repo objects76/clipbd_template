@@ -2,7 +2,6 @@
 import subprocess
 import sys
 import re
-from extract_article import extract_article_content
 from youtube import get_youtube_videoid, download_transcript
 
 def clear_lastest_clipboard(n=3):
@@ -108,22 +107,36 @@ def get_QandA():
 
     raise ValueError("No valid clipboard data for youtube.")
 
-def get_html():
+from medium import extract_medium
+def get_medium():
     result = { "source_url": "Not provided" }
     """ with CopyHTML chrome plugin: get raw html text with CopyHTML plugin. """
-    items = get_lastest_clipboard(n=2, include_images=False)
+    items = get_lastest_clipboard(n=1, include_images=False)
     for i, item in enumerate(items, start=1):
         if item['type'] != 'text': continue
         text = item['data'].strip()
-        if text.startswith('https://'):
-            result['source_url'] = text
-        elif text := extract_article_content(text, "meteredContent"):
-            result["html_content"] = text
-    if "html_content" in result:
+        if text := extract_medium(text):
+            result["medium_content"] = text
+    if "medium_content" in result:
+        return result
+
+    raise ValueError("No valid clipboard data.")
+
+from html_to_md import html_to_markdown
+def get_webpage():
+    result = { "source_url": "Not provided" }
+    """ with CopyHTML chrome plugin: get raw html text with CopyHTML plugin. """
+    items = get_lastest_clipboard(n=1, include_images=False)
+    for i, item in enumerate(items, start=1):
+        if item['type'] != 'text': continue
+        text = item['data'].strip()
+        if text := html_to_markdown(text):
+            result["markdown_content"] = text
+    if "markdown_content" in result:
         return result
 
     raise ValueError("No valid clipboard data.")
 
 if __name__ == '__main__':
-    # print( get_html() )
-    print( get_youtube_content() )
+    print( get_medium() )
+    # print( get_youtube_content() )

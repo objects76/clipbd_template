@@ -57,8 +57,10 @@ def main(args) -> int:
         choice, template  = get_template(args.template)
         if choice == 'youtube summary':
             formatted = template.format( **clipbd.get_youtube_content() )
-        elif choice == 'article summary':
-            formatted = template.format( **clipbd.get_html() )
+        elif choice == 'medium summary':
+            formatted = template.format( **clipbd.get_medium() )
+        elif choice == 'webpage summary':
+            formatted = template.format( **clipbd.get_webpage() )
         elif choice == 'meta prompt':
             formatted = template.format( **clipbd.get_prompt() )
         elif choice == 'q&a on context':
@@ -76,7 +78,7 @@ def main(args) -> int:
 
         return 0
     except Exception as e:
-        print('exception:', e)
+        subprocess.run(["notify-send", "-u", "critical", "error", f"{choice}: {str(e)}"], check=False)
         return 1
 
 

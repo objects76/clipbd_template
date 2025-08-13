@@ -23,11 +23,12 @@ def get_youtube_videoid(url: str) -> str:
             return params["v"][0]
     raise ValueError(f"지원하지 않는 YouTube URL 형식: {url}")
 
-
+import subprocess
 def download_transcript(
     video_id: str = "",
     language_codes: list[str] = ['en', 'ko'],
 ):
+    subprocess.run(["notify-send", "running", f"get youtube transcript: {video_id}"], check=False)
 
     # video_id = get_youtube_videoid(video_url)
     ytt_api = YouTubeTranscriptApi()

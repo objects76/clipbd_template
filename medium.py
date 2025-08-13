@@ -4,8 +4,7 @@ Script to find matching </article> tag for <article class="meteredContent">
 and export the complete article section to content.html
 """
 
-
-
+import requests
 from bs4 import BeautifulSoup, Comment
 from pathlib import Path
 import sys
@@ -57,7 +56,7 @@ def _drop_empty_tags(root):
         if is_empty(tag):
             tag.decompose()
 
-def compress_html(html: str):
+def compress_medium(html: str):
     """Return (cleaned_html, plain_text)."""
     soup = BeautifulSoup(html, "html.parser")
     root = soup.find("article") or soup  # preserve article boundary if present
@@ -67,14 +66,22 @@ def compress_html(html: str):
     _drop_empty_tags(root)
     cleaned_html = str(root)
     return cleaned_html
-    # plain_text = root.get_text(separator="\n", strip=True)
-    # return cleaned_html, plain_text
 
-def extract_article_content(html_content: str, article_class:str):
-      soup = BeautifulSoup(html_content, "html.parser")
-      article = soup.find('article', attrs={'class': article_class})
+def extract_medium(html_content: str):
+    soup = BeautifulSoup(html_content, "html.parser")
+    article = soup.find('article', attrs={'class': 'meteredContent'})
 
-      if not article:
-          raise ValueError(f"No article with class '{article_class}' found")
+    if article:
+        return "```html\n" + compress_medium(str(article)) + "\n```"
+    raise ValueError("No article found")
 
-      return compress_html(str(article))
+
+if __name__ == '__main__':
+    with open('temp/input.html', 'rt') as fp:
+        html_content = fp.read()
+
+    extracted = extract_medium(html_content)
+    print(extracted)
+    with open('temp/output.html', 'wt') as fp:
+        fp.write(extracted)
+
