@@ -1,6 +1,10 @@
 
 import subprocess
 import requests
+import os
+
+jjkim_key = os.getenv("JINA_API_KEY_JJKIM")
+obj76_key = os.getenv("JINA_API_KEY_OBJ76")
 
 
 def html_to_markdown(target_url: str):
@@ -8,8 +12,7 @@ def html_to_markdown(target_url: str):
     request_url = f"https://r.jina.ai/{target_url}"
 
     last_exception = None
-    jjkim_key = "jina_7486fd840bda4ea9b428afbaab1d62706gksDo-ypWXbUO7QHwzukzeBujN_"
-    obj76_key = "jina_de01014707b44f2b8da84917e486c09e_y-mapgpzKFuLA9iutoemgnK1eRw"
+
     for i, key in enumerate([jjkim_key, obj76_key]):
         try:
             response = requests.get(
