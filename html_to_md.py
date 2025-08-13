@@ -3,8 +3,11 @@ import subprocess
 import requests
 import os
 
-jjkim_key = os.getenv("JINA_API_KEY_JJKIM")
-obj76_key = os.getenv("JINA_API_KEY_OBJ76")
+from dotenv import load_dotenv
+load_dotenv(os.path.expanduser("~/.config/rofi/.env"))
+jjkim_key = os.getenv("JINA_API_JJKIM")
+obj76_key = os.getenv("JINA_API_OBJECTS76")
+
 
 
 def html_to_markdown(target_url: str):

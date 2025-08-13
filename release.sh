@@ -14,4 +14,6 @@ uv run pyinstaller --onefile \
     --noconfirm \
     "main.py"
 
+cp -f ".env" "$HOME/.config/rofi/.env"
+
 template_paste
