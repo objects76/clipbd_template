@@ -56,28 +56,34 @@ def _drop_empty_tags(root):
         if is_empty(tag):
             tag.decompose()
 
-def compress_medium(html: str):
+import re
+def compress_medium(node):
     """Return (cleaned_html, plain_text)."""
-    soup = BeautifulSoup(html, "html.parser")
-    root = soup.find("article") or soup  # preserve article boundary if present
-    _remove_scripts_styles_comments(root)
-    _unwrap_disallowed_tags(root)
-    _strip_attributes(root)
-    _drop_empty_tags(root)
-    cleaned_html = str(root)
+    # html = re.sub(r'/resize:[^/]+/', '/', html) # remove '/resize:fill:76:76/'
+
+    _remove_scripts_styles_comments(node)
+    _unwrap_disallowed_tags(node)
+    _strip_attributes(node)
+    _drop_empty_tags(node)
+    cleaned_html = str(node)
     return cleaned_html
 
 def extract_medium(html_content: str):
     soup = BeautifulSoup(html_content, "html.parser")
-    article = soup.find('article', attrs={'class': 'meteredContent'})
+    node = soup.find('article', attrs={'class': 'meteredContent'})
 
-    if article:
-        return "```html\n" + compress_medium(str(article)) + "\n```"
+    if node:
+        return "```html\n" + compress_medium(node) + "\n```"
+
+    node = soup.find('section')
+    if node:
+        return "```html\n" + compress_medium(node) + "\n```"
+
     raise ValueError("No article found")
 
 
 if __name__ == '__main__':
-    with open('temp/input.html', 'rt') as fp:
+    with open('temp/medium-free.html', 'rt') as fp:
         html_content = fp.read()
 
     extracted = extract_medium(html_content)
