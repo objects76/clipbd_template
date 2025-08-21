@@ -30,7 +30,7 @@ def get_template(template_path):
     # ~/.config/rofi/
     cmd = [
         'rofi', '-dmenu', '-no-custom',
-        '-monitor', '-3',
+        # '-monitor', '-3',
         '-theme-str', 'window {width: 10%;} entry { enabled: false; }',
         '-p', 'Choose template:',
         '-dpi', '192',

@@ -3,7 +3,7 @@ from urllib.parse import parse_qs, urlparse
 from youtube_transcript_api import YouTubeTranscriptApi
 from youtube_transcript_api.proxies import WebshareProxyConfig
 from youtube_transcript_api import RequestBlocked, IpBlocked
-# RequestBlocked or IpBlocked
+import subprocess
 
 def ts_format(ts):
     sec = int(ts['start'])
@@ -23,7 +23,7 @@ def get_youtube_videoid(url: str) -> str:
             return params["v"][0]
     raise ValueError(f"지원하지 않는 YouTube URL 형식: {url}")
 
-import subprocess
+
 def download_transcript(
     video_id: str = "",
     language_codes: list[str] = ['en', 'ko'],
