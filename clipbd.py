@@ -65,18 +65,23 @@ def get_lastest_clipboard(n=3, include_images=False, debug=False):
                 print(f"[{i}]: image, {item['format']}, {len(item['data'])} bytes -> saved as {filename}")
     return items
 
-def get_youtube_content():
+def get_youtube_content(test_url = None):
     result = dict()
-    items = get_lastest_clipboard(n=2, include_images=False)
+    if test_url:
+        test_url = [{'type': 'text', 'data': test_url}]
+
+    items = test_url or get_lastest_clipboard(n=2, include_images=False)
     for i, item in enumerate(items, start=1):
         if item['type'] != 'text': continue
         text = item['data']
         if ('youtube.com/watch' in text or 'youtu.be/' in text) and len(text) < 100:
             result['video_id'] = get_youtube_videoid(text)
+
         elif len(text) > 300:
             timestamps = re.findall(r'\n\d+:\d+\n', text)
             if len(timestamps) > 10:
                 result['transcript'] = text
+
     if result.get('video_id'):
         if 'transcript' not in result:
             try:
@@ -114,29 +119,60 @@ def get_medium():
     items = get_lastest_clipboard(n=1, include_images=False)
     for i, item in enumerate(items, start=1):
         if item['type'] != 'text': continue
-        text = item['data'].strip()
-        if text := extract_medium(text):
-            result["medium_content"] = text
-    if "medium_content" in result:
+        text_format, text_content = extract_medium( item['data'].strip() )
+        result["content_format"] = text_format
+        result["content_text"] = text_content
+
+    if "content_text" in result:
         return result
 
     raise ValueError("No valid clipboard data.")
 
-from html_to_md import html_to_markdown
-def get_webpage():
+
+def get_longtext(text=None):
     result = { "source_url": "Not provided" }
     """ with CopyHTML chrome plugin: get raw html text with CopyHTML plugin. """
-    items = get_lastest_clipboard(n=1, include_images=False)
+
+    if text:
+        text = [{'type': 'text', 'data': text}]
+
+    items = text or get_lastest_clipboard(n=1, include_images=False)
     for i, item in enumerate(items, start=1):
         if item['type'] != 'text': continue
-        text = item['data'].strip()
-        if text := html_to_markdown(text):
-            result["markdown_content"] = text
-    if "markdown_content" in result:
-        return result
+        long_text = item['data'].strip()
+        if len(long_text) > 500:
+            result["content_format"] = 'text'
+            result["content_text"] = long_text
 
+    if "content_text" in result:
+        return result
     raise ValueError("No valid clipboard data.")
 
+
+from scraping import crawling
+def get_webpage(test_url = None):
+    """ with CopyHTML chrome plugin: get raw html text with CopyHTML plugin. """
+    if test_url:
+        test_url = [{'type': 'text', 'data': test_url}]
+
+    items = test_url or get_lastest_clipboard(n=1, include_images=False)
+    for i, item in enumerate(items, start=1):
+        if item['type'] != 'text': continue
+        url = item['data'].strip()
+        if not url.startswith('https:') and not url.startswith('http:'):
+            continue
+        text_format, text_content = crawling(url)
+        return {
+            "source_url": url,
+            "content_format": text_format,
+            "content_text": text_content,
+        }
+
+    url = url or "No clipboard data"
+    raise ValueError(f"No valid clipboard data: {url[:100]}")
+
 if __name__ == '__main__':
-    print( get_medium() )
-    # print( get_youtube_content() )
+    from rich import print
+    # print( get_webpage('https://news.hada.io/topic?id=22490') )
+    # print( get_medium() )
+    # print( get_youtube_content('https://www.youtube.com/watch?v=FI7huMLcIrM') )

@@ -17,8 +17,8 @@ obj76_key = os.getenv("JINA_API_OBJECTS76")
 
 instruction = "Extract the main content from the given HTML and convert it to Markdown format."
 
-def html_to_markdown(target_url: str):
-    subprocess.run(["notify-send", "running", f"html({target_url}) to markdown"], check=False)
+def jina_to_md(target_url: str):
+    subprocess.run(["notify-send", "running", f"jina({target_url}) to markdown"], check=False)
     request_url = f"https://r.jina.ai/{target_url}"
 
     last_exception = None
@@ -39,7 +39,7 @@ def html_to_markdown(target_url: str):
     raise last_exception
 
 def test():
-    md_text = html_to_markdown("https://huggingface.co/jinaai/ReaderLM-v2")
+    md_text = jina_to_md("https://huggingface.co/jinaai/ReaderLM-v2")
     print(md_text)
 
 if __name__ == '__main__':
