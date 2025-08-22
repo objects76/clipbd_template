@@ -9,6 +9,9 @@ from bs4 import BeautifulSoup, Comment
 from pathlib import Path
 import sys
 
+class MediumError(Exception):
+    pass
+
 ALLOWED_TAGS = {
     "article", "section",
     "h1", "h2", "h3", "h4",
@@ -69,24 +72,28 @@ def compress_medium(node):
     return cleaned_html
 
 def extract_medium(html_content: str):
+    cnt = html_content.count('.medium.com')
+    if cnt < 10:
+        raise MediumError("Not a medium article")
+
     soup = BeautifulSoup(html_content, "html.parser")
     node = soup.find('article', attrs={'class': 'meteredContent'})
 
     if node:
-        return "```html\n" + compress_medium(node) + "\n```"
+        return "HTML", compress_medium(node)
 
     node = soup.find('section')
     if node:
-        return "```html\n" + compress_medium(node) + "\n```"
+        return "HTML", compress_medium(node)
 
-    raise ValueError("No article found")
+    raise MediumError("No article in medium")
 
 
 if __name__ == '__main__':
     with open('temp/medium-free.html', 'rt') as fp:
         html_content = fp.read()
 
-    extracted = extract_medium(html_content)
+    content_type,extracted = extract_medium(html_content)
     print(extracted)
     with open('temp/output.html', 'wt') as fp:
         fp.write(extracted)
