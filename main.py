@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+import os
+import shlex
 import subprocess
 import pyperclip
 from pathlib import Path
@@ -7,20 +9,33 @@ import yaml
 import clipbd
 import time
 from clipbd import get_lastest_clipboard
+from exceptions import ClipboardTemplateError
 
 VERSION = "1.0.0"
 
-DEBUG = True
+# Configuration from environment
+DEBUG = os.getenv('DEBUG', 'False').lower() in ('true', '1', 'yes')
 
 
 def llm(user: str, url: str) -> None:
+    """Launch browser with sanitized inputs.
+    
+    Args:
+        user (str): Browser profile directory name
+        url (str): URL to open
+    """
     BROWSER = "microsoft-edge-stable"
+    
+    # Sanitize inputs to prevent command injection
+    safe_user = shlex.quote(user)
+    safe_url = shlex.quote(url)
+    
     subprocess.run([
         BROWSER,
-        f"--profile-directory={user}",
+        f"--profile-directory={safe_user}",
         "--new-tab",
-        url
-    ])
+        safe_url
+    ], check=False)
 
 def resource_path(name: str) -> Path:
     ''' get file path from packed executable '''
@@ -43,21 +58,25 @@ def get_template(template_path, choice = None):
 
     if choice is None:
         # ~/.config/rofi/
+        # Sanitize rofi parameters to prevent injection
+        safe_prompt = shlex.quote(f'Choose {VERSION}:')
+        template_keys = list(templates.keys())
+        
         cmd = [
             'rofi', '-dmenu', '-no-custom',
-            # '-monitor', '-3',
             '-theme-str', 'window {width: 10%;} entry { enabled: false; }',
-            '-p', f'Choose {VERSION}:',
+            '-p', safe_prompt,
             '-dpi', '192',
-            '-lines', f'{len(templates)}',
+            '-lines', str(len(template_keys)),
             '-no-fixed-num-lines',
         ]
 
         rofi = subprocess.run(
             cmd,
-            input='\n'.join(templates.keys()),
+            input='\n'.join(template_keys),
             text=True,
             capture_output=True,
+            timeout=30  # Prevent hanging
         )
 
         choice = (rofi.stdout or '').strip()
@@ -122,9 +141,10 @@ def main(args) -> int:
         elif choice == 'q&a on context':
             formatted = template.format( **clipbd.get_QandA() )
 
-        if DEBUG: print(f'{choice=}')
-        if DEBUG: print(f'{template=}')
-        if DEBUG: print(f'{formatted=}')
+        if DEBUG:
+            print(f'Template choice: {choice}')
+            print(f'Template length: {len(template)} characters')
+            print(f'Formatted output length: {len(formatted)} characters')
 
         if formatted:
             if args.auto:
@@ -133,14 +153,15 @@ def main(args) -> int:
 
             pyperclip.copy(formatted)
             time.sleep(0.3)
-            subprocess.run(['xdotool', 'key', '--clearmodifiers', 'ctrl+v', 'Return'])
+            subprocess.run(['xdotool', 'key', '--clearmodifiers', 'ctrl+v', 'Return'], check=False)
             # time.sleep(0.5)
             # subprocess.run(['xdotool', 'key', 'Return'])
             # clipbd.clear_lastest_clipboard(n=1)
 
         return 0
     except Exception as e:
-        subprocess.run(["notify-send", "-u", "critical", "error", f"{choice}: {str(e)}"], check=False)
+        error_msg = f"{choice or 'Unknown'}: {str(e)}"
+        subprocess.run(["notify-send", "-u", "critical", "Template Error", error_msg], check=False)
         return 1
 
 

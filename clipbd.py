@@ -5,6 +5,8 @@ import re
 import json
 from youtube import get_youtube_videoid, download_transcript
 from copyq import get_lastest_clipboard
+from exceptions import YouTubeExtractionError, ContentNotFoundError, WebExtractionError
+
 
 def get_youtube_content(test_url = None):
     result = dict()
@@ -28,10 +30,10 @@ def get_youtube_content(test_url = None):
             try:
               result['transcript'] = download_transcript(result['video_id'])
             except Exception as e:
-                result['transcript'] = f"[Error downloading transcript: {e}]"
+                raise YouTubeExtractionError(f"Failed to download transcript for video {result['video_id']}: {e}")
         return result
 
-    raise ValueError("No valid clipboard data.")
+    raise ContentNotFoundError("No YouTube content found in clipboard")
 
 def get_prompt():
     items = get_lastest_clipboard(n=1)
@@ -87,10 +89,51 @@ def get_longtext(text=None):
 
     if "content_text" in result:
         return result
-    raise ValueError("No valid clipboard data.")
+    raise ContentNotFoundError("No long text content found in clipboard (minimum 500 characters required)")
 
 
 from scraping import crawling
+
+def get_current_browser_url():
+    """Get URL from current active browser window."""
+    try:
+        from get_browser_url import get_current_browser_url as get_url
+        return get_url()
+    except ImportError:
+        # Fallback to simple clipboard method
+        import subprocess
+        import time
+        import pyperclip
+        
+        try:
+            original_clipboard = pyperclip.paste()
+            subprocess.run(['xdotool', 'key', 'ctrl+l'], check=True)
+            time.sleep(0.1)
+            subprocess.run(['xdotool', 'key', 'ctrl+c'], check=True)
+            time.sleep(0.1)
+            url = pyperclip.paste().strip()
+            pyperclip.copy(original_clipboard)
+            
+            if url.startswith(('http://', 'https://')):
+                return url
+        except Exception as e:
+            print(f"Failed to get browser URL: {e}")
+        
+        return None
+
+def get_webpage_from_browser():
+    """Get webpage content from current browser URL."""
+    url = get_current_browser_url()
+    if not url:
+        raise WebExtractionError("Could not get URL from active browser window")
+    
+    text_format, text_content = crawling(url)
+    return {
+        "source_url": url,
+        "content_format": text_format,
+        "content_text": text_content,
+    }
+
 def get_webpage(test_url = None):
     """ with CopyHTML chrome plugin: get raw html text with CopyHTML plugin. """
     if test_url:
@@ -109,8 +152,7 @@ def get_webpage(test_url = None):
             "content_text": text_content,
         }
 
-    url = url or "No clipboard data"
-    raise ValueError(f"No valid clipboard data: {url[:100]}")
+    raise WebExtractionError(f"No valid web URL found in clipboard data")
 
 if __name__ == '__main__':
     from rich import print
