@@ -2,8 +2,12 @@
 import requests
 import time
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
 # 🔑 API Keys (Replace with your actual keys)
-FIRECRAWL_API_KEY = os.getenv("FIRECRAWL_API_KEY")
+# FIRECRAWL_API_KEY = os.getenv("FIRECRAWL_API_KEY")
 # FIRECRAWL_BASE_URL = "https://api.firecrawl.dev/v1"
 # # 🔗 API URLs
 # FIRECRAWL_START_URL = FIRECRAWL_BASE_URL
@@ -80,35 +84,124 @@ import asyncio
 from firecrawl import AsyncFirecrawlApp, FirecrawlApp
 import subprocess
 
+FIRECRAWL_API_KEY = os.getenv("FIRECRAWL_API_KEY")
+
 def firecrawl_to_md(url) -> str:
+    """Extract content from URL using Firecrawl API and convert to markdown.
+
+    Args:
+        url (str): URL to extract content from
+
+    Returns:
+        str: Markdown formatted content
+
+    Raises:
+        Exception: If API key is missing or extraction fails
+    """
+    if not FIRECRAWL_API_KEY:
+        raise Exception(f"FIRECRAWL_API_KEY environment variable not set")
     subprocess.run(["notify-send", "running", f"firecrawl({url}) to markdown"], check=False)
+
     try:
-        app = FirecrawlApp(api_key='fc-54f5d81344d34207ae1ba87ac565458d')
+        app = FirecrawlApp(api_key=FIRECRAWL_API_KEY)
         response = app.scrape_url(
             url=url,
-            formats= [ 'markdown' ],
-            only_main_content= True,
-            parse_pdf= True,
-            max_age= 14400000
+            formats=['markdown'],
+            only_main_content=True,
+            parse_pdf=True,
+            max_age=14400000
         )
         return response.markdown or "No content"
     except Exception as e:
-        raise Exception(url+'\n'+str(e))
+        raise Exception(f"Firecrawl extraction failed for {url}: {str(e)}")
 
-def main():
-    urls = [
-        # 'https://cookbook.openai.com/examples/gpt-5/gpt-5_prompting_guide',
-        # "https://news.hada.io/topic?id=22490",
-        # "https://old.reddit.com/r/LocalLLaMA/comments/1mke7ef/120b_runs_awesome_on_just_8gb_vram",
+
+async def async_firecrawl_to_md(url: str) -> str:
+    """Extract content from URL using async Firecrawl API for better performance.
+
+    Args:
+        url (str): URL to extract content from
+
+    Returns:
+        str: Markdown formatted content
+
+    Raises:
+        Exception: If API key is missing or extraction fails
+    """
+
+    if not FIRECRAWL_API_KEY:
+        raise Exception(f"FIRECRAWL_API_KEY environment variable not set")
+    subprocess.run(["notify-send", "running", f"async_firecrawl({url}) to markdown"], check=False)
+
+    try:
+        app = AsyncFirecrawlApp(api_key=FIRECRAWL_API_KEY)
+        response = await app.scrape_url(
+            url=url,
+            formats=['markdown'],
+            only_main_content=True,
+            parse_pdf=True,
+            max_age=14400000
+        )
+        return response.markdown or "No content"
+    except Exception as e:
+        raise Exception(f"Async Firecrawl extraction failed for {url}: {str(e)}")
+
+
+async def async_test():
+    """Test async Firecrawl functionality."""
+    test_urls = [
+        "https://news.hada.io/topic?id=22490",
+        "https://old.reddit.com/r/LocalLLaMA/comments/1mke7ef/120b_runs_awesome_on_just_8gb_vram"
     ]
 
-    for url in urls:
-        md = firecrawl_to_md(url)
-        filename = f"temp/{url.split('/')[-1]}.md"
-        print(f"writing to {filename}")
+    for url in test_urls:
+        print(f"\n=== Testing async Firecrawl for {url} ===")
+        start_time = time.time()
 
-        with open(filename, 'w') as f:
-            f.write(md)
+        try:
+            content = await async_firecrawl_to_md(url)
+            elapsed = time.time() - start_time
+            print(f"✅ Async Firecrawl: {len(content)} chars in {elapsed:.2f}s")
+        except Exception as e:
+            elapsed = time.time() - start_time
+            print(f"❌ Async Firecrawl failed in {elapsed:.2f}s: {e}")
+
+
+def sync_test():
+    """Test sync Firecrawl functionality."""
+    test_urls = [
+        "https://news.hada.io/topic?id=22490",
+        "https://old.reddit.com/r/LocalLLaMA/comments/1mke7ef/120b_runs_awesome_on_just_8gb_vram"
+    ]
+
+    for url in test_urls:
+        print(f"\n=== Testing sync Firecrawl for {url} ===")
+        start_time = time.time()
+
+        try:
+            content = firecrawl_to_md(url)
+            elapsed = time.time() - start_time
+            print(f"✅ Sync Firecrawl: {len(content)} chars in {elapsed:.2f}s")
+        except Exception as e:
+            elapsed = time.time() - start_time
+            print(f"❌ Sync Firecrawl failed in {elapsed:.2f}s: {e}")
+
+
+def main():
+    """Compare sync vs async Firecrawl performance."""
+    print("🚀 Testing Firecrawl Async vs Sync Performance")
+    print("=" * 50)
+
+    # Test sync version
+    print("\n📋 SYNC FIRECRAWL TEST")
+    sync_test()
+
+    # Test async version
+    print("\n⚡ ASYNC FIRECRAWL TEST")
+    asyncio.run(async_test())
+
+    print("\n✅ Firecrawl tests completed!")
+
 
 if __name__ == '__main__':
     main()

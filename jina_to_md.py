@@ -8,39 +8,58 @@ load_dotenv(os.path.expanduser("~/.config/rofi/.env"))
 jjkim_key = os.getenv("JINA_API_JJKIM")
 obj76_key = os.getenv("JINA_API_OBJECTS76")
 
-#
-# curl "https://r.jina.ai/https://www.example.com" \
-#   -H "Accept: text/event-stream" \
-#   -H "Authorization: Bearer jina_de01014707b44f2b8da84917e486c09e_y-mapgpzKFuLA9iutoemgnK1eRw" \
-#   -H "X-Respond-With: readerlm-v2"
-
+# Jina Reader API integration
+# Documentation: https://jina.ai/reader/
+API_CALL_TIMEOUT = 120
 
 instruction = "Extract the main content from the given HTML and convert it to Markdown format."
 
-def jina_to_md(target_url: str):
+def jina_to_md(target_url: str) -> str:
+    """Extract content from URL using Jina Reader API.
+
+    Args:
+        target_url (str): URL to extract content from
+
+    Returns:
+        str: Markdown formatted content
+
+    Raises:
+        Exception: If all API keys fail or no keys available
+    """
     subprocess.run(["notify-send", "running", f"jina({target_url}) to markdown"], check=False)
     request_url = f"https://r.jina.ai/{target_url}"
 
+    api_keys = [key for key in [jjkim_key, obj76_key] if key]
+    if not api_keys:
+        raise Exception("No Jina API keys found in environment variables")
+
     last_exception = None
 
-    for i, key in enumerate([jjkim_key, obj76_key]):
+    for key in api_keys:
         try:
             response = requests.get(
                 request_url,
                 headers={
                     "Authorization": f"Bearer {key}",
                     "X-Respond-With": "readerlm-v2",
-                })
+                },
+                timeout= API_CALL_TIMEOUT  # Add timeout to prevent hanging
+            )
+            response.raise_for_status()  # Raise exception for HTTP errors
             return response.text
         except Exception as e:
             last_exception = e
             continue
-    assert  last_exception
-    raise last_exception
+
+    raise Exception(f"All Jina API keys failed for {target_url}: {str(last_exception)}")
 
 def test():
-    md_text = jina_to_md("https://huggingface.co/jinaai/ReaderLM-v2")
-    print(md_text)
+    """Test Jina API with a sample URL."""
+    try:
+        md_text = jina_to_md("https://huggingface.co/jinaai/ReaderLM-v2")
+        print(md_text)
+    except Exception as e:
+        print(f"Test failed: {e}")
 
 if __name__ == '__main__':
     test()
