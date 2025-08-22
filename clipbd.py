@@ -2,75 +2,16 @@
 import subprocess
 import sys
 import re
+import json
 from youtube import get_youtube_videoid, download_transcript
-
-def clear_lastest_clipboard(n=3):
-    text_cmd = ["copyq", "remove", *map(str, range(n))]
-    return subprocess.run(text_cmd, capture_output=True, check=True)
-
-
-def get_lastest_clipboard(n=3, include_images=False, debug=False):
-    """Get latest clipboard items including text and optionally images.
-
-    Args:
-        n: Number of clipboard items to retrieve
-        include_images: Whether to include image data
-
-    Returns:
-        List of dicts with 'type' and 'data' keys
-    """
-    items = []
-
-    for i in range(n):
-        item = {'type': 'text', 'data': None}
-
-        # First try to get text data
-        try:
-            text_cmd = ["copyq", "read", str(i)]
-            text_result = subprocess.run(text_cmd, capture_output=True, check=True)
-            text_data = text_result.stdout.decode("utf-8").strip()
-
-            if text_data:
-                item['data'] = text_data
-                items.append(item)
-                continue
-        except (subprocess.CalledProcessError, UnicodeDecodeError):
-            pass
-
-        # If no text data and images are requested, try image formats
-        if include_images:
-            for img_format in ['image/png', 'image/jpeg', 'image/gif', 'image/bmp']:
-                try:
-                    img_cmd = ["copyq", "read", img_format, str(i)]
-                    img_result = subprocess.run(img_cmd, capture_output=True, check=True)
-
-                    if img_result.stdout:
-                        item['type'] = 'image'
-                        item['format'] = img_format
-                        item['data'] = img_result.stdout  # Binary data
-                        items.append(item)
-                        break
-                except subprocess.CalledProcessError:
-                    continue
-
-    if debug:
-        for i, item in enumerate(items, start=1):
-            if item['type'] == 'text':
-                print(f"[{i}]: text, {len(item['data'])}, {item['data']}")
-            elif item['type'] == 'image':
-                ext = item['format'].split('/')[-1]
-                filename = f"{i}_clipboard.{ext}"
-                with open(filename, 'wb') as f:
-                    f.write(item['data'])
-                print(f"[{i}]: image, {item['format']}, {len(item['data'])} bytes -> saved as {filename}")
-    return items
+from copyq import get_lastest_clipboard
 
 def get_youtube_content(test_url = None):
     result = dict()
     if test_url:
         test_url = [{'type': 'text', 'data': test_url}]
 
-    items = test_url or get_lastest_clipboard(n=2, include_images=False)
+    items = test_url or get_lastest_clipboard(n=2)
     for i, item in enumerate(items, start=1):
         if item['type'] != 'text': continue
         text = item['data']
@@ -93,7 +34,7 @@ def get_youtube_content(test_url = None):
     raise ValueError("No valid clipboard data.")
 
 def get_prompt():
-    items = get_lastest_clipboard(n=1, include_images=False)
+    items = get_lastest_clipboard(n=1)
     for i, item in enumerate(items, start=1):
         if item['type'] != 'text': continue
         text = item['data'].strip()
@@ -103,7 +44,7 @@ def get_prompt():
     raise ValueError("No valid clipboard data for youtube.")
 
 def get_QandA():
-    items = get_lastest_clipboard(n=1, include_images=False)
+    items = get_lastest_clipboard(n=1)
     for i, item in enumerate(items, start=1):
         if item['type'] != 'text': continue
         text = item['data'].strip()
@@ -116,7 +57,7 @@ from medium import extract_medium
 def get_medium():
     result = { "source_url": "Not provided" }
     """ with CopyHTML chrome plugin: get raw html text with CopyHTML plugin. """
-    items = get_lastest_clipboard(n=1, include_images=False)
+    items = get_lastest_clipboard(n=1)
     for i, item in enumerate(items, start=1):
         if item['type'] != 'text': continue
         text_format, text_content = extract_medium( item['data'].strip() )
@@ -136,7 +77,7 @@ def get_longtext(text=None):
     if text:
         text = [{'type': 'text', 'data': text}]
 
-    items = text or get_lastest_clipboard(n=1, include_images=False)
+    items = text or get_lastest_clipboard(n=1)
     for i, item in enumerate(items, start=1):
         if item['type'] != 'text': continue
         long_text = item['data'].strip()
@@ -155,7 +96,7 @@ def get_webpage(test_url = None):
     if test_url:
         test_url = [{'type': 'text', 'data': test_url}]
 
-    items = test_url or get_lastest_clipboard(n=1, include_images=False)
+    items = test_url or get_lastest_clipboard(n=1)
     for i, item in enumerate(items, start=1):
         if item['type'] != 'text': continue
         url = item['data'].strip()
