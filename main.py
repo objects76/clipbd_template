@@ -67,12 +67,12 @@ def get_template(template_path, choice = None):
 
 
 def auto_selector():
-    items = get_lastest_clipboard(n=1, include_images=False)
+    text = ''
+    items = get_lastest_clipboard(n=1)
     for i, item in enumerate(items, start=1):
         if item['type'] != 'text': continue
         text = item['data'].strip()
 
-    text = text or ''
     if 'youtube.com/watch' in text or 'youtu.be/' in text:
         return 'youtube summary'
     elif text.startswith('https://') or text.startswith('http://'):
@@ -105,11 +105,11 @@ def webpage_summary():
     return clipbd.get_longtext()
 
 def main(args) -> int:
-
-    choice = auto_selector() if args.auto else None
-    choice, template  = get_template(args.template, choice)
+    choice = None
 
     try:
+        choice = auto_selector() if args.auto else None
+        choice, template  = get_template(args.template, choice)
         formatted = ""
         if choice == 'youtube summary':
             formatted = template.format( **clipbd.get_youtube_content() )

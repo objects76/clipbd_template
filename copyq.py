@@ -1,4 +1,9 @@
 import subprocess, json
+from datetime import datetime
+
+class CopyQError(Exception):
+    pass
+
 
 def clear_lastest_clipboard(n=3):
     text_cmd = ["copyq", "remove", *map(str, range(n))]
@@ -14,6 +19,7 @@ def copyq_read(row):
     out = subprocess.run( ["copyq", "eval", script], capture_output=True, text=True, check=True).stdout
     return json.loads(out.strip())
 
+
 def get_lastest_clipboard(n, debug=False):
     """Get latest clipboard items including text and optionally images.
 
@@ -25,27 +31,26 @@ def get_lastest_clipboard(n, debug=False):
         List of dicts with 'type' and 'data' keys
     """
     items = []
-
+    last_exception = None
     for i in range(n):
         try:
             text_data = copyq_read(i)
 
             if text_data:
                 ts = datetime.strptime(text_data['timestamp'], '%Y-%m-%d %H:%M:%S')
-                elapsed = (datetime.now() - ts).total_seconds()
-                if elapsed > 60: continue # skip, too old
+                elapsed = int((datetime.now() - ts).total_seconds())
+                if elapsed > 60:
+                    raise CopyQError(f"Too old: {elapsed=}sec, {text_data['text'][:200]}")
                 items.append({
                     'type': 'text',
                     'data': text_data['text'],
                 })
-                continue
-        except (subprocess.CalledProcessError, UnicodeDecodeError):
-            pass
+        except (CopyQError, subprocess.CalledProcessError, UnicodeDecodeError) as e:
+            last_exception = e
 
-    if debug:
-        for i, item in enumerate(items, start=1):
-            print(f"{i}: {item}")
-    return items
+    if len(items):
+        return items
+    raise last_exception or CopyQError("No items")
 
 
 if __name__ == "__main__":
