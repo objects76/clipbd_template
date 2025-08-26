@@ -6,22 +6,23 @@ import pyperclip
 from pathlib import Path
 import sys
 import yaml
-import clipbd
+import ng.clipbd as clipbd
 import time
-from clipbd import get_lastest_clipboard
+import re
+from typing import Optional, Tuple
+from ng.clipbd import get_lastest_clipboard
 from copyq import clear_lastest_clipboard
 from config import Config
 import q_and_a
 from exceptions import ClipboardTemplateError
 from dunstify import notify_send, notify_cont, notify_close
-from scraping import get_html
 from text_info import get_text_type
 import webpage
 import youtube
-rprint = print
-
-VERSION = "1.0.0"
 from enum import Enum
+
+rprint = print
+VERSION = "1.0.0"
 
 class Commands(Enum):
     SUMMARY = "Summary"
@@ -68,7 +69,7 @@ def resource_path(name: str) -> Path:
         print(ex)
         return Path(name)
 
-def get_template(template_path, command: Commands, subtype: Subtype|None) -> str:
+def get_template(template_path: str, command: Commands, subtype: Optional[Subtype]) -> str:
     template_yaml = Path(template_path).expanduser()
     if not template_yaml.exists():
         raise ValueError(f'not found: {template_yaml}')
@@ -98,12 +99,12 @@ def get_template(template_path, command: Commands, subtype: Subtype|None) -> str
 def manual_selector():
     pass
 
-import re
-def is_url(string):
+
+def is_url(string: str) -> bool:
     pattern = r'https?://(?:[-\w.]|(?:%[\da-fA-F]{2}))+'
     return re.match(pattern, string) is not None
 
-def get_command(text:str, auto: bool = False) -> tuple[Commands, Subtype|None]|None:
+def get_command(text: str, auto: bool = False) -> Optional[Tuple[Commands, Optional[Subtype]]]:
     if auto:
         command = Commands.SUMMARY
     else:
@@ -160,12 +161,12 @@ def main(args) -> int:
         for i, item in enumerate(items, start=1):
             if item['type'] != 'text': continue
             cb_text = item['data'].strip()
-        if not cb_text:
-            raise ValueError("No text in clipboard")
+        if len(cb_text) < 20 and not is_url(cb_text):
+            raise Warning("No valid text:\n "+cb_text)
 
         cmdinfo = get_command(cb_text, args.auto)
         if cmdinfo is None:
-            raise ValueError("No command found")
+            raise Warning("No command found")
 
         command, subtype = cmdinfo
         template  = get_template(args.template, command, subtype)
@@ -194,7 +195,7 @@ def main(args) -> int:
             print(f"formatted: {formatted}")
 
         elif command == Commands.QA:
-            content = q_and_a.get_QandA()
+            content = q_and_a.get_QandA(cb_text)
             formatted = template.format( **content )
 
         elif command == Commands.META_PROMPT:
@@ -223,6 +224,10 @@ def main(args) -> int:
                 clear_lastest_clipboard(n=1)
         notify_close()
         return 0
+
+    except Warning as e:
+        notify_send("Warning", str(e), timeout_ms=1000)
+        return 1
     except Exception as e:
         error_msg = f"{command}, {subtype}: {str(e)}"
         if len(error_msg) > 250:
@@ -242,7 +247,7 @@ if __name__ == '__main__':
     if args.test:
         import time
         for i in range(5, 0, -1):
-            print(f"{i}초 대기 중...")
+            print(f"Waiting {i} seconds...")
             time.sleep(1)
 
     sys.exit(main(args))

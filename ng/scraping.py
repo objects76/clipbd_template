@@ -60,38 +60,31 @@ def crawling(url: str, use_parallel: bool = True) -> tuple[str, str]:
     if not url.startswith(('https:', 'http:')):
         raise ValueError(f"Invalid URL format: {url}")
 
-    # Sequential fallback extraction
+    # Sequential fallback extraction with error collection
     errors = []
 
-
     # Try Jina Reader API first
+    try:
+        content = jina_to_md(url)
+        return 'Markdown', content
+    except Exception as e:
+        errors.append(f"Jina API failed: {str(e)}")
+
+    # Try Firecrawl API as fallback
+    try:
+        content = firecrawl_to_md(url)
+        return 'Markdown', content
+    except Exception as e:
+        errors.append(f"Firecrawl API failed: {str(e)}")
+
+    # Final fallback to raw HTML with markdown conversion
     try:
         html = get_html(url)
         markdown = html_to_md(html)
         return 'Markdown', markdown
     except Exception as e:
-        raise Exception(f"html to markdown: {str(e)}")
-
-#     # Try Jina Reader API first
-#         content = jina_to_md(url)
-#         return 'Markdown', content
-#     except Exception as e:
-#         errors.append(f"Jina API failed: {str(e)}")
-#
-#     # Try Firecrawl API as fallback
-#     try:
-#         content = firecrawl_to_md(url)
-#         return 'Markdown', content
-#     except Exception as e:
-#         errors.append(f"Firecrawl API failed: {str(e)}")
-#
-#     # Final fallback to raw HTML
-#     try:
-#         content = get_html(url)
-#         return 'HTML', content
-#     except Exception as e:
-#         errors.append(f"Raw HTML extraction failed: {str(e)}")
-#         raise Exception(f"All extraction methods failed for {url}: {'; '.join(errors)}")
+        errors.append(f"Raw HTML extraction failed: {str(e)}")
+        raise Exception(f"All extraction methods failed for {url}: {'; '.join(errors)}")
 
 
 if __name__ == "__main__":

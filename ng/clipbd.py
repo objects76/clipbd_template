@@ -11,7 +11,6 @@ from medium import extract_medium
 from exceptions import YouTubeExtractionError, ContentNotFoundError, WebExtractionError
 from webpage import html_to_md
 from config import Config
-from scraping import crawling
 
 def get_prompt():
     items = get_lastest_clipboard(n=1)

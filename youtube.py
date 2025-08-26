@@ -58,7 +58,7 @@ def download_transcript(
 
         transcript = transcript.fetch(preserve_formatting=False)
 
-        print(f"선택된 자막 정보:")
+        print(f"Selected transcript info:")
         print(f"  - 언어: {transcript.language} ({transcript.language_code})")
         print(f"  - 자동 생성: {transcript.is_generated}")
         if getattr(transcript, "translation_languages", False):
@@ -70,7 +70,7 @@ def download_transcript(
     except (RequestBlocked, IpBlocked) as e:
         raise e
     except Exception as e:
-        raise ValueError(f"자막 다운로드 실패: {video_id}: {e}") from e
+        raise ValueError(f"Transcript download failed for {video_id}: {e}") from e
 
 
 

@@ -2,7 +2,7 @@ import subprocess, json
 from datetime import datetime
 import pyperclip
 
-OLD_CLIPBOARD_THRESHOLD = 20*0 # seconds
+OLD_CLIPBOARD_THRESHOLD = 0  # Threshold disabled (was 20 seconds)
 
 class CopyQError(Exception):
     pass
@@ -93,30 +93,11 @@ def get_lastest_clipboard(n: int) -> list[dict]:
     if len(items):
         return items
 
-    # if last_exception is None:
-    #     active_url = get_current_browser_url()
-    #     if active_url:
-    #         return [{
-    #             'type': 'text',
-    #             'data': active_url,
-    #         }]
 
     raise last_exception or CopyQError("No items")
 
 import pyperclip
 if __name__ == "__main__":
     from rich import print
-#     s1 = '2025-08-21 15:07:45'
-#     s2 = '2025-08-21 23:07:45'
-#
-#     from datetime import datetime
-#     current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-#     print(f"Current time: {current_time}")
-#
-#     dt1 = datetime.strptime(s1, '%Y-%m-%d %H:%M:%S')
-#     dt2 = datetime.strptime(s2, '%Y-%m-%d %H:%M:%S')
-#     elapsed = (datetime.now() - dt1).total_seconds()
-#     print (f"{s1 < s2=}, {elapsed=}")
-#
     clipbds = copyq_read(0)
     print(clipbds)
