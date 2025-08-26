@@ -9,7 +9,9 @@ import yaml
 import clipbd
 import time
 from clipbd import get_lastest_clipboard
+import q_and_a
 from exceptions import ClipboardTemplateError
+from dunstify import notify_send, notify_cont, notify_close
 
 VERSION = "1.0.0"
 
@@ -19,17 +21,17 @@ DEBUG = os.getenv('DEBUG', 'False').lower() in ('true', '1', 'yes')
 
 def llm(user: str, url: str) -> None:
     """Launch browser with sanitized inputs.
-    
+
     Args:
         user (str): Browser profile directory name
         url (str): URL to open
     """
     BROWSER = "microsoft-edge-stable"
-    
+
     # Sanitize inputs to prevent command injection
     safe_user = shlex.quote(user)
     safe_url = shlex.quote(url)
-    
+
     subprocess.run([
         BROWSER,
         f"--profile-directory={safe_user}",
@@ -61,7 +63,7 @@ def get_template(template_path, choice = None):
         # Sanitize rofi parameters to prevent injection
         safe_prompt = shlex.quote(f'Choose {VERSION}:')
         template_keys = list(templates.keys())
-        
+
         cmd = [
             'rofi', '-dmenu', '-no-custom',
             '-theme-str', 'window {width: 10%;} entry { enabled: false; }',
@@ -87,6 +89,7 @@ def get_template(template_path, choice = None):
 
 def auto_selector():
     text = ''
+    notify_send("auto_selector", "get clipboard data")
     items = get_lastest_clipboard(n=1)
     for i, item in enumerate(items, start=1):
         if item['type'] != 'text': continue
@@ -101,6 +104,8 @@ def auto_selector():
         # return 'medium summary'
     elif len(text) > 500:
         return 'webpage summary'
+    else:
+        raise ValueError(f"Invalid clipboard data: {text}")
 
     return "invalid"
 
@@ -127,19 +132,19 @@ def main(args) -> int:
     choice = None
 
     try:
-        choice = auto_selector() if args.auto else None
-        choice, template  = get_template(args.template, choice)
+        auto_choice = auto_selector() if args.auto else None
+        choice, template  = get_template(args.template, auto_choice)
         formatted = ""
+
+        notify_cont(choice, choice + " content")
         if choice == 'youtube summary':
             formatted = template.format( **clipbd.get_youtube_content() )
-        # elif choice == 'medium summary':
-        #     formatted = template.format( **clipbd.get_medium() )
         elif choice == 'webpage summary':
             formatted = template.format( **webpage_summary() )
         elif choice == 'meta prompt':
             formatted = template.format( **clipbd.get_prompt() )
         elif choice == 'q&a on context':
-            formatted = template.format( **clipbd.get_QandA() )
+            formatted = template.format( **q_and_a.get_QandA() )
 
         if DEBUG:
             print(f'Template choice: {choice}')
@@ -153,11 +158,14 @@ def main(args) -> int:
 
             pyperclip.copy(formatted)
             time.sleep(0.3)
-            subprocess.run(['xdotool', 'key', '--clearmodifiers', 'ctrl+v', 'Return'], check=False)
+            if auto_choice:
+                subprocess.run(['xdotool', 'key', '--clearmodifiers', 'ctrl+v', 'Return'], check=False)
+            else:
+                subprocess.run(['xdotool', 'key', '--clearmodifiers', 'ctrl+v'], check=False)
             # time.sleep(0.5)
             # subprocess.run(['xdotool', 'key', 'Return'])
             # clipbd.clear_lastest_clipboard(n=1)
-
+        notify_close()
         return 0
     except Exception as e:
         error_msg = f"{choice or 'Unknown'}: {str(e)}"
@@ -175,8 +183,8 @@ if __name__ == '__main__':
 
     if args.test:
         import time
-        for i in range(5):
-            print(f"{i+1}초 대기 중...")
+        for i in range(5, 0, -1):
+            print(f"{i}초 대기 중...")
             time.sleep(1)
 
     sys.exit(main(args))

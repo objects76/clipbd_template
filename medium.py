@@ -8,6 +8,8 @@ import requests
 from bs4 import BeautifulSoup, Comment
 from pathlib import Path
 import sys
+from web_to_md import html_to_md
+
 
 class MediumError(Exception):
     pass
@@ -80,10 +82,12 @@ def extract_medium(html_content: str):
     node = soup.find('article', attrs={'class': 'meteredContent'})
 
     if node:
+        return "markdown", html_to_md(str(node))
         return "HTML", compress_medium(node)
 
     node = soup.find('section')
     if node:
+        return "markdown", html_to_md(str(node))
         return "HTML", compress_medium(node)
 
     raise MediumError("No article in medium")

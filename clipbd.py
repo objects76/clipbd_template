@@ -5,8 +5,9 @@ import re
 import json
 from youtube import get_youtube_videoid, download_transcript
 from copyq import get_lastest_clipboard
+from medium import extract_medium
 from exceptions import YouTubeExtractionError, ContentNotFoundError, WebExtractionError
-
+from web_to_md import html_to_md
 
 def get_youtube_content(test_url = None):
     result = dict()
@@ -45,17 +46,6 @@ def get_prompt():
 
     raise ValueError("No valid clipboard data for youtube.")
 
-def get_QandA():
-    items = get_lastest_clipboard(n=1)
-    for i, item in enumerate(items, start=1):
-        if item['type'] != 'text': continue
-        text = item['data'].strip()
-        if len(text) > 10:
-            return { "context": text }
-
-    raise ValueError("No valid clipboard data for youtube.")
-
-from medium import extract_medium
 def get_medium():
     result = { "source_url": "Not provided" }
     """ with CopyHTML chrome plugin: get raw html text with CopyHTML plugin. """
@@ -104,7 +94,7 @@ def get_current_browser_url():
         import subprocess
         import time
         import pyperclip
-        
+
         try:
             original_clipboard = pyperclip.paste()
             subprocess.run(['xdotool', 'key', 'ctrl+l'], check=True)
@@ -113,12 +103,12 @@ def get_current_browser_url():
             time.sleep(0.1)
             url = pyperclip.paste().strip()
             pyperclip.copy(original_clipboard)
-            
+
             if url.startswith(('http://', 'https://')):
                 return url
         except Exception as e:
             print(f"Failed to get browser URL: {e}")
-        
+
         return None
 
 def get_webpage_from_browser():
@@ -126,7 +116,7 @@ def get_webpage_from_browser():
     url = get_current_browser_url()
     if not url:
         raise WebExtractionError("Could not get URL from active browser window")
-    
+
     text_format, text_content = crawling(url)
     return {
         "source_url": url,

@@ -38,6 +38,7 @@ class Dunstify:
                 f"`{self.binary}` not found on PATH. Install dunst (which provides dunstify) "
                 "and ensure the notification daemon (dunst) is running."
             )
+        self.notify_id = None
 
     @staticmethod
     def _hint_tuple_to_str(k: str, v: Union[bool, int, float, str, bytes]) -> str:
@@ -58,6 +59,15 @@ class Dunstify:
             t = "string"
             val = str(v)
         return f"{t}:{k}:{val}"
+
+    def cont(self, summary: str, body: Optional[str] = None, **kwargs) -> NotifyResult:
+        kwargs['replace_id'] = self.notify_id
+        return self.send(summary, body, **kwargs)
+
+    def close(self, notify_id: int|None=None):
+        notify_id = notify_id or self.notify_id
+        args: list[str] = [self.binary, "--close", str(notify_id)]
+        subprocess.run(args, capture_output=False, text=True)
 
     def send(
         self,
@@ -101,8 +111,8 @@ class Dunstify:
                 args += [f"--action={key},{label}"]
         if replace_id is not None:
             args += ["--replace", str(replace_id)]
-        if wait:
-            args.append("--wait")
+        # if wait:
+        #     args.append("--wait")
         if print_id:
             args.append("--printid")
         if extra_args:
@@ -111,6 +121,8 @@ class Dunstify:
         args.append(summary)
         if body:
             args.append(body)
+
+        print('subprocess.run', args)
 
         proc = subprocess.run(args, capture_output=True, text=True)
         stdout = (proc.stdout or "").strip()
@@ -129,17 +141,18 @@ class Dunstify:
             # first numeric token -> id
             for token in lines:
                 if token.isdigit():
-                    notify_id = int(token)
+                    self.notify_id = int(token)
                     break
             # last non-digit -> action
             if lines and not lines[-1].isdigit():
                 chosen_action = lines[-1]
 
+
         result = NotifyResult(
             returncode=proc.returncode,
             stdout=stdout,
             stderr=stderr,
-            notify_id=notify_id,
+            notify_id=self.notify_id,
             chosen_action=chosen_action,
         )
 
@@ -178,6 +191,21 @@ class Dunstify:
         # dunstify --action="yes,OK" --action="no,CANCEL" "질문" "원하는 옵션을 선택하세요"
         return self.send(summary, body, actions=options, **kwargs)
 
+_notify = None
+def notify_send(summary: str, body: Optional[str] = None, **kwargs):
+    global _notify
+    _notify = Dunstify()
+    _notify.send(summary, body, **kwargs)
+
+def notify_cont(summary: str, body: Optional[str] = None, **kwargs):
+    if _notify:
+        _notify.cont(summary, body, **kwargs)
+
+def notify_close(notify_id: int|None=None):
+    if _notify:
+        _notify.close(notify_id)
+
+
 
 import os
 import sys
@@ -206,10 +234,12 @@ def test_replace(client: Dunstify):
     first = client.send("진행 상태", "초기화 중…", print_id=True, timeout_ms=5000)
     print("  -> first id:", first.notify_id)
     time.sleep(1.0)
-    client.send("진행 상태", "50% 완료", replace_id=first.notify_id)
+    client.cont("진행 상태", "50% 완료")
     time.sleep(1.0)
-    client.send("진행 상태", "완료!", replace_id=first.notify_id)
+    client.cont("진행 상태", "완료!")
     print("  -> replaced id:", first.notify_id)
+    time.sleep(1.0)
+    client.close()
 
 def test_progress(client: Dunstify):
     print("[progress] 힌트(int:value)로 진행률 표시")
@@ -241,10 +271,12 @@ def main():
     # 개별 테스트 실행
     # test_basic(client)
     # test_urgency(client)
-    # test_replace(client)
+
+    test_replace(client)
     # test_progress(client)
+
     # test_actions(client)
-    test_wait_and_printid(client)
+    # test_wait_and_printid(client)
 
     print("\n모든 테스트가 실행되었습니다. 화면의 알림과 터미널 출력을 함께 확인하세요.")
 

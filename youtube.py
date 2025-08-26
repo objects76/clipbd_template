@@ -5,12 +5,25 @@ from youtube_transcript_api.proxies import WebshareProxyConfig
 from youtube_transcript_api import RequestBlocked, IpBlocked
 import subprocess
 
+from dunstify import notify_cont
+
 def ts_format(ts):
     sec = int(ts['start'])
     hours, remainder = divmod(sec, 3600)
     minutes, seconds = divmod(remainder, 60)
     hhmmss = f"{hours}:{minutes:02d}:{seconds:02d}" if hours else f"{minutes}:{seconds:02d}"
     return f"{hhmmss}\n{ts['text']}"
+
+
+def ts_merge(ts1, ts2 = None):
+    sec = int(ts1['start'])
+    hours, remainder = divmod(sec, 3600)
+    minutes, seconds = divmod(remainder, 60)
+    hhmmss = f"{hours}:{minutes:02d}:{seconds:02d}" if hours else f"{minutes}:{seconds:02d}"
+    if ts2:
+        return f"{hhmmss}\n{ts1['text']} {ts2['text']}"
+    else:
+        return f"{hhmmss}\n{ts1['text']}"
 
 
 def get_youtube_videoid(url: str) -> str:
@@ -28,7 +41,7 @@ def download_transcript(
     video_id: str = "",
     language_codes: list[str] = ['en', 'ko'],
 ):
-    subprocess.run(["notify-send", "running", f"get youtube transcript: {video_id}"], check=False)
+    notify_cont("youtube summary", f"get youtube transcript: {video_id}")
 
     # video_id = get_youtube_videoid(video_url)
     ytt_api = YouTubeTranscriptApi()
@@ -47,7 +60,9 @@ def download_transcript(
         if getattr(transcript, "translation_languages", False):
             print(f"  - 번역 가능 언어: {getattr(transcript, 'translation_languages')}")
 
-        return '\n'.join( map(ts_format, transcript.to_raw_data()) )
+        raw_data = transcript.to_raw_data()
+        merged_segments = [ts_merge(*raw_data[i:i+2]) for i in range(0, len(raw_data), 2)]
+        return '\n'.join(merged_segments)
     except (RequestBlocked, IpBlocked) as e:
         raise e
     except Exception as e:
@@ -55,4 +70,4 @@ def download_transcript(
 
 
 if __name__ == '__main__':
-    print(download_transcript("https://www.youtube.com/watch?v=k_5NcmxWlVg"))
+    print(download_transcript("k_5NcmxWlVg"))

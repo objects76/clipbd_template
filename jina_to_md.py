@@ -4,6 +4,8 @@ import requests
 import os
 
 from dotenv import load_dotenv
+
+from dunstify import notify_cont
 load_dotenv(os.path.expanduser("~/.config/rofi/.env"))
 jjkim_key = os.getenv("JINA_API_JJKIM")
 obj76_key = os.getenv("JINA_API_OBJECTS76")
@@ -26,7 +28,7 @@ def jina_to_md(target_url: str) -> str:
     Raises:
         Exception: If all API keys fail or no keys available
     """
-    subprocess.run(["notify-send", "running", f"jina({target_url}) to markdown"], check=False)
+    notify_cont("jina to markdown", f"jina({target_url}) to markdown")
     request_url = f"https://r.jina.ai/{target_url}"
 
     api_keys = [key for key in [jjkim_key, obj76_key] if key]
