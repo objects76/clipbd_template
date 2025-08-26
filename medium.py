@@ -84,7 +84,6 @@ def extract_medium(html_content: str):
     node = node or soup
 
     return "markdown", html_to_md(str(node))
-    return "HTML", compress_medium(node)
 
     raise MediumError("No article in medium")
 

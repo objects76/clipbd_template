@@ -4,16 +4,12 @@ def add_linenumber(text):
     numbered_lines = [f"Line={i}. {line}" for i, line in enumerate(lines.split('\n'),start=1)]
     return '\n'.join(numbered_lines)
 
-def get_QandA():
-    items = get_lastest_clipboard(n=1)
-    for i, item in enumerate(items, start=1):
-        if item['type'] != 'text': continue
-        text = item['data'].strip()
-        if len(text) > 10:
-            # text = '"'+text.replace("\n", "\\n")+'"'
-            text = [f"L{i}. {txt}".strip() for i, txt in enumerate(text.split('\n'),start=1)]
-            text = '\n'.join(text)
-            return { "context": {text}, "query": "your_question_here" }
+def get_QandA(cb_text:str):
+    if len(cb_text) > 10:
+        # text = '"'+text.replace("\n", "\\n")+'"'
+        lines = [f"L{i}. {txt}".strip() for i, txt in enumerate(cb_text.split('\n'),start=1)]
+        lines = '\n'.join(lines)
+        return { "context": {lines}, "query": "your_question_here" }
 
     raise ValueError("No valid clipboard data for youtube.")
 
