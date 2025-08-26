@@ -6,7 +6,7 @@ from urllib.parse import urlparse
 
 from firecrawl_to_md import firecrawl_to_md
 from jina_to_md import jina_to_md
-from web_to_md import html_to_md
+from webpage import html_to_md
 
 def get_html(url: str) -> str:
     """Fetch raw HTML content from URL with timeout handling.

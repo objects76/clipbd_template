@@ -1,11 +1,15 @@
 
+import re
 from urllib.parse import parse_qs, urlparse
 from youtube_transcript_api import YouTubeTranscriptApi
 from youtube_transcript_api.proxies import WebshareProxyConfig
 from youtube_transcript_api import RequestBlocked, IpBlocked
 import subprocess
 
+from config import Config
+from copyq import get_lastest_clipboard
 from dunstify import notify_cont
+from exceptions import ContentNotFoundError, YouTubeExtractionError
 
 def ts_format(ts):
     sec = int(ts['start'])
@@ -67,6 +71,38 @@ def download_transcript(
         raise e
     except Exception as e:
         raise ValueError(f"자막 다운로드 실패: {video_id}: {e}") from e
+
+
+
+def get_youtube_content(cb_text = None):
+
+    items = [{'type': 'text', 'data': cb_text}] if cb_text else []
+
+    n = 2 if Config.clipbd_transcript else 1
+    if len(items) < n:
+        items = get_lastest_clipboard(n=n)
+
+    result = dict()
+    for i, item in enumerate(items, start=1):
+        if item['type'] != 'text': continue
+        text = item['data']
+        if ('youtube.com/watch' in text or 'youtu.be/' in text) and len(text) < 100:
+            result['video_id'] = get_youtube_videoid(text)
+
+        elif len(text) > 300:
+            timestamps = re.findall(r'\n\d+:\d+\n', text)
+            if len(timestamps) > 10:
+                result['transcript'] = text
+
+    if result.get('video_id'):
+        if 'transcript' not in result:
+            try:
+              result['transcript'] = download_transcript(result['video_id'])
+            except Exception as e:
+                raise YouTubeExtractionError(f"Failed to download transcript for video {result['video_id']}: {e}")
+        return result
+
+    raise ContentNotFoundError("No YouTube content found in clipboard")
 
 
 if __name__ == '__main__':

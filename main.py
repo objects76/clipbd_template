@@ -9,17 +9,37 @@ import yaml
 import clipbd
 import time
 from clipbd import get_lastest_clipboard
+from copyq import clear_lastest_clipboard
+from config import Config
 import q_and_a
 from exceptions import ClipboardTemplateError
 from dunstify import notify_send, notify_cont, notify_close
+from scraping import get_html
+from text_info import get_text_type
+import webpage
+import youtube
+rprint = print
 
 VERSION = "1.0.0"
+from enum import Enum
+
+class Commands(Enum):
+    SUMMARY = "Summary"
+    QA = "Q&A"
+    META_PROMPT = "Meta Prompt"
+
+class Subtype(Enum):
+    YOUTUBE = "youtube"
+    WEBURL = "webpage"
+    HTML_TEXT = "html_text"
+    MARKDOWN = "markdown"
+    LONGTEXT = "longtext"
 
 # Configuration from environment
 DEBUG = os.getenv('DEBUG', 'False').lower() in ('true', '1', 'yes')
 
 
-def llm(user: str, url: str) -> None:
+def run_web_llm(profile: str, url: str) -> None:
     """Launch browser with sanitized inputs.
 
     Args:
@@ -29,7 +49,7 @@ def llm(user: str, url: str) -> None:
     BROWSER = "microsoft-edge-stable"
 
     # Sanitize inputs to prevent command injection
-    safe_user = shlex.quote(user)
+    safe_user = shlex.quote(profile)
     safe_url = shlex.quote(url)
 
     subprocess.run([
@@ -48,7 +68,7 @@ def resource_path(name: str) -> Path:
         print(ex)
         return Path(name)
 
-def get_template(template_path, choice = None):
+def get_template(template_path, command: Commands, subtype: Subtype|None) -> str:
     template_yaml = Path(template_path).expanduser()
     if not template_yaml.exists():
         raise ValueError(f'not found: {template_yaml}')
@@ -58,117 +78,155 @@ def get_template(template_path, choice = None):
     if not isinstance(templates, dict) or not templates:
         raise ValueError('no templates')
 
-    if choice is None:
-        # ~/.config/rofi/
-        # Sanitize rofi parameters to prevent injection
-        safe_prompt = shlex.quote(f'Choose {VERSION}:')
-        template_keys = list(templates.keys())
+    print(f"command: {command}, subtype: {subtype}")
 
+    if command == Commands.SUMMARY:
+        assert subtype is not None, "subtype is required"
+        if subtype == Subtype.YOUTUBE:
+            return templates.get('youtube summary', "")
+        elif subtype == Subtype.HTML_TEXT or subtype == Subtype.WEBURL:
+            return templates.get('webtext summary', "")
+        # elif subtype == Subtype.LONGTEXT:
+        #     return templates.get('webpage summary', "")
+    elif command == Commands.QA:
+        return templates.get('q&a on context', "")
+    elif command == Commands.META_PROMPT:
+        return templates.get('meta prompt', "")
+
+    raise ValueError(f"Invalid template: {command}, {subtype}")
+
+def manual_selector():
+    pass
+
+import re
+def is_url(string):
+    pattern = r'https?://(?:[-\w.]|(?:%[\da-fA-F]{2}))+'
+    return re.match(pattern, string) is not None
+
+def get_command(text:str, auto: bool = False) -> tuple[Commands, Subtype|None]|None:
+    if auto:
+        command = Commands.SUMMARY
+    else:
         cmd = [
             'rofi', '-dmenu', '-no-custom',
             '-theme-str', 'window {width: 10%;} entry { enabled: false; }',
-            '-p', safe_prompt,
+            '-p', f'Choose {VERSION}:',
             '-dpi', '192',
-            '-lines', str(len(template_keys)),
+            '-lines', str(len(Commands)),
             '-no-fixed-num-lines',
         ]
 
         rofi = subprocess.run(
             cmd,
-            input='\n'.join(template_keys),
+            input='\n'.join([cmd.value for cmd in Commands]),
             text=True,
             capture_output=True,
             timeout=30  # Prevent hanging
         )
 
         choice = (rofi.stdout or '').strip()
-        if not choice or choice not in templates:
-            return "", ""
-    return choice, templates[choice]
+
+        if not choice:
+            return None
+        command = Commands(choice)
 
 
-def auto_selector():
-    text = ''
-    notify_send("auto_selector", "get clipboard data")
-    items = get_lastest_clipboard(n=1)
-    for i, item in enumerate(items, start=1):
-        if item['type'] != 'text': continue
-        text = item['data'].strip()
+    if command == Commands.SUMMARY:
+        if (is_url(text) and ('youtube.com/watch' in text or 'youtu.be/' in text)):
+            return Commands.SUMMARY, Subtype.YOUTUBE
+        elif is_url(text):
+            return Commands.SUMMARY, Subtype.WEBURL
+        else:
+            txt_type, stat = get_text_type(text)
+            print(f"text_type: {txt_type}, status: {stat}")
+            if txt_type == "html":
+                return Commands.SUMMARY, Subtype.HTML_TEXT
+            elif txt_type == "markdown":
+                return Commands.SUMMARY, Subtype.MARKDOWN
+            elif txt_type == "plain":
+                return Commands.SUMMARY, Subtype.LONGTEXT
 
-    if 'youtube.com/watch' in text or 'youtu.be/' in text:
-        return 'youtube summary'
-    elif text.startswith('https://') or text.startswith('http://'):
-        return 'webpage summary'
-    elif text.count('.medium.com') > 10:
-        return 'webpage summary'
-        # return 'medium summary'
-    elif len(text) > 500:
-        return 'webpage summary'
-    else:
         raise ValueError(f"Invalid clipboard data: {text}")
-
-    return "invalid"
-
-def manual_selector():
-    pass
-
-from medium import MediumError
-def webpage_summary():
-    try:
-        return clipbd.get_medium()
-    except MediumError as e:
-        print(e)
-        pass
-
-    try:
-        return clipbd.get_webpage()
-    except Exception as e:
-        print(e)
-        pass
-
-    return clipbd.get_longtext()
+    else:
+        return command, None
 
 def main(args) -> int:
-    choice = None
-
+    command, subtype = None, None
     try:
-        auto_choice = auto_selector() if args.auto else None
-        choice, template  = get_template(args.template, auto_choice)
+        Config(args.template)
+
+        cb_text = ''
+        items = get_lastest_clipboard(n=1)
+        for i, item in enumerate(items, start=1):
+            if item['type'] != 'text': continue
+            cb_text = item['data'].strip()
+        if not cb_text:
+            raise ValueError("No text in clipboard")
+
+        cmdinfo = get_command(cb_text, args.auto)
+        if cmdinfo is None:
+            raise ValueError("No command found")
+
+        command, subtype = cmdinfo
+        template  = get_template(args.template, command, subtype)
+        assert template, "template is empty"
         formatted = ""
 
-        notify_cont(choice, choice + " content")
-        if choice == 'youtube summary':
-            formatted = template.format( **clipbd.get_youtube_content() )
-        elif choice == 'webpage summary':
-            formatted = template.format( **webpage_summary() )
-        elif choice == 'meta prompt':
-            formatted = template.format( **clipbd.get_prompt() )
-        elif choice == 'q&a on context':
-            formatted = template.format( **q_and_a.get_QandA() )
+        notify_send(command.value, subtype.value if subtype else None)
+        if command == Commands.SUMMARY:
+            assert subtype is not None, "subtype is required"
+            if subtype == Subtype.YOUTUBE:
+                notify_cont("summary", "youtube content")
+                content = youtube.get_youtube_content(cb_text)
+
+            elif subtype == Subtype.HTML_TEXT:
+                notify_cont("summary", "html text content")
+                content = webpage.from_html_text(cb_text)
+                # rprint(f"content: {content}")
+
+            elif subtype == Subtype.WEBURL:
+                notify_cont("summary", "weburl content")
+                html_text = webpage.get_html(cb_text)
+                content = webpage.from_html_text(html_text)
+
+            formatted = template.format( **content )
+            print(f"template: {template}")
+            print(f"formatted: {formatted}")
+
+        elif command == Commands.QA:
+            content = q_and_a.get_QandA()
+            formatted = template.format( **content )
+
+        elif command == Commands.META_PROMPT:
+            content = clipbd.get_prompt()
+            formatted = template.format( **content )
 
         if DEBUG:
-            print(f'Template choice: {choice}')
+            print(f'Template choice: {command}, {subtype}')
             print(f'Template length: {len(template)} characters')
             print(f'Formatted output length: {len(formatted)} characters')
 
         if formatted:
             if args.auto:
-                llm("Default", "https://www.chatgpt.com")
+                run_web_llm("Default", "https://www.chatgpt.com")
                 time.sleep(1)
 
             pyperclip.copy(formatted)
             time.sleep(0.3)
-            if auto_choice:
+            if args.auto:
                 subprocess.run(['xdotool', 'key', '--clearmodifiers', 'ctrl+v', 'Return'], check=False)
             else:
                 subprocess.run(['xdotool', 'key', '--clearmodifiers', 'ctrl+v'], check=False)
             # time.sleep(0.5)
             # subprocess.run(['xdotool', 'key', 'Return'])
-            # clipbd.clear_lastest_clipboard(n=1)
+            if Config.clear_generated:
+                clear_lastest_clipboard(n=1)
         notify_close()
         return 0
     except Exception as e:
-        error_msg = f"{choice or 'Unknown'}: {str(e)}"
+        error_msg = f"{command}, {subtype}: {str(e)}"
+        if len(error_msg) > 250:
+            error_msg = error_msg[:100]+'\n...\n'+error_msg[-100:]
         subprocess.run(["notify-send", "-u", "critical", "Template Error", error_msg], check=False)
         return 1
 
