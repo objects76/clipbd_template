@@ -1,8 +1,8 @@
 import subprocess, json
 from datetime import datetime
-from get_browser_url import get_current_browser_url
+import pyperclip
 
-OLD_CLIPBOARD_THRESHOLD = 20 # 1min
+OLD_CLIPBOARD_THRESHOLD = 20*0 # seconds
 
 class CopyQError(Exception):
     pass
@@ -19,6 +19,7 @@ def clear_lastest_clipboard(n=3):
     """
     text_cmd = ["copyq", "remove", *map(str, range(n))]
     return subprocess.run(text_cmd, capture_output=True, check=True, timeout=10)
+
 
 
 def copyq_read(row: int) -> dict:
@@ -39,14 +40,20 @@ def copyq_read(row: int) -> dict:
         var ts   = str(read('application/x-copyq-timestamp', {row}));
         JSON.stringify({{text: plain_text, timestamp: ts}})
     """
-    out = subprocess.run(
-        ["copyq", "eval", script],
-        capture_output=True,
-        text=True,
-        check=True,
-        timeout=10
-    ).stdout
-    return json.loads(out.strip())
+    try:
+        out = subprocess.run(
+            ["copyq", "eval", script],
+            capture_output=True,
+            text=True,
+            check=True,
+            timeout=10
+        ).stdout
+        return json.loads(out.strip())
+    except Exception as e:
+        if row == 0:
+            return {"text": pyperclip.paste(), "timestamp": ""}
+        raise
+
 
 
 def get_lastest_clipboard(n: int) -> list[dict]:
@@ -69,12 +76,13 @@ def get_lastest_clipboard(n: int) -> list[dict]:
             text_data = copyq_read(i)
 
             if text_data:
-                ts = datetime.strptime(text_data['timestamp'], '%Y-%m-%d %H:%M:%S')
-                elapsed = int((datetime.now() - ts).total_seconds())
-                # Skip items older than 1 minutes to avoid stale content
-                if elapsed > OLD_CLIPBOARD_THRESHOLD:
-                    print(f"Skipping item {i}: too old ({elapsed}s)")
-                    continue
+                if OLD_CLIPBOARD_THRESHOLD > 0:
+                    ts = datetime.strptime(text_data['timestamp'], '%Y-%m-%d %H:%M:%S')
+                    elapsed = int((datetime.now() - ts).total_seconds())
+                    # Skip items older than 1 minutes to avoid stale content
+                    if elapsed > OLD_CLIPBOARD_THRESHOLD:
+                        print(f"Skipping item {i}: too old ({elapsed}s)")
+                        continue
                 items.append({
                     'type': 'text',
                     'data': text_data['text'],
@@ -95,17 +103,20 @@ def get_lastest_clipboard(n: int) -> list[dict]:
 
     raise last_exception or CopyQError("No items")
 
-
+import pyperclip
 if __name__ == "__main__":
     from rich import print
-    s1 = '2025-08-21 15:07:45'
-    s2 = '2025-08-21 23:07:45'
-
-    from datetime import datetime
-    current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-    print(f"Current time: {current_time}")
-
-    dt1 = datetime.strptime(s1, '%Y-%m-%d %H:%M:%S')
-    dt2 = datetime.strptime(s2, '%Y-%m-%d %H:%M:%S')
-    elapsed = (datetime.now() - dt1).total_seconds()
-    print (f"{s1 < s2=}, {elapsed=}")
+#     s1 = '2025-08-21 15:07:45'
+#     s2 = '2025-08-21 23:07:45'
+#
+#     from datetime import datetime
+#     current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+#     print(f"Current time: {current_time}")
+#
+#     dt1 = datetime.strptime(s1, '%Y-%m-%d %H:%M:%S')
+#     dt2 = datetime.strptime(s2, '%Y-%m-%d %H:%M:%S')
+#     elapsed = (datetime.now() - dt1).total_seconds()
+#     print (f"{s1 < s2=}, {elapsed=}")
+#
+    clipbds = copyq_read(0)
+    print(clipbds)

@@ -1,4 +1,23 @@
+import re
 import html_to_markdown
+
+
+def compress_html(html: str) -> str:
+    """Compress HTML by removing SVG elements to reduce size.
+
+    Args:
+        html (str): Original HTML content
+
+    Returns:
+        str: Compressed HTML with SVG elements removed
+    """
+
+    # Remove entire SVG elements including content
+    svg_pattern = r'<svg[^>]*>.*?</svg>'
+    compressed = re.sub(svg_pattern, '', html, flags=re.DOTALL | re.IGNORECASE)
+    return compressed
+
+
 
 def compress_md(md: str) -> str:
     """Compress markdown by removing or truncating long SVG images.
@@ -24,16 +43,23 @@ def compress_md(md: str) -> str:
     return compressed
 
 def html_to_md(html: str) -> str:
-    # Try Jina Reader API first
     try:
+        html = compress_html(html)
         markdown = html_to_markdown.convert_to_markdown(
             html,
+            escape_misc = False,
+            escape_underscores = False,
             extract_metadata = False,
             )
         # Compress SVG images to reduce size
         compressed_markdown = compress_md(markdown)
-        print(f"html to markdown: {len(html)} -> {len(markdown)} -> {len(compressed_markdown)} (compressed)")
+        print(f"# html to markdown: {len(html)} -> {len(markdown)} -> {len(compressed_markdown)} (compressed)")
         return compressed_markdown
     except Exception as e:
         raise Exception(f"html to markdown: {str(e)}")
 
+
+if __name__ == "__main__":
+    with open("asset/input.html", "r") as f:
+        html = f.read()
+    print(html_to_md(html))
