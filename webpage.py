@@ -18,6 +18,13 @@ def compress_html(html: str) -> str:
     # Remove entire SVG elements including content
     svg_pattern = r'<svg[^>]*>.*?</svg>'
     compressed = re.sub(svg_pattern, '', html, flags=re.DOTALL | re.IGNORECASE)
+
+    # remove fixed text
+    for useless_text in [
+        "Press enter or click to view image in full size",
+    ]:
+        compressed = compressed.replace(useless_text, '')
+
     return compressed
 
 
@@ -105,6 +112,7 @@ def from_html_text(html_text: str):
 
     result["content_format"] = "markdown"
     result["content_text"] = html_to_md( str(node) )
+
 
     return result
 
