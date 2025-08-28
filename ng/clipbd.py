@@ -7,7 +7,7 @@ import json
 from bs4 import BeautifulSoup
 from youtube import get_youtube_videoid, download_transcript
 from copyq import get_lastest_clipboard
-from medium import extract_medium
+from ng.medium import extract_medium
 from exceptions import YouTubeExtractionError, ContentNotFoundError, WebExtractionError
 from webpage import html_to_md
 from config import Config

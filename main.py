@@ -96,9 +96,6 @@ def get_template(template_path: str, command: Commands, subtype: Optional[Subtyp
 
     raise ValueError(f"Invalid template: {command}, {subtype}")
 
-def manual_selector():
-    pass
-
 
 def is_url(string: str) -> bool:
     pattern = r'https?://(?:[-\w.]|(?:%[\da-fA-F]{2}))+'
