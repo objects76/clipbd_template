@@ -1,6 +1,7 @@
 
 
 from ck_clipboard import ClipboardData
+from exceptions import ContentNotFoundError
 
 def get_prompt(text:str):
     items = [ClipboardData(type="text", data=text)]
@@ -10,5 +11,5 @@ def get_prompt(text:str):
         if len(text) > 10:
             return { "source_prompt": text }
 
-    raise ValueError("No valid clipboard data for youtube.")
+    raise ContentNotFoundError("No valid clipboard data for meta prompt processing")
 

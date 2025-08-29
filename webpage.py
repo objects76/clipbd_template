@@ -3,6 +3,7 @@ from urllib.parse import urlparse
 from bs4 import BeautifulSoup
 import html_to_markdown
 import requests
+from exceptions import WebExtractionError
 
 
 def compress_html(html: str) -> str:
@@ -65,7 +66,7 @@ def html_to_md(html: str) -> str:
         print(f"# html to markdown: {len(html)} -> {len(markdown)} -> {len(compressed_markdown)} (compressed)")
         return compressed_markdown
     except Exception as e:
-        raise Exception(f"html to markdown: {str(e)}")
+        raise WebExtractionError(f"HTML to markdown conversion failed: {str(e)}") from e
 
 
 
@@ -97,7 +98,7 @@ def get_html(url: str) -> str:
         with open(parsed.path, 'r', encoding='utf-8') as f:
             return f.read()
     else:
-        raise ValueError(f"Unsupported URL scheme: {parsed.scheme}")
+        raise WebExtractionError(f"Unsupported URL scheme: {parsed.scheme}")
 
 
 def from_html_text(html_text: str):
