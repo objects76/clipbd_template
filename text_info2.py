@@ -108,7 +108,7 @@ def get_text_type(text: str):
 
     # Handle “Markdown allows raw HTML”: if both are strong, call it mixed
     if hs >= 2.0 and ms >= 1.0:
-        label: Label = "plain"
+        label: Label = "html"
         why = "Strong HTML structure detected and multiple Markdown constructs present (Markdown permits raw HTML)."
     elif hs >= 1.5 and hs >= ms + 0.5:
         label = "html"
