@@ -1,4 +1,4 @@
-from copyq import get_lastest_clipboard
+
 def add_linenumber(text):
     lines = text.split('\n')
     numbered_lines = [f"Line={i}. {line}" for i, line in enumerate(lines.split('\n'),start=1)]
@@ -9,7 +9,7 @@ def get_QandA(cb_text:str):
         # text = '"'+text.replace("\n", "\\n")+'"'
         lines = [f"L{i}. {txt}".strip() for i, txt in enumerate(cb_text.split('\n'),start=1)]
         lines = '\n'.join(lines)
-        return { "context": {lines}, "query": "your_question_here" }
+        return lines
 
     raise ValueError("No valid clipboard data for youtube.")
 

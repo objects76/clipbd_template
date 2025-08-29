@@ -4,12 +4,13 @@ from urllib.parse import parse_qs, urlparse
 from youtube_transcript_api import YouTubeTranscriptApi
 from youtube_transcript_api.proxies import WebshareProxyConfig
 from youtube_transcript_api import RequestBlocked, IpBlocked
-import subprocess
 
+from cache import ClipboardCache
 from config import Config
-from copyq import get_lastest_clipboard
+# from copyq import get_lastest_clipboard
 from dunstify import notify_cont
 from exceptions import ContentNotFoundError, YouTubeExtractionError
+
 
 def ts_format(ts):
     sec = int(ts['start'])
@@ -47,6 +48,8 @@ def download_transcript(
 ):
     notify_cont("youtube summary", f"get youtube transcript: {video_id}")
 
+    # raise RequestBlocked("Test Blocked by youtube")
+
     # video_id = get_youtube_videoid(video_url)
     ytt_api = YouTubeTranscriptApi()
     try:
@@ -73,36 +76,23 @@ def download_transcript(
         raise ValueError(f"Transcript download failed for {video_id}: {e}") from e
 
 
+#
+#
+#
+def get_youtube_content(url:str, transcript:str = "") -> dict:
 
-def get_youtube_content(cb_text = None):
+    assert ('youtube.com/watch' in url or 'youtu.be/' in url)
+    video_id = get_youtube_videoid(url)
 
-    items = [{'type': 'text', 'data': cb_text}] if cb_text else []
+    timestamps = re.findall(r'\n\d+:\d+\n', transcript)
+    if len(timestamps) < 10:
+        try:
+            transcript = download_transcript(video_id)
+        except Exception as e:
+            ClipboardCache.save(url, "wait transcript")
+            raise YouTubeExtractionError(f"Failed to get transcript for `{video_id}`: {e}")
 
-    n = 2 if Config.clipbd_transcript else 1
-    if len(items) < n:
-        items = get_lastest_clipboard(n=n)
-
-    result = dict()
-    for i, item in enumerate(items, start=1):
-        if item['type'] != 'text': continue
-        text = item['data']
-        if ('youtube.com/watch' in text or 'youtu.be/' in text) and len(text) < 100:
-            result['video_id'] = get_youtube_videoid(text)
-
-        elif len(text) > 300:
-            timestamps = re.findall(r'\n\d+:\d+\n', text)
-            if len(timestamps) > 10:
-                result['transcript'] = text
-
-    if result.get('video_id'):
-        if 'transcript' not in result:
-            try:
-              result['transcript'] = download_transcript(result['video_id'])
-            except Exception as e:
-                raise YouTubeExtractionError(f"Failed to download transcript for video {result['video_id']}: {e}")
-        return result
-
-    raise ContentNotFoundError("No YouTube content found in clipboard")
+    return {"video_id": video_id, "transcript": transcript}
 
 
 if __name__ == '__main__':

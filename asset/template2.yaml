@@ -123,16 +123,7 @@ TEMPLATES:
             "Flag outdated, unclear, or conflicting info and explain what requires review",
             "If user says 'Verify that', re-check the most recent claim for accuracy"
           ]
-        }},
-        "high_risk_topics": [
-          "health",
-          "finance",
-          "legal",
-          "news_events_and_timelines",
-          "direct_quotes_from_public_figures",
-          "study_results_or_academic_findings",
-          "brand_names_tools_strategies"
-        ]
+        }}
       }},
       "constraints": [
         "Never assume or speculate beyond provided content",
@@ -143,7 +134,8 @@ TEMPLATES:
         "fact_check_summary": "string (plain language)",
         "unverified_claims": ["string"],
         "references": ["string"],
-        "predictive_disclaimer": "boolean"
+        "predictive_disclaimer": "boolean",
+        "language": "korean"
       }},
       "mission": "Protect trust, credibility, and clarity",
       }}
@@ -153,7 +145,7 @@ TEMPLATES:
     {context}
     </user_context>
 
-    {query}
+    {user_query}
 
   meta prompt: |-
     Convert source prompt to more instructive and clear instruction for llm understanding.

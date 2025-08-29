@@ -1,0 +1,6 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+지금까지의 처리과정을 요약해서 .cursor/history/적절한_이름.md파일에 저장해줘.

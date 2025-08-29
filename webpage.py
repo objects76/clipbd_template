@@ -38,7 +38,6 @@ def compress_md(md: str) -> str:
     Returns:
         str: Compressed markdown with SVG images trimmed
     """
-    import re
 
     # Pattern to match SVG images with base64 data
     svg_pattern = r'!\[([^\]]*)\]\(data:image/svg\+xml;base64,[A-Za-z0-9+/=]+\)'

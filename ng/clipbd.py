@@ -6,33 +6,21 @@ import json
 
 from bs4 import BeautifulSoup
 from youtube import get_youtube_videoid, download_transcript
-from copyq import get_lastest_clipboard
+
 from ng.medium import extract_medium
 from exceptions import YouTubeExtractionError, ContentNotFoundError, WebExtractionError
 from webpage import html_to_md
 from config import Config
-
-def get_prompt():
-    items = get_lastest_clipboard(n=1)
-    for i, item in enumerate(items, start=1):
-        if item['type'] != 'text': continue
-        text = item['data'].strip()
-        if len(text) > 10:
-            return { "source_prompt": text }
-
-    raise ValueError("No valid clipboard data for youtube.")
+from ck_clipboard import ClipboardData
 
 
 
-def get_webpage(test_url = None):
+def get_webpage(url:str):
     """ with CopyHTML chrome plugin: get raw html text with CopyHTML plugin. """
-    if test_url:
-        test_url = [{'type': 'text', 'data': test_url}]
-
-    items = test_url or get_lastest_clipboard(n=1)
+    items = [ClipboardData(type='text', data=url)]
     for i, item in enumerate(items, start=1):
-        if item['type'] != 'text': continue
-        url = item['data'].strip()
+        if item.type != 'text': continue
+        url = str(item.data).strip() if isinstance(item.data, str) else ""
         if not url.startswith('https:') and not url.startswith('http:'):
             continue
         text_format, text_content = crawling(url)
@@ -50,12 +38,12 @@ def get_longtext(text=None):
     """ with CopyHTML chrome plugin: get raw html text with CopyHTML plugin. """
 
     if text:
-        text = [{'type': 'text', 'data': text}]
+        text = [ClipboardData(type='text', data=text)]
 
     items = text or get_lastest_clipboard(n=1)
     for i, item in enumerate(items, start=1):
-        if item['type'] != 'text': continue
-        long_text = item['data'].strip()
+        if item.type != 'text': continue
+        long_text = str(item.data).strip() if isinstance(item.data, str) else ""
         if len(long_text) > 500:
             result["content_format"] = 'text'
             result["content_text"] = long_text

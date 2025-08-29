@@ -132,9 +132,6 @@ if __name__ == "__main__":
     from pathlib import Path
 
     text = Path('asset/input.html').read_text(encoding='utf-8')
-    # text = Path('asset/test.md').read_text(encoding='utf-8')
-    # text = Path('asset/text.txt').read_text(encoding='utf-8')
-    # text = pyperclip.paste()
     print(get_text_type(text))
     print('length:', len(text))
 
