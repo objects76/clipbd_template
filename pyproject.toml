@@ -6,6 +6,7 @@ readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
     "bs4>=0.0.2",
+    "copykitten>=1.2.2",
     "dotenv>=0.9.9",
     "firecrawl-py>=2.16.5",
     "hf-transfer>=0.1.9",

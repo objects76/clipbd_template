@@ -222,8 +222,8 @@ def main(args) -> int:
                 run_web_llm("Default", "https://www.chatgpt.com")
                 time.sleep(1)
 
+            pyperclip.copy(formatted)
             if command == Commands.IMAGE_ANALYSIS:
-                pyperclip.copy(formatted)
                 subprocess.run(['copyq', 'paste'], check=False) # paste template to chatgpt
                 subprocess.run(['copyq', 'select', '1'], check=False) # paste image to chatgpt
                 subprocess.run(['copyq', 'paste'], check=False)
