@@ -8,22 +8,24 @@ import pyperclip
 from pathlib import Path
 import sys
 import yaml
+from cache import ClipboardCache
+import meta_prompt
 import ng.clipbd as clipbd
 import time
 import re
-from ng.clipbd import get_lastest_clipboard
-from copyq import clear_clipboard
+
+from ck_clipboard import get_clipboard_data, clear_clipboard, paste, set_clipboard_data, ClipboardData
+from text_info2 import get_text_type
+
 from config import Config
 import q_and_a
-from exceptions import ClipboardTemplateError
 from dunstify import notify_send, notify_cont, notify_close
-from text_info2 import get_text_type
 import webpage
 import youtube
 from enum import Enum
 
-rprint = print
 VERSION = "1.0.0"
+DEBUG = True
 
 class Commands(Enum):
     SUMMARY = "Summary"
@@ -38,9 +40,6 @@ class Subtype(Enum):
     MARKDOWN = "markdown"
     LONGTEXT = "longtext"
     IMAGE = "image"
-
-# Configuration from environment
-DEBUG = os.getenv('DEBUG', 'False').lower() in ('true', '1', 'yes')
 
 
 def run_web_llm(profile: str, url: str) -> None:
@@ -90,8 +89,6 @@ def get_template(template_path: str, command: Commands, subtype: Subtype | None)
             return templates.get('youtube summary', "")
         elif subtype == Subtype.HTML_TEXT or subtype == Subtype.WEBURL:
             return templates.get('webtext summary', "")
-        # elif subtype == Subtype.LONGTEXT:
-        #     return templates.get('webpage summary', "")
     elif command == Commands.QA:
         return templates.get('q&a on context', "")
     elif command == Commands.META_PROMPT:
@@ -106,7 +103,22 @@ def is_url(string: str) -> bool:
     pattern = r'https?://(?:[-\w.]|(?:%[\da-fA-F]{2}))+'
     return re.match(pattern, string) is not None
 
-def get_command(text: str, auto: bool = False, data_type: str = 'text') -> tuple[Commands, Subtype | None] | None:
+def get_command(items: list[ClipboardData], auto: bool = False, data_type: str = 'text') -> tuple[Commands, Subtype | None] | None:
+    # verify text
+    url_text = ''
+    long_text = ''
+    for item in items:
+        if item.type != 'text': continue
+        text_data = str(item.data) if isinstance(item.data, str) else ""
+        if len(text_data) < 300:
+            if not is_url(text_data):
+                raise Warning("No valid text:"+text_data)
+            url_text = text_data
+        else:
+            long_text = text_data
+
+    if DEBUG: print(f"url_text: {url_text}, long_text: {long_text[:100]} ... {long_text[-100:]}")
+
     if auto:
         command = Commands.SUMMARY if data_type == 'text' else Commands.IMAGE_ANALYSIS
     else:
@@ -135,22 +147,24 @@ def get_command(text: str, auto: bool = False, data_type: str = 'text') -> tuple
 
     if data_type == 'image':
         return Commands.IMAGE_ANALYSIS, Subtype.IMAGE
-    elif command == Commands.SUMMARY:
-        if (is_url(text) and ('youtube.com/watch' in text or 'youtu.be/' in text)):
-            return Commands.SUMMARY, Subtype.YOUTUBE
-        elif is_url(text):
-            return Commands.SUMMARY, Subtype.WEBURL
+    elif command == Commands.SUMMARY or command == Commands.QA:
+
+        if url_text:
+            if ('youtube.com/watch' in url_text) or ('youtu.be/' in url_text):
+                return Commands.SUMMARY, Subtype.YOUTUBE
+            return command, Subtype.WEBURL
         else:
-            txt_type, stat = get_text_type(text)
+
+            txt_type, stat = get_text_type(long_text)
             print(f"text_type: {txt_type}, status: {stat}")
             if txt_type == "html":
-                return Commands.SUMMARY, Subtype.HTML_TEXT
+                return command, Subtype.HTML_TEXT
             elif txt_type == "markdown":
-                return Commands.SUMMARY, Subtype.MARKDOWN
+                return command, Subtype.MARKDOWN
             elif txt_type == "plain":
-                return Commands.SUMMARY, Subtype.LONGTEXT
+                return command, Subtype.LONGTEXT
 
-        raise ValueError(f"Invalid clipboard data: {text}")
+        raise ValueError(f"Invalid clipboard data: {url_text}, {long_text}")
     else:
         return command, None
 
@@ -158,19 +172,23 @@ def main(args) -> int:
     command, subtype = None, None
     try:
         Config(args.template)
+        items:list[ClipboardData] = []
 
-        cb_text = ''
-        cb_type = 'text'
-        items = get_lastest_clipboard(n=1)
-        for i, item in enumerate(items, start=1):
-            if item['type'] not in ['text', 'image']: continue
-            cb_text = item['data'].strip()
-            cb_type = item['type']
+        cb_cached = ClipboardCache.get_data()
+        if cb_cached:
+            items.append(ClipboardData(type="text", data=cb_cached['data']))
+            print(f"cached reason: {cb_cached['reason']}")
 
-        if cb_type == 'text' and len(cb_text) < 20 and not is_url(cb_text):
-            raise Warning("No valid text:\n "+cb_text)
+        clipboard_data = get_clipboard_data()
+        if clipboard_data is not None:
+            items.append(clipboard_data)
+        if len(items) == 0:
+            raise Warning("No clipboard data")
 
-        cmdinfo = get_command(cb_text, args.auto, cb_type)
+        if DEBUG: print(f"items: len: {len(items)}, {[item.type for item in items]}")
+
+
+        cmdinfo = get_command(items, args.auto, items[0].type)
         if cmdinfo is None:
             raise Warning("No command found")
 
@@ -184,32 +202,43 @@ def main(args) -> int:
             assert subtype is not None, "subtype is required"
             if subtype == Subtype.YOUTUBE:
                 notify_cont("summary", "youtube content")
-                content = youtube.get_youtube_content(cb_text)
+                url = str(items[0].data)
+                transcript = str(items[1].data) if len(items) > 1 else ""
+                content = youtube.get_youtube_content(url, transcript)
 
             elif subtype == Subtype.HTML_TEXT:
                 notify_cont("summary", "html text content")
-                content = webpage.from_html_text(cb_text)
-                # rprint(f"content: {content}")
+                html_text: str = str(items[0].data) if items[0].type == 'text' else ""
+                content = webpage.from_html_text(html_text)
 
             elif subtype == Subtype.WEBURL:
                 notify_cont("summary", "weburl content")
-                html_text = webpage.get_html(cb_text)
+                url: str = str(items[0].data) if items[0].type == 'text' else ""
+                html_text = webpage.get_html(url)
                 content = webpage.from_html_text(html_text)
 
             formatted = template.format( **content )
-            print(f"template: {template}")
-            print(f"formatted: {formatted}")
 
         elif command == Commands.QA:
-            content = q_and_a.get_QandA(cb_text)
-            formatted = template.format( **content )
+            if subtype == Subtype.HTML_TEXT:
+                notify_cont("q&a", "html text content")
+                html_text: str = str(items[0].data) if items[0].type == 'text' else ""
+                content = webpage.from_html_text(html_text)
+                context = content.get('content_text', '')
+            else:
+                assert subtype == Subtype.LONGTEXT
+                qa_data = str(items[0].data) if items[0].type == 'text' else ""
+                context = q_and_a.get_QandA(qa_data)
+
+            formatted = template.format( context = context, user_query = "user_query here" )
 
         elif command == Commands.META_PROMPT:
-            content = clipbd.get_prompt()
+            src_prompt = str(items[0].data) if items[0].type == 'text' else ""
+            content = meta_prompt.get_prompt(src_prompt)
             formatted = template.format( **content )
 
         elif command == Commands.IMAGE_ANALYSIS:
-            content = {'image_data': cb_text}
+            content = {'image_data': items}
             formatted = template.format( **content ) # content will beignored
 
         if DEBUG:
@@ -222,28 +251,28 @@ def main(args) -> int:
                 run_web_llm("Default", "https://www.chatgpt.com")
                 time.sleep(1)
 
-            pyperclip.copy(formatted)
             if command == Commands.IMAGE_ANALYSIS:
-                subprocess.run(['copyq', 'paste'], check=False) # paste template to chatgpt
-                subprocess.run(['copyq', 'select', '1'], check=False) # paste image to chatgpt
-                subprocess.run(['copyq', 'paste'], check=False)
-                if Config.clear_generated:
-                    clear_clipboard(1)
-            else:
-                time.sleep(0.3)
-                if args.auto:
-                    subprocess.run(['xdotool', 'key', '--clearmodifiers', 'ctrl+v', 'Return'], check=False)
-                else:
-                    subprocess.run(['xdotool', 'key', '--clearmodifiers', 'ctrl+v'], check=False)
-                if Config.clear_generated:
-                    clear_clipboard(0)
+                paste() # paste image to chatgpt
+                time.sleep(1.5)
+
+            set_clipboard_data(formatted) # set formatted text to clipboard
+            paste(return_key=args.auto) # paste formatted text to chatgpt
+
+            if Config.clear_generated:
+                clear_clipboard()
         notify_close()
+        ClipboardCache.clear()
         return 0
 
     except Warning as e:
         notify_send("Warning", str(e), timeout_ms=1000)
         return 1
     except Exception as e:
+        if DEBUG:
+            print(f"error: {e}")
+            import traceback
+            traceback.print_exc()
+
         error_msg = f"{command}, {subtype}: {str(e)}"
         if len(error_msg) > 250:
             error_msg = error_msg[:100]+'\n...\n'+error_msg[-100:]
@@ -280,6 +309,6 @@ if __name__ == '__main__':
         for i in range(5, 0, -1):
             print(f"Waiting {i} seconds...")
             time.sleep(1)
-        test()
+        # test()
 
     sys.exit(main(args))
