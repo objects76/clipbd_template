@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+from __future__ import annotations
+
 import os
 import shlex
 import subprocess
@@ -9,14 +11,13 @@ import yaml
 import ng.clipbd as clipbd
 import time
 import re
-from typing import Optional, Tuple
 from ng.clipbd import get_lastest_clipboard
-from copyq import clear_lastest_clipboard
+from copyq import clear_clipboard
 from config import Config
 import q_and_a
 from exceptions import ClipboardTemplateError
 from dunstify import notify_send, notify_cont, notify_close
-from text_info import get_text_type
+from text_info2 import get_text_type
 import webpage
 import youtube
 from enum import Enum
@@ -28,6 +29,7 @@ class Commands(Enum):
     SUMMARY = "Summary"
     QA = "Q&A"
     META_PROMPT = "Meta Prompt"
+    IMAGE_ANALYSIS = "Image Analysis"
 
 class Subtype(Enum):
     YOUTUBE = "youtube"
@@ -35,6 +37,7 @@ class Subtype(Enum):
     HTML_TEXT = "html_text"
     MARKDOWN = "markdown"
     LONGTEXT = "longtext"
+    IMAGE = "image"
 
 # Configuration from environment
 DEBUG = os.getenv('DEBUG', 'False').lower() in ('true', '1', 'yes')
@@ -69,7 +72,7 @@ def resource_path(name: str) -> Path:
         print(ex)
         return Path(name)
 
-def get_template(template_path: str, command: Commands, subtype: Optional[Subtype]) -> str:
+def get_template(template_path: str, command: Commands, subtype: Subtype | None) -> str:
     template_yaml = Path(template_path).expanduser()
     if not template_yaml.exists():
         raise ValueError(f'not found: {template_yaml}')
@@ -93,6 +96,8 @@ def get_template(template_path: str, command: Commands, subtype: Optional[Subtyp
         return templates.get('q&a on context', "")
     elif command == Commands.META_PROMPT:
         return templates.get('meta prompt', "")
+    elif command == Commands.IMAGE_ANALYSIS:
+        return templates.get('image analysis', "")
 
     raise ValueError(f"Invalid template: {command}, {subtype}")
 
@@ -101,9 +106,9 @@ def is_url(string: str) -> bool:
     pattern = r'https?://(?:[-\w.]|(?:%[\da-fA-F]{2}))+'
     return re.match(pattern, string) is not None
 
-def get_command(text: str, auto: bool = False) -> Optional[Tuple[Commands, Optional[Subtype]]]:
+def get_command(text: str, auto: bool = False, data_type: str = 'text') -> tuple[Commands, Subtype | None] | None:
     if auto:
-        command = Commands.SUMMARY
+        command = Commands.SUMMARY if data_type == 'text' else Commands.IMAGE_ANALYSIS
     else:
         cmd = [
             'rofi', '-dmenu', '-no-custom',
@@ -128,8 +133,9 @@ def get_command(text: str, auto: bool = False) -> Optional[Tuple[Commands, Optio
             return None
         command = Commands(choice)
 
-
-    if command == Commands.SUMMARY:
+    if data_type == 'image':
+        return Commands.IMAGE_ANALYSIS, Subtype.IMAGE
+    elif command == Commands.SUMMARY:
         if (is_url(text) and ('youtube.com/watch' in text or 'youtu.be/' in text)):
             return Commands.SUMMARY, Subtype.YOUTUBE
         elif is_url(text):
@@ -154,14 +160,17 @@ def main(args) -> int:
         Config(args.template)
 
         cb_text = ''
+        cb_type = 'text'
         items = get_lastest_clipboard(n=1)
         for i, item in enumerate(items, start=1):
-            if item['type'] != 'text': continue
+            if item['type'] not in ['text', 'image']: continue
             cb_text = item['data'].strip()
-        if len(cb_text) < 20 and not is_url(cb_text):
+            cb_type = item['type']
+
+        if cb_type == 'text' and len(cb_text) < 20 and not is_url(cb_text):
             raise Warning("No valid text:\n "+cb_text)
 
-        cmdinfo = get_command(cb_text, args.auto)
+        cmdinfo = get_command(cb_text, args.auto, cb_type)
         if cmdinfo is None:
             raise Warning("No command found")
 
@@ -199,6 +208,10 @@ def main(args) -> int:
             content = clipbd.get_prompt()
             formatted = template.format( **content )
 
+        elif command == Commands.IMAGE_ANALYSIS:
+            content = {'image_data': cb_text}
+            formatted = template.format( **content ) # content will beignored
+
         if DEBUG:
             print(f'Template choice: {command}, {subtype}')
             print(f'Template length: {len(template)} characters')
@@ -209,16 +222,21 @@ def main(args) -> int:
                 run_web_llm("Default", "https://www.chatgpt.com")
                 time.sleep(1)
 
-            pyperclip.copy(formatted)
-            time.sleep(0.3)
-            if args.auto:
-                subprocess.run(['xdotool', 'key', '--clearmodifiers', 'ctrl+v', 'Return'], check=False)
+            if command == Commands.IMAGE_ANALYSIS:
+                pyperclip.copy(formatted)
+                subprocess.run(['copyq', 'paste'], check=False) # paste template to chatgpt
+                subprocess.run(['copyq', 'select', '1'], check=False) # paste image to chatgpt
+                subprocess.run(['copyq', 'paste'], check=False)
+                if Config.clear_generated:
+                    clear_clipboard(1)
             else:
-                subprocess.run(['xdotool', 'key', '--clearmodifiers', 'ctrl+v'], check=False)
-            # time.sleep(0.5)
-            # subprocess.run(['xdotool', 'key', 'Return'])
-            if Config.clear_generated:
-                clear_lastest_clipboard(n=1)
+                time.sleep(0.3)
+                if args.auto:
+                    subprocess.run(['xdotool', 'key', '--clearmodifiers', 'ctrl+v', 'Return'], check=False)
+                else:
+                    subprocess.run(['xdotool', 'key', '--clearmodifiers', 'ctrl+v'], check=False)
+                if Config.clear_generated:
+                    clear_clipboard(0)
         notify_close()
         return 0
 
@@ -232,6 +250,22 @@ def main(args) -> int:
         subprocess.run(["notify-send", "-u", "critical", "Template Error", error_msg], check=False)
         return 1
 
+def test():
+    pyperclip.copy("image prompt is here")
+
+    # subprocess.run(['copyq', 'select', '0'], check=False)
+    result = subprocess.run(['copyq', 'paste'], check=False, capture_output=True, text=True)
+    if result.returncode != 0:
+        print(f"Command failed with return code {result.returncode}")
+        print(f"stderr: {result.stderr}")
+    else:
+        print(f"Command succeeded. stdout: {result.stdout}")
+    # time.sleep(1)
+    # clear_lastest_clipboard(n=1)
+
+    subprocess.run(['copyq', 'select', '1'], check=False)
+    subprocess.run(['copyq', 'paste'], check=False)
+    exit(0)
 
 if __name__ == '__main__':
     import argparse
@@ -246,5 +280,6 @@ if __name__ == '__main__':
         for i in range(5, 0, -1):
             print(f"Waiting {i} seconds...")
             time.sleep(1)
+        test()
 
     sys.exit(main(args))
