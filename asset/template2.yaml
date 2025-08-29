@@ -162,3 +162,54 @@ TEMPLATES:
     ```
     {source_prompt}
     ```
+
+  image analysis: |-
+    {{
+      "task": "analyze image",
+      "rules": [
+        {{
+          "condition": "image contains mainly places, landmarks, or buildings",
+          "action": {{
+            "type": "describe_place",
+            "details": [
+              "identify the place",
+              "provide location",
+              "give background information"
+            ]
+          }}
+        }},
+        {{
+          "condition": "image contains mostly text",
+          "action": {{
+            "type": "perform_ocr",
+            "details": [
+              "extract text accurately",
+              "wrap extracted text inside triple backtick",
+              "present text clearly",
+              "no need to explain the extracted text"
+            ]
+          }}
+        }},
+        {{
+          "condition": "image focuses on a product",
+          "action": {{
+            "type": "describe_product",
+            "details": [
+              "identify product name and category",
+              "provide typical price",
+              "include useful information such as brand, features, or usage"
+            ]
+          }}
+        }},
+        {{
+          "condition": "always",
+          "action": {{
+            "type": "language_constraint",
+            "details": [
+              "Answer in Korean"
+            ]
+          }}
+        }}
+      ],
+      "output_format": "clear and structured"
+    }}
