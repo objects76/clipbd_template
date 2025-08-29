@@ -1,4 +1,6 @@
 
+from exceptions import ContentNotFoundError
+
 def add_linenumber(text):
     lines = text.split('\n')
     numbered_lines = [f"Line={i}. {line}" for i, line in enumerate(lines.split('\n'),start=1)]
@@ -11,7 +13,7 @@ def get_QandA(cb_text:str):
         lines = '\n'.join(lines)
         return lines
 
-    raise ValueError("No valid clipboard data for youtube.")
+    raise ContentNotFoundError("No valid clipboard data for Q&A processing")
 
 
 if __name__ == "__main__":

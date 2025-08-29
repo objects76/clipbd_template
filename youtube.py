@@ -39,7 +39,7 @@ def get_youtube_videoid(url: str) -> str:
         params = parse_qs(parsed_url.query)
         if "v" in params:
             return params["v"][0]
-    raise ValueError(f"지원하지 않는 YouTube URL 형식: {url}")
+    raise YouTubeExtractionError(f"Unsupported YouTube URL format: {url}")
 
 
 def download_transcript(
@@ -73,7 +73,7 @@ def download_transcript(
     except (RequestBlocked, IpBlocked) as e:
         raise e
     except Exception as e:
-        raise ValueError(f"Transcript download failed for {video_id}: {e}") from e
+        raise YouTubeExtractionError(f"Transcript download failed for {video_id}: {e}") from e
 
 
 #

@@ -3,6 +3,7 @@
 from dataclasses import dataclass
 from pathlib import Path
 import yaml
+from exceptions import ConfigurationError
 
 
 @dataclass
@@ -13,7 +14,7 @@ class Config:
     def __init__(self, config_path: str):
         template_yaml = Path(config_path).expanduser()
         if not template_yaml.exists():
-            raise ValueError(f'not found: {template_yaml}')
+            raise ConfigurationError(f'Configuration file not found: {template_yaml}')
 
         config = yaml.safe_load(template_yaml.read_text(encoding='utf-8')) or {}
         config = config.get('config', {})

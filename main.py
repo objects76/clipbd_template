@@ -23,6 +23,7 @@ from dunstify import notify_send, notify_cont, notify_close
 import webpage
 import youtube
 from enum import Enum
+from exceptions import TemplateNotFoundError, TemplateFormatError, ContentNotFoundError
 
 VERSION = "1.0.0"
 DEBUG = True
@@ -74,12 +75,12 @@ def resource_path(name: str) -> Path:
 def get_template(template_path: str, command: Commands, subtype: Subtype | None) -> str:
     template_yaml = Path(template_path).expanduser()
     if not template_yaml.exists():
-        raise ValueError(f'not found: {template_yaml}')
+        raise TemplateNotFoundError(f'Template file not found: {template_yaml}')
 
     config = yaml.safe_load(template_yaml.read_text(encoding='utf-8')) or {}
     templates = config.get('TEMPLATES', {})
     if not isinstance(templates, dict) or not templates:
-        raise ValueError('no templates')
+        raise TemplateFormatError('Template file contains no valid templates')
 
     print(f"command: {command}, subtype: {subtype}")
 
@@ -96,7 +97,7 @@ def get_template(template_path: str, command: Commands, subtype: Subtype | None)
     elif command == Commands.IMAGE_ANALYSIS:
         return templates.get('image analysis', "")
 
-    raise ValueError(f"Invalid template: {command}, {subtype}")
+    raise TemplateNotFoundError(f"Template not found for command: {command}, subtype: {subtype}")
 
 
 def is_url(string: str) -> bool:
@@ -164,7 +165,7 @@ def get_command(items: list[ClipboardData], auto: bool = False, data_type: str =
             elif txt_type == "plain":
                 return command, Subtype.LONGTEXT
 
-        raise ValueError(f"Invalid clipboard data: {url_text}, {long_text}")
+        raise ContentNotFoundError(f"No valid content found in clipboard data")
     else:
         return command, None
 
@@ -276,24 +277,15 @@ def main(args) -> int:
         error_msg = f"{command}, {subtype}: {str(e)}"
         if len(error_msg) > 250:
             error_msg = error_msg[:100]+'\n...\n'+error_msg[-100:]
-        subprocess.run(["notify-send", "-u", "critical", "Template Error", error_msg], check=False)
+        subprocess.run(["notify-send", "-u", "critical", type(e).__name__, error_msg], check=False)
         return 1
 
 def test():
-    pyperclip.copy("image prompt is here")
-
-    # subprocess.run(['copyq', 'select', '0'], check=False)
-    result = subprocess.run(['copyq', 'paste'], check=False, capture_output=True, text=True)
-    if result.returncode != 0:
-        print(f"Command failed with return code {result.returncode}")
-        print(f"stderr: {result.stderr}")
-    else:
-        print(f"Command succeeded. stdout: {result.stdout}")
-    # time.sleep(1)
-    # clear_lastest_clipboard(n=1)
-
-    subprocess.run(['copyq', 'select', '1'], check=False)
-    subprocess.run(['copyq', 'paste'], check=False)
+    try:
+        raise ContentNotFoundError("test")
+    except Exception as e:
+        print(type(e).__name__)
+        print(str(e))
     exit(0)
 
 if __name__ == '__main__':
@@ -309,6 +301,6 @@ if __name__ == '__main__':
         for i in range(5, 0, -1):
             print(f"Waiting {i} seconds...")
             time.sleep(1)
-        # test()
+        test()
 
     sys.exit(main(args))
