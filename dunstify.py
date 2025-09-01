@@ -192,14 +192,14 @@ class Dunstify:
         return self.send(summary, body, actions=options, **kwargs)
 
 _notify = None
-def notify_send(summary: str, body: Optional[str] = None, **kwargs):
+def notify_send(title: str, body: Optional[str] = None, **kwargs):
     global _notify
     _notify = Dunstify()
-    _notify.send(summary, body, **kwargs)
+    _notify.send(title, body, **kwargs)
 
-def notify_cont(summary: str, body: Optional[str] = None, **kwargs):
+def notify_cont(title: str, body: Optional[str] = None, **kwargs):
     if _notify:
-        _notify.cont(summary, body, **kwargs)
+        _notify.cont(title, body, **kwargs)
 
 def notify_close(notify_id: int|None=None):
     if _notify:
