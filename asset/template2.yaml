@@ -146,14 +146,14 @@ TEMPLATES:
     </user_context>
 
     {user_query}
-
-  meta prompt: |-
-    Convert source prompt to more instructive and clear instruction for llm understanding.
-
-    ## Source prompt:
-    ```
-    {source_prompt}
-    ```
+#
+#   meta prompt: |-
+#     Convert source prompt to more instructive and clear instruction for llm understanding.
+#
+#     ## Source prompt:
+#     ```
+#     {source_prompt}
+#     ```
 
   image analysis: |-
     {{
@@ -205,3 +205,20 @@ TEMPLATES:
       ],
       "output_format": "clear and structured"
     }}
+
+  translate to korean: |-
+    {{
+      "task": "translation",
+      "language": "korean",
+      "restrictions": [
+        "keep the original document format",
+        "keep the code and citation as original"
+      ],
+      "content": """{content_text}"""
+    }}
+
+  translate to korean old: |-
+    Translate the following text to korean:
+    ---
+    {content_text}
+

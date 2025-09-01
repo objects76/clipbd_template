@@ -33,7 +33,8 @@ DEBUG = True
 class Commands(Enum):
     SUMMARY = "Summary"
     QA = "Q&A"
-    META_PROMPT = "Meta Prompt"
+    # META_PROMPT = "Meta Prompt"
+    TRANSLATE_TO_KOREAN = "Translate to Korean"
     IMAGE_ANALYSIS = "Image Analysis"
 
 class Subtype(Enum):
@@ -74,10 +75,12 @@ def get_template(template_path: str, command: Commands, subtype: Subtype | None)
             return templates.get('webtext summary', "")
     elif command == Commands.QA:
         return templates.get('q&a on context', "")
-    elif command == Commands.META_PROMPT:
-        return templates.get('meta prompt', "")
+    # elif command == Commands.META_PROMPT:
+    #     return templates.get('meta prompt', "")
     elif command == Commands.IMAGE_ANALYSIS:
         return templates.get('image analysis', "")
+    elif command == Commands.TRANSLATE_TO_KOREAN:
+        return templates.get('translate to korean', "")
 
     raise TemplateNotFoundError(f"Template not found for command: {command}, subtype: {subtype}")
 
@@ -114,9 +117,14 @@ def get_command(items: list[ClipboardData], auto: bool = False, data_type: str =
             '-no-fixed-num-lines',
         ]
 
+        if data_type == 'image':
+            commands = [cmd.value for cmd in Commands if cmd == Commands.IMAGE_ANALYSIS]
+        else:
+            commands = [cmd.value for cmd in Commands if cmd != Commands.IMAGE_ANALYSIS]
+
         rofi = subprocess.run(
             cmd,
-            input='\n'.join([cmd.value for cmd in Commands]),
+            input='\n'.join(commands),
             text=True,
             capture_output=True,
             timeout=30  # Prevent hanging
@@ -130,7 +138,7 @@ def get_command(items: list[ClipboardData], auto: bool = False, data_type: str =
 
     if data_type == 'image':
         return Commands.IMAGE_ANALYSIS, Subtype.IMAGE
-    elif command == Commands.SUMMARY or command == Commands.QA:
+    elif command == Commands.SUMMARY or command == Commands.QA or command == Commands.TRANSLATE_TO_KOREAN:
 
         if url_text:
             if ('youtube.com/watch' in url_text) or ('youtu.be/' in url_text):
@@ -181,21 +189,21 @@ def main(args) -> int:
         formatted = ""
 
         notify_send(command.value, subtype.value if subtype else None)
-        if command == Commands.SUMMARY:
+        if command == Commands.SUMMARY or command == Commands.TRANSLATE_TO_KOREAN:
             assert subtype is not None, "subtype is required"
             if subtype == Subtype.YOUTUBE:
-                notify_cont("summary", "youtube content")
+                notify_cont(command.name, "youtube content")
                 url = str(items[0].data)
                 transcript = str(items[1].data) if len(items) > 1 else ""
                 content = youtube.get_youtube_content(url, transcript)
 
             elif subtype == Subtype.HTML_TEXT:
-                notify_cont("summary", "html text content")
+                notify_cont(command.name, "html text content")
                 html_text: str = str(items[0].data) if items[0].type == 'text' else ""
                 content = webpage.from_html_text(html_text)
 
             elif subtype == Subtype.WEBURL:
-                notify_cont("summary", "weburl content")
+                notify_cont(command.name, "weburl content")
                 url: str = str(items[0].data) if items[0].type == 'text' else ""
                 html_text = webpage.get_html(url)
                 content = webpage.from_html_text(html_text)
@@ -215,10 +223,10 @@ def main(args) -> int:
 
             formatted = template.format( context = context, user_query = "user_query here" )
 
-        elif command == Commands.META_PROMPT:
-            src_prompt = str(items[0].data) if items[0].type == 'text' else ""
-            content = meta_prompt.get_prompt(src_prompt)
-            formatted = template.format( **content )
+        # elif command == Commands.META_PROMPT:
+        #     src_prompt = str(items[0].data) if items[0].type == 'text' else ""
+        #     content = meta_prompt.get_prompt(src_prompt)
+        #     formatted = template.format( **content )
 
         elif command == Commands.IMAGE_ANALYSIS:
             content = {'image_data': items}
@@ -290,6 +298,6 @@ if __name__ == '__main__':
         for i in range(5, 0, -1):
             print(f"Waiting {i} seconds...")
             time.sleep(1)
-        test()
+        # test()
 
     sys.exit(main(args))
