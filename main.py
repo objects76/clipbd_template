@@ -24,6 +24,8 @@ import webpage
 import youtube
 from enum import Enum
 from exceptions import TemplateNotFoundError, TemplateFormatError, ContentNotFoundError
+import locale
+from llm import run_web_llm
 
 VERSION = "1.0.0"
 DEBUG = True
@@ -42,26 +44,6 @@ class Subtype(Enum):
     LONGTEXT = "longtext"
     IMAGE = "image"
 
-
-def run_web_llm(profile: str, url: str) -> None:
-    """Launch browser with sanitized inputs.
-
-    Args:
-        user (str): Browser profile directory name
-        url (str): URL to open
-    """
-    BROWSER = "microsoft-edge-stable"
-
-    # Sanitize inputs to prevent command injection
-    safe_user = shlex.quote(profile)
-    safe_url = shlex.quote(url)
-
-    subprocess.run([
-        BROWSER,
-        f"--profile-directory={safe_user}",
-        "--new-tab",
-        safe_url
-    ], check=False)
 
 def resource_path(name: str) -> Path:
     ''' get file path from packed executable '''
@@ -180,7 +162,7 @@ def main(args) -> int:
             items.append(ClipboardData(type="text", data=cb_cached['data']))
             print(f"cached reason: {cb_cached['reason']}")
 
-        clipboard_data = get_clipboard_data()
+        clipboard_data:ClipboardData|None = get_clipboard_data()
         if clipboard_data is not None:
             items.append(clipboard_data)
         if len(items) == 0:
@@ -249,18 +231,23 @@ def main(args) -> int:
 
         if formatted:
             if args.auto:
-                run_web_llm("Default", "https://www.chatgpt.com")
-                time.sleep(1)
+                run_web_llm("Default", "https://www.chatgpt.com", wait_title="chatgpt")
 
             if command == Commands.IMAGE_ANALYSIS:
                 paste() # paste image to chatgpt
                 time.sleep(1.5)
 
-            set_clipboard_data(formatted) # set formatted text to clipboard
+            # for line in formatted.split('\n'):
+            #     subprocess.run(['xdotool', 'type', '--delay', '5', line], check=False)
+            #     subprocess.run(['xdotool', 'key', '--clearmodifiers', 'shift+Return'], check=False)
+            set_clipboard_data( ClipboardData(type="text", data=formatted) ) # set formatted text to clipboard
             paste(return_key=args.auto) # paste formatted text to chatgpt
 
             if Config.clear_generated:
                 clear_clipboard()
+            # elif command == Commands.IMAGE_ANALYSIS:
+            #     set_clipboard_data(clipboard_data) # restore original image
+
         notify_close()
         ClipboardCache.clear()
         return 0
@@ -287,6 +274,8 @@ def test():
         print(type(e).__name__)
         print(str(e))
     exit(0)
+
+
 
 if __name__ == '__main__':
     import argparse

@@ -1,6 +1,6 @@
 config:
   youtube_clip_count: 1
-  clear_generated: true
+  clear_generated: false
 
 TEMPLATES:
   youtube summary: |-
