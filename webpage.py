@@ -1,72 +1,9 @@
-import re
+import requests
 from urllib.parse import urlparse
 from bs4 import BeautifulSoup
-import html_to_markdown
-import requests
 from exceptions import WebExtractionError
+from text_info2 import html_to_md
 
-
-def compress_html(html: str) -> str:
-    """Compress HTML by removing SVG elements to reduce size.
-
-    Args:
-        html (str): Original HTML content
-
-    Returns:
-        str: Compressed HTML with SVG elements removed
-    """
-
-    # Remove entire SVG elements including content
-    svg_pattern = r'<svg[^>]*>.*?</svg>'
-    compressed = re.sub(svg_pattern, '', html, flags=re.DOTALL | re.IGNORECASE)
-
-    # remove fixed text
-    for useless_text in [
-        "Press enter or click to view image in full size",
-    ]:
-        compressed = compressed.replace(useless_text, '')
-
-    return compressed
-
-
-
-def compress_md(md: str) -> str:
-    """Compress markdown by removing or truncating long SVG images.
-
-    Args:
-        md (str): Original markdown content
-
-    Returns:
-        str: Compressed markdown with SVG images trimmed
-    """
-
-    # Pattern to match SVG images with base64 data
-    svg_pattern = r'!\[([^\]]*)\]\(data:image/svg\+xml;base64,[A-Za-z0-9+/=]+\)'
-
-    def replace_svg(match):
-        alt_text = match.group(1) or "SVG Image"
-        return f"[{alt_text}]"
-
-    # Replace all SVG images with just their alt text
-    compressed = re.sub(svg_pattern, replace_svg, md)
-
-    return compressed
-
-def html_to_md(html: str) -> str:
-    try:
-        html = compress_html(html)
-        markdown = html_to_markdown.convert_to_markdown(
-            html,
-            escape_misc = False,
-            escape_underscores = False,
-            extract_metadata = False,
-            )
-        # Compress SVG images to reduce size
-        compressed_markdown = compress_md(markdown)
-        print(f"# html to markdown: {len(html)} -> {len(markdown)} -> {len(compressed_markdown)} (compressed)")
-        return compressed_markdown
-    except Exception as e:
-        raise WebExtractionError(f"HTML to markdown conversion failed: {str(e)}") from e
 
 
 
@@ -117,6 +54,9 @@ def from_html_text(html_text: str):
     return result
 
 if __name__ == "__main__":
-    with open("asset/input.html", "r") as f:
-        html = f.read()
-    print(html_to_md(html))
+    # html to md test
+    from pathlib import Path
+    html_text = Path("asset/docs.html").read_text(encoding='utf-8')
+    md_text = html_to_md(html_text)
+    Path("asset/docs.md").write_text(html_to_md(html_text))
+
