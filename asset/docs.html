@@ -1,0 +1,502 @@
+<div class="page-body full-width flush docs-page"><div class="docs-markdown-page docs-markdown-content markdown-prompt-blockquote"><div class="flex w-full items-start"><div class="docs-markdown-page-inner"><div><div class="title-container flex flex-col items-baseline justify-between lg:flex-row"><div class="order-2 lg:order-1"><h1 id="page-top" class="docs-markdown-page-title">Text generation</h1><div class="docs-markdown-page-subtitle">Learn how to prompt a model to generate text.</div></div><div class="order-1 -mt-2.5 mb-4 flex w-full flex-row items-end justify-between gap-2 lg:order-2 lg:mt-0 lg:mb-0 lg:ml-4 lg:w-auto lg:flex-col lg:justify-start lg:px-1"><div class="-order-1 -ml-1.5 lg:ml-0"><button type="button" class="lkCln copy-button" data-color="primary" data-variant="ghost" data-size="2xs"><span class="NBPKZ"><span class="block relative w-[var(--button-icon-size)] h-[var(--button-icon-size)]" data-transition-position="absolute" style="--tg-will-change: transform, opacity; --tg-enter-opacity: 1; --tg-enter-transform: scale(1); --tg-enter-filter: none; --tg-enter-duration: 300ms; --tg-enter-delay: 150ms; --tg-enter-timing-function: var(--cubic-enter); --tg-exit-opacity: 0; --tg-exit-transform: scale(0.6); --tg-exit-filter: none; --tg-exit-duration: 150ms; --tg-exit-delay: 0ms; --tg-exit-timing-function: var(--cubic-exit); --tg-initial-opacity: 0; --tg-initial-transform: scale(0.6); --tg-initial-filter: none;"><span class="_4jUWi pdMy8"><svg viewBox="0 0 24 24" fill="currentColor" width="1em" height="1em"><path d="M12.7587 2H16.2413C17.0463 1.99999 17.7106 1.99998 18.2518 2.04419C18.8139 2.09012 19.3306 2.18868 19.816 2.43597C20.5686 2.81947 21.1805 3.43139 21.564 4.18404C21.8113 4.66937 21.9099 5.18608 21.9558 5.74817C22 6.28936 22 6.95372 22 7.75868V11.2413C22 12.0463 22 12.7106 21.9558 13.2518C21.9099 13.8139 21.8113 14.3306 21.564 14.816C21.1805 15.5686 20.5686 16.1805 19.816 16.564C19.3306 16.8113 18.8139 16.9099 18.2518 16.9558C17.8906 16.9853 17.4745 16.9951 16.9984 16.9984C16.9951 17.4745 16.9853 17.8906 16.9558 18.2518C16.9099 18.8139 16.8113 19.3306 16.564 19.816C16.1805 20.5686 15.5686 21.1805 14.816 21.564C14.3306 21.8113 13.8139 21.9099 13.2518 21.9558C12.7106 22 12.0463 22 11.2413 22H7.75868C6.95372 22 6.28936 22 5.74818 21.9558C5.18608 21.9099 4.66937 21.8113 4.18404 21.564C3.43139 21.1805 2.81947 20.5686 2.43597 19.816C2.18868 19.3306 2.09012 18.8139 2.04419 18.2518C1.99998 17.7106 1.99999 17.0463 2 16.2413V12.7587C1.99999 11.9537 1.99998 11.2894 2.04419 10.7482C2.09012 10.1861 2.18868 9.66937 2.43597 9.18404C2.81947 8.43139 3.43139 7.81947 4.18404 7.43598C4.66937 7.18868 5.18608 7.09012 5.74817 7.04419C6.10939 7.01468 6.52548 7.00487 7.00162 7.00162C7.00487 6.52548 7.01468 6.10939 7.04419 5.74817C7.09012 5.18608 7.18868 4.66937 7.43598 4.18404C7.81947 3.43139 8.43139 2.81947 9.18404 2.43597C9.66937 2.18868 10.1861 2.09012 10.7482 2.04419C11.2894 1.99998 11.9537 1.99999 12.7587 2ZM9.00176 7L11.2413 7C12.0463 6.99999 12.7106 6.99998 13.2518 7.04419C13.8139 7.09012 14.3306 7.18868 14.816 7.43598C15.5686 7.81947 16.1805 8.43139 16.564 9.18404C16.8113 9.66937 16.9099 10.1861 16.9558 10.7482C17 11.2894 17 11.9537 17 12.7587V14.9982C17.4455 14.9951 17.7954 14.9864 18.089 14.9624C18.5274 14.9266 18.7516 14.8617 18.908 14.782C19.2843 14.5903 19.5903 14.2843 19.782 13.908C19.8617 13.7516 19.9266 13.5274 19.9624 13.089C19.9992 12.6389 20 12.0566 20 11.2V7.8C20 6.94342 19.9992 6.36113 19.9624 5.91104C19.9266 5.47262 19.8617 5.24842 19.782 5.09202C19.5903 4.7157 19.2843 4.40973 18.908 4.21799C18.7516 4.1383 18.5274 4.07337 18.089 4.03755C17.6389 4.00078 17.0566 4 16.2 4H12.8C11.9434 4 11.3611 4.00078 10.911 4.03755C10.4726 4.07337 10.2484 4.1383 10.092 4.21799C9.7157 4.40973 9.40973 4.7157 9.21799 5.09202C9.1383 5.24842 9.07337 5.47262 9.03755 5.91104C9.01357 6.20463 9.00489 6.55447 9.00176 7ZM5.91104 9.03755C5.47262 9.07337 5.24842 9.1383 5.09202 9.21799C4.7157 9.40973 4.40973 9.7157 4.21799 10.092C4.1383 10.2484 4.07337 10.4726 4.03755 10.911C4.00078 11.3611 4 11.9434 4 12.8V16.2C4 17.0566 4.00078 17.6389 4.03755 18.089C4.07337 18.5274 4.1383 18.7516 4.21799 18.908C4.40973 19.2843 4.7157 19.5903 5.09202 19.782C5.24842 19.8617 5.47262 19.9266 5.91104 19.9624C6.36113 19.9992 6.94342 20 7.8 20H11.2C12.0566 20 12.6389 19.9992 13.089 19.9624C13.5274 19.9266 13.7516 19.8617 13.908 19.782C14.2843 19.5903 14.5903 19.2843 14.782 18.908C14.8617 18.7516 14.9266 18.5274 14.9624 18.089C14.9992 17.6389 15 17.0566 15 16.2V12.8C15 11.9434 14.9992 11.3611 14.9624 10.911C14.9266 10.4726 14.8617 10.2484 14.782 10.092C14.5903 9.7157 14.2843 9.40973 13.908 9.21799C13.7516 9.1383 13.5274 9.07337 13.089 9.03755C12.6389 9.00078 12.0566 9 11.2 9H7.8C6.94342 9 6.36113 9.00078 5.91104 9.03755Z"></path></svg></span></span><span>Copy page</span></span></button></div></div></div><p>With the OpenAI API, you can use a <a href="/docs/models" class="kZ98Q" data-underline="">large language model</a> to generate text from a prompt, as you might using <a target="_blank" rel="noopener noreferrer" href="https://chatgpt.com" class="kZ98Q" data-underline="">ChatGPT</a>. Models can generate almost any kind of text response—like code, mathematical equations, structured JSON data, or human-like prose.</p>
+<p>Here's a simple example using the <a href="/docs/api-reference/responses" class="kZ98Q" data-underline="">Responses API</a>.</p><div class="code-sample dark-mode"><div class="code-sample-header"><div class="code-sample-title body-small">Generate text from a simple prompt</div><div class="exclude-from-copy"><span class="fsluc" role="button" tabindex="0" data-variant="ghost" data-size="sm" data-selected="true" aria-disabled="false" id="select-trigger-:ru:" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="radix-:r10:" data-state="closed"><span class="ktL9G">python</span><div class="FJZOe"><svg width="1em" height="1em" viewBox="0 0 10 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg" class="ygzs6"><path fill-rule="evenodd" clip-rule="evenodd" d="M4.34151 0.747423C4.71854 0.417526 5.28149 0.417526 5.65852 0.747423L9.65852 4.24742C10.0742 4.61111 10.1163 5.24287 9.75259 5.6585C9.38891 6.07414 8.75715 6.11626 8.34151 5.75258L5.00001 2.82877L1.65852 5.75258C1.24288 6.11626 0.61112 6.07414 0.247438 5.6585C-0.116244 5.24287 -0.0741267 4.61111 0.34151 4.24742L4.34151 0.747423ZM0.246065 10.3578C0.608879 9.94139 1.24055 9.89795 1.65695 10.2608L5.00001 13.1737L8.34308 10.2608C8.75948 9.89795 9.39115 9.94139 9.75396 10.3578C10.1168 10.7742 10.0733 11.4058 9.65695 11.7687L5.65695 15.2539C5.28043 15.582 4.7196 15.582 4.34308 15.2539L0.343082 11.7687C-0.0733128 11.4058 -0.116749 10.7742 0.246065 10.3578Z"></path></svg></div></span></div><button type="button" class="lkCln" data-color="primary" data-variant="ghost" data-size="sm" data-gutter-size="xs" data-icon-size="sm"><span class="NBPKZ"><span class="block relative w-[var(--button-icon-size)] h-[var(--button-icon-size)]" data-transition-position="absolute" style="--tg-will-change: transform, opacity; --tg-enter-opacity: 1; --tg-enter-transform: scale(1); --tg-enter-filter: none; --tg-enter-duration: 300ms; --tg-enter-delay: 150ms; --tg-enter-timing-function: var(--cubic-enter); --tg-exit-opacity: 0; --tg-exit-transform: scale(0.6); --tg-exit-filter: none; --tg-exit-duration: 150ms; --tg-exit-delay: 0ms; --tg-exit-timing-function: var(--cubic-exit); --tg-initial-opacity: 0; --tg-initial-transform: scale(0.6); --tg-initial-filter: none;"><span class="_4jUWi pdMy8"><svg viewBox="0 0 24 24" fill="currentColor" width="1em" height="1em"><path d="M12.7587 2H16.2413C17.0463 1.99999 17.7106 1.99998 18.2518 2.04419C18.8139 2.09012 19.3306 2.18868 19.816 2.43597C20.5686 2.81947 21.1805 3.43139 21.564 4.18404C21.8113 4.66937 21.9099 5.18608 21.9558 5.74817C22 6.28936 22 6.95372 22 7.75868V11.2413C22 12.0463 22 12.7106 21.9558 13.2518C21.9099 13.8139 21.8113 14.3306 21.564 14.816C21.1805 15.5686 20.5686 16.1805 19.816 16.564C19.3306 16.8113 18.8139 16.9099 18.2518 16.9558C17.8906 16.9853 17.4745 16.9951 16.9984 16.9984C16.9951 17.4745 16.9853 17.8906 16.9558 18.2518C16.9099 18.8139 16.8113 19.3306 16.564 19.816C16.1805 20.5686 15.5686 21.1805 14.816 21.564C14.3306 21.8113 13.8139 21.9099 13.2518 21.9558C12.7106 22 12.0463 22 11.2413 22H7.75868C6.95372 22 6.28936 22 5.74818 21.9558C5.18608 21.9099 4.66937 21.8113 4.18404 21.564C3.43139 21.1805 2.81947 20.5686 2.43597 19.816C2.18868 19.3306 2.09012 18.8139 2.04419 18.2518C1.99998 17.7106 1.99999 17.0463 2 16.2413V12.7587C1.99999 11.9537 1.99998 11.2894 2.04419 10.7482C2.09012 10.1861 2.18868 9.66937 2.43597 9.18404C2.81947 8.43139 3.43139 7.81947 4.18404 7.43598C4.66937 7.18868 5.18608 7.09012 5.74817 7.04419C6.10939 7.01468 6.52548 7.00487 7.00162 7.00162C7.00487 6.52548 7.01468 6.10939 7.04419 5.74817C7.09012 5.18608 7.18868 4.66937 7.43598 4.18404C7.81947 3.43139 8.43139 2.81947 9.18404 2.43597C9.66937 2.18868 10.1861 2.09012 10.7482 2.04419C11.2894 1.99998 11.9537 1.99999 12.7587 2ZM9.00176 7L11.2413 7C12.0463 6.99999 12.7106 6.99998 13.2518 7.04419C13.8139 7.09012 14.3306 7.18868 14.816 7.43598C15.5686 7.81947 16.1805 8.43139 16.564 9.18404C16.8113 9.66937 16.9099 10.1861 16.9558 10.7482C17 11.2894 17 11.9537 17 12.7587V14.9982C17.4455 14.9951 17.7954 14.9864 18.089 14.9624C18.5274 14.9266 18.7516 14.8617 18.908 14.782C19.2843 14.5903 19.5903 14.2843 19.782 13.908C19.8617 13.7516 19.9266 13.5274 19.9624 13.089C19.9992 12.6389 20 12.0566 20 11.2V7.8C20 6.94342 19.9992 6.36113 19.9624 5.91104C19.9266 5.47262 19.8617 5.24842 19.782 5.09202C19.5903 4.7157 19.2843 4.40973 18.908 4.21799C18.7516 4.1383 18.5274 4.07337 18.089 4.03755C17.6389 4.00078 17.0566 4 16.2 4H12.8C11.9434 4 11.3611 4.00078 10.911 4.03755C10.4726 4.07337 10.2484 4.1383 10.092 4.21799C9.7157 4.40973 9.40973 4.7157 9.21799 5.09202C9.1383 5.24842 9.07337 5.47262 9.03755 5.91104C9.01357 6.20463 9.00489 6.55447 9.00176 7ZM5.91104 9.03755C5.47262 9.07337 5.24842 9.1383 5.09202 9.21799C4.7157 9.40973 4.40973 9.7157 4.21799 10.092C4.1383 10.2484 4.07337 10.4726 4.03755 10.911C4.00078 11.3611 4 11.9434 4 12.8V16.2C4 17.0566 4.00078 17.6389 4.03755 18.089C4.07337 18.5274 4.1383 18.7516 4.21799 18.908C4.40973 19.2843 4.7157 19.5903 5.09202 19.782C5.24842 19.8617 5.47262 19.9266 5.91104 19.9624C6.36113 19.9992 6.94342 20 7.8 20H11.2C12.0566 20 12.6389 19.9992 13.089 19.9624C13.5274 19.9266 13.7516 19.8617 13.908 19.782C14.2843 19.5903 14.5903 19.2843 14.782 18.908C14.8617 18.7516 14.9266 18.5274 14.9624 18.089C14.9992 17.6389 15 17.0566 15 16.2V12.8C15 11.9434 14.9992 11.3611 14.9624 10.911C14.9266 10.4726 14.8617 10.2484 14.782 10.092C14.5903 9.7157 14.2843 9.40973 13.908 9.21799C13.7516 9.1383 13.5274 9.07337 13.089 9.03755C12.6389 9.00078 12.0566 9 11.2 9H7.8C6.94342 9 6.36113 9.00078 5.91104 9.03755Z"></path></svg></span></span></span></button></div><div class="code-sample-body code-sample-body-small code-sample-body-with-header"><div class="code-block hidden"><pre class="hljs syntax-highlighter dark-mode code-sample-pre"><code class="language-javascript" style="white-space: pre;"><code style="float: left; padding-right: 10px;"><span class="react-syntax-highlighter-line-number">1
+</span><span class="react-syntax-highlighter-line-number">2
+</span><span class="react-syntax-highlighter-line-number">3
+</span><span class="react-syntax-highlighter-line-number">4
+</span><span class="react-syntax-highlighter-line-number">5
+</span><span class="react-syntax-highlighter-line-number">6
+</span><span class="react-syntax-highlighter-line-number">7
+</span><span class="react-syntax-highlighter-line-number">8
+</span><span class="react-syntax-highlighter-line-number">9
+</span></code><span><span class="hljs-keyword">import</span><span> OpenAI </span><span class="hljs-keyword">from</span><span> </span><span class="hljs-string">"openai"</span><span>;
+</span></span><span><span></span><span class="hljs-keyword">const</span><span> client = </span><span class="hljs-keyword">new</span><span> OpenAI();
+</span></span><span>
+</span><span><span></span><span class="hljs-keyword">const</span><span> response = </span><span class="hljs-keyword">await</span><span> client.responses.create({
+</span></span><span><span>    </span><span class="hljs-attr">model</span><span>: </span><span class="hljs-string">"gpt-5"</span><span>,
+</span></span><span><span>    </span><span class="hljs-attr">input</span><span>: </span><span class="hljs-string">"Write a one-sentence bedtime story about a unicorn."</span><span>
+</span></span><span>});
+</span><span>
+</span><span><span></span><span class="hljs-built_in">console</span><span>.log(response.output_text);</span></span></code></pre></div><div class="code-block"><pre class="hljs syntax-highlighter dark-mode code-sample-pre"><code class="language-python" style="white-space: pre;"><code style="float: left; padding-right: 10px;"><span class="react-syntax-highlighter-line-number">1
+</span><span class="react-syntax-highlighter-line-number">2
+</span><span class="react-syntax-highlighter-line-number">3
+</span><span class="react-syntax-highlighter-line-number">4
+</span><span class="react-syntax-highlighter-line-number">5
+</span><span class="react-syntax-highlighter-line-number">6
+</span><span class="react-syntax-highlighter-line-number">7
+</span><span class="react-syntax-highlighter-line-number">8
+</span><span class="react-syntax-highlighter-line-number">9
+</span></code><span><span class="hljs-keyword">from</span><span> openai </span><span class="hljs-keyword">import</span><span> OpenAI
+</span></span><span>client = OpenAI()
+</span><span>
+</span><span>response = client.responses.create(
+</span><span><span>    model=</span><span class="hljs-string">"gpt-5"</span><span>,
+</span></span><span><span>    </span><span class="hljs-built_in">input</span><span>=</span><span class="hljs-string">"Write a one-sentence bedtime story about a unicorn."</span><span>
+</span></span><span>)
+</span><span>
+</span><span><span></span><span class="hljs-built_in">print</span><span>(response.output_text)</span></span></code></pre></div><div class="code-block hidden"><pre class="hljs syntax-highlighter dark-mode code-sample-pre"><code class="language-bash" style="white-space: pre;"><code style="float: left; padding-right: 10px;"><span class="react-syntax-highlighter-line-number">1
+</span><span class="react-syntax-highlighter-line-number">2
+</span><span class="react-syntax-highlighter-line-number">3
+</span><span class="react-syntax-highlighter-line-number">4
+</span><span class="react-syntax-highlighter-line-number">5
+</span><span class="react-syntax-highlighter-line-number">6
+</span><span class="react-syntax-highlighter-line-number">7
+</span></code><span><span>curl </span><span class="hljs-string">"https://api.openai.com/v1/responses"</span><span> \
+</span></span><span><span>    -H </span><span class="hljs-string">"Content-Type: application/json"</span><span> \
+</span></span><span><span>    -H </span><span class="hljs-string">"Authorization: Bearer </span><span class="hljs-string hljs-variable">$OPENAI_API_KEY</span><span class="hljs-string">"</span><span> \
+</span></span><span><span>    -d </span><span class="hljs-string">'{
+</span></span><span class="hljs-string">        "model": "gpt-5",
+</span><span class="hljs-string">        "input": "Write a one-sentence bedtime story about a unicorn."
+</span><span class="hljs-string">    }'</span></code></pre></div></div></div><p>An array of content generated by the model is in the <code>output</code> property of the response. In this simple example, we have just one output which looks like this:</p><div class="code-sample dark-mode"><div class="code-sample-body code-sample-body-large"><div class="code-sample-copy-float"><button type="button" class="lkCln" data-color="primary" data-variant="ghost" data-size="sm" data-gutter-size="xs" data-icon-size="sm"><span class="NBPKZ"><span class="block relative w-[var(--button-icon-size)] h-[var(--button-icon-size)]" data-transition-position="absolute" style="--tg-will-change: transform, opacity; --tg-enter-opacity: 1; --tg-enter-transform: scale(1); --tg-enter-filter: none; --tg-enter-duration: 300ms; --tg-enter-delay: 150ms; --tg-enter-timing-function: var(--cubic-enter); --tg-exit-opacity: 0; --tg-exit-transform: scale(0.6); --tg-exit-filter: none; --tg-exit-duration: 150ms; --tg-exit-delay: 0ms; --tg-exit-timing-function: var(--cubic-exit); --tg-initial-opacity: 0; --tg-initial-transform: scale(0.6); --tg-initial-filter: none;"><span class="_4jUWi pdMy8"><svg viewBox="0 0 24 24" fill="currentColor" width="1em" height="1em"><path d="M12.7587 2H16.2413C17.0463 1.99999 17.7106 1.99998 18.2518 2.04419C18.8139 2.09012 19.3306 2.18868 19.816 2.43597C20.5686 2.81947 21.1805 3.43139 21.564 4.18404C21.8113 4.66937 21.9099 5.18608 21.9558 5.74817C22 6.28936 22 6.95372 22 7.75868V11.2413C22 12.0463 22 12.7106 21.9558 13.2518C21.9099 13.8139 21.8113 14.3306 21.564 14.816C21.1805 15.5686 20.5686 16.1805 19.816 16.564C19.3306 16.8113 18.8139 16.9099 18.2518 16.9558C17.8906 16.9853 17.4745 16.9951 16.9984 16.9984C16.9951 17.4745 16.9853 17.8906 16.9558 18.2518C16.9099 18.8139 16.8113 19.3306 16.564 19.816C16.1805 20.5686 15.5686 21.1805 14.816 21.564C14.3306 21.8113 13.8139 21.9099 13.2518 21.9558C12.7106 22 12.0463 22 11.2413 22H7.75868C6.95372 22 6.28936 22 5.74818 21.9558C5.18608 21.9099 4.66937 21.8113 4.18404 21.564C3.43139 21.1805 2.81947 20.5686 2.43597 19.816C2.18868 19.3306 2.09012 18.8139 2.04419 18.2518C1.99998 17.7106 1.99999 17.0463 2 16.2413V12.7587C1.99999 11.9537 1.99998 11.2894 2.04419 10.7482C2.09012 10.1861 2.18868 9.66937 2.43597 9.18404C2.81947 8.43139 3.43139 7.81947 4.18404 7.43598C4.66937 7.18868 5.18608 7.09012 5.74817 7.04419C6.10939 7.01468 6.52548 7.00487 7.00162 7.00162C7.00487 6.52548 7.01468 6.10939 7.04419 5.74817C7.09012 5.18608 7.18868 4.66937 7.43598 4.18404C7.81947 3.43139 8.43139 2.81947 9.18404 2.43597C9.66937 2.18868 10.1861 2.09012 10.7482 2.04419C11.2894 1.99998 11.9537 1.99999 12.7587 2ZM9.00176 7L11.2413 7C12.0463 6.99999 12.7106 6.99998 13.2518 7.04419C13.8139 7.09012 14.3306 7.18868 14.816 7.43598C15.5686 7.81947 16.1805 8.43139 16.564 9.18404C16.8113 9.66937 16.9099 10.1861 16.9558 10.7482C17 11.2894 17 11.9537 17 12.7587V14.9982C17.4455 14.9951 17.7954 14.9864 18.089 14.9624C18.5274 14.9266 18.7516 14.8617 18.908 14.782C19.2843 14.5903 19.5903 14.2843 19.782 13.908C19.8617 13.7516 19.9266 13.5274 19.9624 13.089C19.9992 12.6389 20 12.0566 20 11.2V7.8C20 6.94342 19.9992 6.36113 19.9624 5.91104C19.9266 5.47262 19.8617 5.24842 19.782 5.09202C19.5903 4.7157 19.2843 4.40973 18.908 4.21799C18.7516 4.1383 18.5274 4.07337 18.089 4.03755C17.6389 4.00078 17.0566 4 16.2 4H12.8C11.9434 4 11.3611 4.00078 10.911 4.03755C10.4726 4.07337 10.2484 4.1383 10.092 4.21799C9.7157 4.40973 9.40973 4.7157 9.21799 5.09202C9.1383 5.24842 9.07337 5.47262 9.03755 5.91104C9.01357 6.20463 9.00489 6.55447 9.00176 7ZM5.91104 9.03755C5.47262 9.07337 5.24842 9.1383 5.09202 9.21799C4.7157 9.40973 4.40973 9.7157 4.21799 10.092C4.1383 10.2484 4.07337 10.4726 4.03755 10.911C4.00078 11.3611 4 11.9434 4 12.8V16.2C4 17.0566 4.00078 17.6389 4.03755 18.089C4.07337 18.5274 4.1383 18.7516 4.21799 18.908C4.40973 19.2843 4.7157 19.5903 5.09202 19.782C5.24842 19.8617 5.47262 19.9266 5.91104 19.9624C6.36113 19.9992 6.94342 20 7.8 20H11.2C12.0566 20 12.6389 19.9992 13.089 19.9624C13.5274 19.9266 13.7516 19.8617 13.908 19.782C14.2843 19.5903 14.5903 19.2843 14.782 18.908C14.8617 18.7516 14.9266 18.5274 14.9624 18.089C14.9992 17.6389 15 17.0566 15 16.2V12.8C15 11.9434 14.9992 11.3611 14.9624 10.911C14.9266 10.4726 14.8617 10.2484 14.782 10.092C14.5903 9.7157 14.2843 9.40973 13.908 9.21799C13.7516 9.1383 13.5274 9.07337 13.089 9.03755C12.6389 9.00078 12.0566 9 11.2 9H7.8C6.94342 9 6.36113 9.00078 5.91104 9.03755Z"></path></svg></span></span></span></button></div><pre class="hljs syntax-highlighter dark-mode code-sample-pre"><code class="language-json" style="white-space: pre;"><code style="float: left; padding-right: 10px;"><span class="react-syntax-highlighter-line-number">1
+</span><span class="react-syntax-highlighter-line-number">2
+</span><span class="react-syntax-highlighter-line-number">3
+</span><span class="react-syntax-highlighter-line-number">4
+</span><span class="react-syntax-highlighter-line-number">5
+</span><span class="react-syntax-highlighter-line-number">6
+</span><span class="react-syntax-highlighter-line-number">7
+</span><span class="react-syntax-highlighter-line-number">8
+</span><span class="react-syntax-highlighter-line-number">9
+</span><span class="react-syntax-highlighter-line-number">10
+</span><span class="react-syntax-highlighter-line-number">11
+</span><span class="react-syntax-highlighter-line-number">12
+</span><span class="react-syntax-highlighter-line-number">13
+</span><span class="react-syntax-highlighter-line-number">14
+</span></code><span><span>[
+</span></span><span>    {
+</span><span><span>        </span><span class="hljs-attr">"id"</span><span>: </span><span class="hljs-string">"msg_67b73f697ba4819183a15cc17d011509"</span><span>,
+</span></span><span><span>        </span><span class="hljs-attr">"type"</span><span>: </span><span class="hljs-string">"message"</span><span>,
+</span></span><span><span>        </span><span class="hljs-attr">"role"</span><span>: </span><span class="hljs-string">"assistant"</span><span>,
+</span></span><span><span>        </span><span class="hljs-attr">"content"</span><span>: [
+</span></span><span>            {
+</span><span><span>                </span><span class="hljs-attr">"type"</span><span>: </span><span class="hljs-string">"output_text"</span><span>,
+</span></span><span><span>                </span><span class="hljs-attr">"text"</span><span>: </span><span class="hljs-string">"Under the soft glow of the moon, Luna the unicorn danced through fields of twinkling stardust, leaving trails of dreams for every child asleep."</span><span>,
+</span></span><span><span>                </span><span class="hljs-attr">"annotations"</span><span>: []
+</span></span><span>            }
+</span><span>        ]
+</span><span>    }
+</span><span>]</span></code></pre></div></div><div class="Hrx2F"><div class="az2qq" data-variant="outline" data-color="primary" data-actions-placement="end"><div class="rlGOC"><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 24 24"><path d="M13 12a1 1 0 1 0-2 0v4a1 1 0 1 0 2 0v-4Zm-1-2.5A1.25 1.25 0 1 0 12 7a1.25 1.25 0 0 0 0 2.5Z"></path><path fill-rule="evenodd" d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2ZM4 12a8 8 0 1 1 16 0 8 8 0 0 1-16 0Z" clip-rule="evenodd"></path></svg></div><div class="nCOFE"><div class="QoPCW"><div class="VZYeX"><p><strong>The <code>output</code> array often has more than one item in it!</strong> It can contain tool calls, data about reasoning tokens generated by <a href="/docs/guides/reasoning" class="kZ98Q" data-underline="">reasoning models</a>, and other items. It is not safe to assume that the model's text output is present at <code>output[0].content[0].text</code>.</p></div></div></div></div></div><p>Some of our <a href="/docs/libraries" class="kZ98Q" data-underline="">official SDKs</a> include an <code>output_text</code> property on model responses for convenience, which aggregates all text outputs from the model into a single string. This may be useful as a shortcut to access text output from the model.</p><p>In addition to plain text, you can also have the model return structured data in JSON format - this feature is called <a href="/docs/guides/structured-outputs" class="kZ98Q" data-underline=""><strong>Structured Outputs</strong></a>.</p>
+
+<div class="anchor-heading-wrapper"><h2 id="prompt-engineering" class="anchor-heading" data-name="prompt-engineering">Prompt engineering<svg viewBox="0 0 24 24" fill="currentColor" width="15" height="15" class="anchor-heading-icon" role="presentation"><path d="M18.2929 5.7071C16.4743 3.88849 13.5257 3.88849 11.7071 5.7071L10.7071 6.7071C10.3166 7.09763 9.68341 7.09763 9.29289 6.7071C8.90236 6.31658 8.90236 5.68341 9.29289 5.29289L10.2929 4.29289C12.8926 1.69322 17.1074 1.69322 19.7071 4.29289C22.3068 6.89255 22.3068 11.1074 19.7071 13.7071L18.7071 14.7071C18.3166 15.0976 17.6834 15.0976 17.2929 14.7071C16.9024 14.3166 16.9024 13.6834 17.2929 13.2929L18.2929 12.2929C20.1115 10.4743 20.1115 7.52572 18.2929 5.7071ZM15.7071 8.29289C16.0976 8.68341 16.0976 9.31658 15.7071 9.7071L9.7071 15.7071C9.31658 16.0976 8.68341 16.0976 8.29289 15.7071C7.90236 15.3166 7.90236 14.6834 8.29289 14.2929L14.2929 8.29289C14.6834 7.90236 15.3166 7.90236 15.7071 8.29289ZM6.7071 9.29289C7.09763 9.68341 7.09763 10.3166 6.7071 10.7071L5.7071 11.7071C3.88849 13.5257 3.88849 16.4743 5.7071 18.2929C7.52572 20.1115 10.4743 20.1115 12.2929 18.2929L13.2929 17.2929C13.6834 16.9024 14.3166 16.9024 14.7071 17.2929C15.0976 17.6834 15.0976 18.3166 14.7071 18.7071L13.7071 19.7071C11.1074 22.3068 6.89255 22.3068 4.29289 19.7071C1.69322 17.1074 1.69322 12.8926 4.29289 10.2929L5.29289 9.29289C5.68341 8.90236 6.31658 8.90236 6.7071 9.29289Z"></path></svg></h2></div>
+<p><strong>Prompt engineering</strong> is the process of writing effective instructions for a model, such that it consistently generates content that meets your requirements.</p>
+<p>Because the content generated from a model is non-deterministic, prompting to get your desired output is a mix of art and science. However, you can apply techniques and best practices to get good results consistently.</p>
+<p>Some prompt engineering techniques work with every model, like using message roles. But different models might need to be prompted differently to produce the best results. Even different snapshots of models within the same family could produce different results. So as you build more complex applications, we strongly recommend:</p>
+<ul>
+<li>Pinning your production applications to specific <a href="/docs/models" class="kZ98Q" data-underline="">model snapshots</a> (like <code>gpt-5-2025-08-07</code> for example) to ensure consistent behavior</li>
+<li>Building <a href="/docs/guides/evals" class="kZ98Q" data-underline="">evals</a> that measure the behavior of your prompts so you can monitor prompt performance as you iterate, or when you change and upgrade model versions</li>
+</ul>
+<p>Now, let's examine some tools and techniques available to you to construct prompts.</p>
+<div class="anchor-heading-wrapper"><h2 id="message-roles-and-instruction-following" class="anchor-heading" data-name="message-roles-and-instruction-following">Message roles and instruction following<svg viewBox="0 0 24 24" fill="currentColor" width="15" height="15" class="anchor-heading-icon" role="presentation"><path d="M18.2929 5.7071C16.4743 3.88849 13.5257 3.88849 11.7071 5.7071L10.7071 6.7071C10.3166 7.09763 9.68341 7.09763 9.29289 6.7071C8.90236 6.31658 8.90236 5.68341 9.29289 5.29289L10.2929 4.29289C12.8926 1.69322 17.1074 1.69322 19.7071 4.29289C22.3068 6.89255 22.3068 11.1074 19.7071 13.7071L18.7071 14.7071C18.3166 15.0976 17.6834 15.0976 17.2929 14.7071C16.9024 14.3166 16.9024 13.6834 17.2929 13.2929L18.2929 12.2929C20.1115 10.4743 20.1115 7.52572 18.2929 5.7071ZM15.7071 8.29289C16.0976 8.68341 16.0976 9.31658 15.7071 9.7071L9.7071 15.7071C9.31658 16.0976 8.68341 16.0976 8.29289 15.7071C7.90236 15.3166 7.90236 14.6834 8.29289 14.2929L14.2929 8.29289C14.6834 7.90236 15.3166 7.90236 15.7071 8.29289ZM6.7071 9.29289C7.09763 9.68341 7.09763 10.3166 6.7071 10.7071L5.7071 11.7071C3.88849 13.5257 3.88849 16.4743 5.7071 18.2929C7.52572 20.1115 10.4743 20.1115 12.2929 18.2929L13.2929 17.2929C13.6834 16.9024 14.3166 16.9024 14.7071 17.2929C15.0976 17.6834 15.0976 18.3166 14.7071 18.7071L13.7071 19.7071C11.1074 22.3068 6.89255 22.3068 4.29289 19.7071C1.69322 17.1074 1.69322 12.8926 4.29289 10.2929L5.29289 9.29289C5.68341 8.90236 6.31658 8.90236 6.7071 9.29289Z"></path></svg></h2></div>
+<p>You can provide instructions to the model with <a target="_blank" rel="noopener noreferrer" href="https://model-spec.openai.com/2025-02-12.html#chain_of_command" class="kZ98Q" data-underline="">differing levels of authority</a> using the <code>instructions</code> API parameter along with <strong>message roles</strong>.</p>
+<p>The <code>instructions</code> parameter gives the model high-level instructions on how it should behave while generating a response, including tone, goals, and examples of correct responses. Any instructions provided this way will take priority over a prompt in the <code>input</code> parameter.</p>
+<div class="code-sample dark-mode"><div class="code-sample-header"><div class="code-sample-title body-small">Generate text with instructions</div><div class="exclude-from-copy"><span class="fsluc" role="button" tabindex="0" data-variant="ghost" data-size="sm" data-selected="true" aria-disabled="false" id="select-trigger-:r11:" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="radix-:r13:" data-state="closed"><span class="ktL9G">python</span><div class="FJZOe"><svg width="1em" height="1em" viewBox="0 0 10 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg" class="ygzs6"><path fill-rule="evenodd" clip-rule="evenodd" d="M4.34151 0.747423C4.71854 0.417526 5.28149 0.417526 5.65852 0.747423L9.65852 4.24742C10.0742 4.61111 10.1163 5.24287 9.75259 5.6585C9.38891 6.07414 8.75715 6.11626 8.34151 5.75258L5.00001 2.82877L1.65852 5.75258C1.24288 6.11626 0.61112 6.07414 0.247438 5.6585C-0.116244 5.24287 -0.0741267 4.61111 0.34151 4.24742L4.34151 0.747423ZM0.246065 10.3578C0.608879 9.94139 1.24055 9.89795 1.65695 10.2608L5.00001 13.1737L8.34308 10.2608C8.75948 9.89795 9.39115 9.94139 9.75396 10.3578C10.1168 10.7742 10.0733 11.4058 9.65695 11.7687L5.65695 15.2539C5.28043 15.582 4.7196 15.582 4.34308 15.2539L0.343082 11.7687C-0.0733128 11.4058 -0.116749 10.7742 0.246065 10.3578Z"></path></svg></div></span></div><button type="button" class="lkCln" data-color="primary" data-variant="ghost" data-size="sm" data-gutter-size="xs" data-icon-size="sm"><span class="NBPKZ"><span class="block relative w-[var(--button-icon-size)] h-[var(--button-icon-size)]" data-transition-position="absolute" style="--tg-will-change: transform, opacity; --tg-enter-opacity: 1; --tg-enter-transform: scale(1); --tg-enter-filter: none; --tg-enter-duration: 300ms; --tg-enter-delay: 150ms; --tg-enter-timing-function: var(--cubic-enter); --tg-exit-opacity: 0; --tg-exit-transform: scale(0.6); --tg-exit-filter: none; --tg-exit-duration: 150ms; --tg-exit-delay: 0ms; --tg-exit-timing-function: var(--cubic-exit); --tg-initial-opacity: 0; --tg-initial-transform: scale(0.6); --tg-initial-filter: none;"><span class="_4jUWi pdMy8"><svg viewBox="0 0 24 24" fill="currentColor" width="1em" height="1em"><path d="M12.7587 2H16.2413C17.0463 1.99999 17.7106 1.99998 18.2518 2.04419C18.8139 2.09012 19.3306 2.18868 19.816 2.43597C20.5686 2.81947 21.1805 3.43139 21.564 4.18404C21.8113 4.66937 21.9099 5.18608 21.9558 5.74817C22 6.28936 22 6.95372 22 7.75868V11.2413C22 12.0463 22 12.7106 21.9558 13.2518C21.9099 13.8139 21.8113 14.3306 21.564 14.816C21.1805 15.5686 20.5686 16.1805 19.816 16.564C19.3306 16.8113 18.8139 16.9099 18.2518 16.9558C17.8906 16.9853 17.4745 16.9951 16.9984 16.9984C16.9951 17.4745 16.9853 17.8906 16.9558 18.2518C16.9099 18.8139 16.8113 19.3306 16.564 19.816C16.1805 20.5686 15.5686 21.1805 14.816 21.564C14.3306 21.8113 13.8139 21.9099 13.2518 21.9558C12.7106 22 12.0463 22 11.2413 22H7.75868C6.95372 22 6.28936 22 5.74818 21.9558C5.18608 21.9099 4.66937 21.8113 4.18404 21.564C3.43139 21.1805 2.81947 20.5686 2.43597 19.816C2.18868 19.3306 2.09012 18.8139 2.04419 18.2518C1.99998 17.7106 1.99999 17.0463 2 16.2413V12.7587C1.99999 11.9537 1.99998 11.2894 2.04419 10.7482C2.09012 10.1861 2.18868 9.66937 2.43597 9.18404C2.81947 8.43139 3.43139 7.81947 4.18404 7.43598C4.66937 7.18868 5.18608 7.09012 5.74817 7.04419C6.10939 7.01468 6.52548 7.00487 7.00162 7.00162C7.00487 6.52548 7.01468 6.10939 7.04419 5.74817C7.09012 5.18608 7.18868 4.66937 7.43598 4.18404C7.81947 3.43139 8.43139 2.81947 9.18404 2.43597C9.66937 2.18868 10.1861 2.09012 10.7482 2.04419C11.2894 1.99998 11.9537 1.99999 12.7587 2ZM9.00176 7L11.2413 7C12.0463 6.99999 12.7106 6.99998 13.2518 7.04419C13.8139 7.09012 14.3306 7.18868 14.816 7.43598C15.5686 7.81947 16.1805 8.43139 16.564 9.18404C16.8113 9.66937 16.9099 10.1861 16.9558 10.7482C17 11.2894 17 11.9537 17 12.7587V14.9982C17.4455 14.9951 17.7954 14.9864 18.089 14.9624C18.5274 14.9266 18.7516 14.8617 18.908 14.782C19.2843 14.5903 19.5903 14.2843 19.782 13.908C19.8617 13.7516 19.9266 13.5274 19.9624 13.089C19.9992 12.6389 20 12.0566 20 11.2V7.8C20 6.94342 19.9992 6.36113 19.9624 5.91104C19.9266 5.47262 19.8617 5.24842 19.782 5.09202C19.5903 4.7157 19.2843 4.40973 18.908 4.21799C18.7516 4.1383 18.5274 4.07337 18.089 4.03755C17.6389 4.00078 17.0566 4 16.2 4H12.8C11.9434 4 11.3611 4.00078 10.911 4.03755C10.4726 4.07337 10.2484 4.1383 10.092 4.21799C9.7157 4.40973 9.40973 4.7157 9.21799 5.09202C9.1383 5.24842 9.07337 5.47262 9.03755 5.91104C9.01357 6.20463 9.00489 6.55447 9.00176 7ZM5.91104 9.03755C5.47262 9.07337 5.24842 9.1383 5.09202 9.21799C4.7157 9.40973 4.40973 9.7157 4.21799 10.092C4.1383 10.2484 4.07337 10.4726 4.03755 10.911C4.00078 11.3611 4 11.9434 4 12.8V16.2C4 17.0566 4.00078 17.6389 4.03755 18.089C4.07337 18.5274 4.1383 18.7516 4.21799 18.908C4.40973 19.2843 4.7157 19.5903 5.09202 19.782C5.24842 19.8617 5.47262 19.9266 5.91104 19.9624C6.36113 19.9992 6.94342 20 7.8 20H11.2C12.0566 20 12.6389 19.9992 13.089 19.9624C13.5274 19.9266 13.7516 19.8617 13.908 19.782C14.2843 19.5903 14.5903 19.2843 14.782 18.908C14.8617 18.7516 14.9266 18.5274 14.9624 18.089C14.9992 17.6389 15 17.0566 15 16.2V12.8C15 11.9434 14.9992 11.3611 14.9624 10.911C14.9266 10.4726 14.8617 10.2484 14.782 10.092C14.5903 9.7157 14.2843 9.40973 13.908 9.21799C13.7516 9.1383 13.5274 9.07337 13.089 9.03755C12.6389 9.00078 12.0566 9 11.2 9H7.8C6.94342 9 6.36113 9.00078 5.91104 9.03755Z"></path></svg></span></span></span></button></div><div class="code-sample-body code-sample-body-small code-sample-body-with-header"><div class="code-block hidden"><pre class="hljs syntax-highlighter dark-mode code-sample-pre"><code class="language-javascript" style="white-space: pre;"><code style="float: left; padding-right: 10px;"><span class="react-syntax-highlighter-line-number">1
+</span><span class="react-syntax-highlighter-line-number">2
+</span><span class="react-syntax-highlighter-line-number">3
+</span><span class="react-syntax-highlighter-line-number">4
+</span><span class="react-syntax-highlighter-line-number">5
+</span><span class="react-syntax-highlighter-line-number">6
+</span><span class="react-syntax-highlighter-line-number">7
+</span><span class="react-syntax-highlighter-line-number">8
+</span><span class="react-syntax-highlighter-line-number">9
+</span><span class="react-syntax-highlighter-line-number">10
+</span><span class="react-syntax-highlighter-line-number">11
+</span></code><span><span class="hljs-keyword">import</span><span> OpenAI </span><span class="hljs-keyword">from</span><span> </span><span class="hljs-string">"openai"</span><span>;
+</span></span><span><span></span><span class="hljs-keyword">const</span><span> client = </span><span class="hljs-keyword">new</span><span> OpenAI();
+</span></span><span>
+</span><span><span></span><span class="hljs-keyword">const</span><span> response = </span><span class="hljs-keyword">await</span><span> client.responses.create({
+</span></span><span><span>    </span><span class="hljs-attr">model</span><span>: </span><span class="hljs-string">"gpt-5"</span><span>,
+</span></span><span><span>    </span><span class="hljs-attr">reasoning</span><span>: { </span><span class="hljs-attr">effort</span><span>: </span><span class="hljs-string">"low"</span><span> },
+</span></span><span><span>    </span><span class="hljs-attr">instructions</span><span>: </span><span class="hljs-string">"Talk like a pirate."</span><span>,
+</span></span><span><span>    </span><span class="hljs-attr">input</span><span>: </span><span class="hljs-string">"Are semicolons optional in JavaScript?"</span><span>,
+</span></span><span>});
+</span><span>
+</span><span><span></span><span class="hljs-built_in">console</span><span>.log(response.output_text);</span></span></code></pre></div><div class="code-block"><pre class="hljs syntax-highlighter dark-mode code-sample-pre"><code class="language-python" style="white-space: pre;"><code style="float: left; padding-right: 10px;"><span class="react-syntax-highlighter-line-number">1
+</span><span class="react-syntax-highlighter-line-number">2
+</span><span class="react-syntax-highlighter-line-number">3
+</span><span class="react-syntax-highlighter-line-number">4
+</span><span class="react-syntax-highlighter-line-number">5
+</span><span class="react-syntax-highlighter-line-number">6
+</span><span class="react-syntax-highlighter-line-number">7
+</span><span class="react-syntax-highlighter-line-number">8
+</span><span class="react-syntax-highlighter-line-number">9
+</span><span class="react-syntax-highlighter-line-number">10
+</span><span class="react-syntax-highlighter-line-number">11
+</span></code><span><span class="hljs-keyword">from</span><span> openai </span><span class="hljs-keyword">import</span><span> OpenAI
+</span></span><span>client = OpenAI()
+</span><span>
+</span><span>response = client.responses.create(
+</span><span><span>    model=</span><span class="hljs-string">"gpt-5"</span><span>,
+</span></span><span><span>    reasoning={</span><span class="hljs-string">"effort"</span><span>: </span><span class="hljs-string">"low"</span><span>},
+</span></span><span><span>    instructions=</span><span class="hljs-string">"Talk like a pirate."</span><span>,
+</span></span><span><span>    </span><span class="hljs-built_in">input</span><span>=</span><span class="hljs-string">"Are semicolons optional in JavaScript?"</span><span>,
+</span></span><span>)
+</span><span>
+</span><span><span></span><span class="hljs-built_in">print</span><span>(response.output_text)</span></span></code></pre></div><div class="code-block hidden"><pre class="hljs syntax-highlighter dark-mode code-sample-pre"><code class="language-bash" style="white-space: pre;"><code style="float: left; padding-right: 10px;"><span class="react-syntax-highlighter-line-number">1
+</span><span class="react-syntax-highlighter-line-number">2
+</span><span class="react-syntax-highlighter-line-number">3
+</span><span class="react-syntax-highlighter-line-number">4
+</span><span class="react-syntax-highlighter-line-number">5
+</span><span class="react-syntax-highlighter-line-number">6
+</span><span class="react-syntax-highlighter-line-number">7
+</span><span class="react-syntax-highlighter-line-number">8
+</span><span class="react-syntax-highlighter-line-number">9
+</span></code><span><span>curl </span><span class="hljs-string">"https://api.openai.com/v1/responses"</span><span> \
+</span></span><span><span>    -H </span><span class="hljs-string">"Content-Type: application/json"</span><span> \
+</span></span><span><span>    -H </span><span class="hljs-string">"Authorization: Bearer </span><span class="hljs-string hljs-variable">$OPENAI_API_KEY</span><span class="hljs-string">"</span><span> \
+</span></span><span><span>    -d </span><span class="hljs-string">'{
+</span></span><span class="hljs-string">        "model": "gpt-5",
+</span><span class="hljs-string">        "reasoning": {"effort": "low"},
+</span><span class="hljs-string">        "instructions": "Talk like a pirate.",
+</span><span class="hljs-string">        "input": "Are semicolons optional in JavaScript?"
+</span><span class="hljs-string">    }'</span></code></pre></div></div></div>
+<p>The example above is roughly equivalent to using the following input messages in the <code>input</code> array:</p>
+<div class="code-sample dark-mode"><div class="code-sample-header"><div class="code-sample-title body-small">Generate text with messages using different roles</div><div class="exclude-from-copy"><span class="fsluc" role="button" tabindex="0" data-variant="ghost" data-size="sm" data-selected="true" aria-disabled="false" id="select-trigger-:r14:" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="radix-:r16:" data-state="closed"><span class="ktL9G">python</span><div class="FJZOe"><svg width="1em" height="1em" viewBox="0 0 10 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg" class="ygzs6"><path fill-rule="evenodd" clip-rule="evenodd" d="M4.34151 0.747423C4.71854 0.417526 5.28149 0.417526 5.65852 0.747423L9.65852 4.24742C10.0742 4.61111 10.1163 5.24287 9.75259 5.6585C9.38891 6.07414 8.75715 6.11626 8.34151 5.75258L5.00001 2.82877L1.65852 5.75258C1.24288 6.11626 0.61112 6.07414 0.247438 5.6585C-0.116244 5.24287 -0.0741267 4.61111 0.34151 4.24742L4.34151 0.747423ZM0.246065 10.3578C0.608879 9.94139 1.24055 9.89795 1.65695 10.2608L5.00001 13.1737L8.34308 10.2608C8.75948 9.89795 9.39115 9.94139 9.75396 10.3578C10.1168 10.7742 10.0733 11.4058 9.65695 11.7687L5.65695 15.2539C5.28043 15.582 4.7196 15.582 4.34308 15.2539L0.343082 11.7687C-0.0733128 11.4058 -0.116749 10.7742 0.246065 10.3578Z"></path></svg></div></span></div><button type="button" class="lkCln" data-color="primary" data-variant="ghost" data-size="sm" data-gutter-size="xs" data-icon-size="sm"><span class="NBPKZ"><span class="block relative w-[var(--button-icon-size)] h-[var(--button-icon-size)]" data-transition-position="absolute" style="--tg-will-change: transform, opacity; --tg-enter-opacity: 1; --tg-enter-transform: scale(1); --tg-enter-filter: none; --tg-enter-duration: 300ms; --tg-enter-delay: 150ms; --tg-enter-timing-function: var(--cubic-enter); --tg-exit-opacity: 0; --tg-exit-transform: scale(0.6); --tg-exit-filter: none; --tg-exit-duration: 150ms; --tg-exit-delay: 0ms; --tg-exit-timing-function: var(--cubic-exit); --tg-initial-opacity: 0; --tg-initial-transform: scale(0.6); --tg-initial-filter: none;"><span class="_4jUWi pdMy8"><svg viewBox="0 0 24 24" fill="currentColor" width="1em" height="1em"><path d="M12.7587 2H16.2413C17.0463 1.99999 17.7106 1.99998 18.2518 2.04419C18.8139 2.09012 19.3306 2.18868 19.816 2.43597C20.5686 2.81947 21.1805 3.43139 21.564 4.18404C21.8113 4.66937 21.9099 5.18608 21.9558 5.74817C22 6.28936 22 6.95372 22 7.75868V11.2413C22 12.0463 22 12.7106 21.9558 13.2518C21.9099 13.8139 21.8113 14.3306 21.564 14.816C21.1805 15.5686 20.5686 16.1805 19.816 16.564C19.3306 16.8113 18.8139 16.9099 18.2518 16.9558C17.8906 16.9853 17.4745 16.9951 16.9984 16.9984C16.9951 17.4745 16.9853 17.8906 16.9558 18.2518C16.9099 18.8139 16.8113 19.3306 16.564 19.816C16.1805 20.5686 15.5686 21.1805 14.816 21.564C14.3306 21.8113 13.8139 21.9099 13.2518 21.9558C12.7106 22 12.0463 22 11.2413 22H7.75868C6.95372 22 6.28936 22 5.74818 21.9558C5.18608 21.9099 4.66937 21.8113 4.18404 21.564C3.43139 21.1805 2.81947 20.5686 2.43597 19.816C2.18868 19.3306 2.09012 18.8139 2.04419 18.2518C1.99998 17.7106 1.99999 17.0463 2 16.2413V12.7587C1.99999 11.9537 1.99998 11.2894 2.04419 10.7482C2.09012 10.1861 2.18868 9.66937 2.43597 9.18404C2.81947 8.43139 3.43139 7.81947 4.18404 7.43598C4.66937 7.18868 5.18608 7.09012 5.74817 7.04419C6.10939 7.01468 6.52548 7.00487 7.00162 7.00162C7.00487 6.52548 7.01468 6.10939 7.04419 5.74817C7.09012 5.18608 7.18868 4.66937 7.43598 4.18404C7.81947 3.43139 8.43139 2.81947 9.18404 2.43597C9.66937 2.18868 10.1861 2.09012 10.7482 2.04419C11.2894 1.99998 11.9537 1.99999 12.7587 2ZM9.00176 7L11.2413 7C12.0463 6.99999 12.7106 6.99998 13.2518 7.04419C13.8139 7.09012 14.3306 7.18868 14.816 7.43598C15.5686 7.81947 16.1805 8.43139 16.564 9.18404C16.8113 9.66937 16.9099 10.1861 16.9558 10.7482C17 11.2894 17 11.9537 17 12.7587V14.9982C17.4455 14.9951 17.7954 14.9864 18.089 14.9624C18.5274 14.9266 18.7516 14.8617 18.908 14.782C19.2843 14.5903 19.5903 14.2843 19.782 13.908C19.8617 13.7516 19.9266 13.5274 19.9624 13.089C19.9992 12.6389 20 12.0566 20 11.2V7.8C20 6.94342 19.9992 6.36113 19.9624 5.91104C19.9266 5.47262 19.8617 5.24842 19.782 5.09202C19.5903 4.7157 19.2843 4.40973 18.908 4.21799C18.7516 4.1383 18.5274 4.07337 18.089 4.03755C17.6389 4.00078 17.0566 4 16.2 4H12.8C11.9434 4 11.3611 4.00078 10.911 4.03755C10.4726 4.07337 10.2484 4.1383 10.092 4.21799C9.7157 4.40973 9.40973 4.7157 9.21799 5.09202C9.1383 5.24842 9.07337 5.47262 9.03755 5.91104C9.01357 6.20463 9.00489 6.55447 9.00176 7ZM5.91104 9.03755C5.47262 9.07337 5.24842 9.1383 5.09202 9.21799C4.7157 9.40973 4.40973 9.7157 4.21799 10.092C4.1383 10.2484 4.07337 10.4726 4.03755 10.911C4.00078 11.3611 4 11.9434 4 12.8V16.2C4 17.0566 4.00078 17.6389 4.03755 18.089C4.07337 18.5274 4.1383 18.7516 4.21799 18.908C4.40973 19.2843 4.7157 19.5903 5.09202 19.782C5.24842 19.8617 5.47262 19.9266 5.91104 19.9624C6.36113 19.9992 6.94342 20 7.8 20H11.2C12.0566 20 12.6389 19.9992 13.089 19.9624C13.5274 19.9266 13.7516 19.8617 13.908 19.782C14.2843 19.5903 14.5903 19.2843 14.782 18.908C14.8617 18.7516 14.9266 18.5274 14.9624 18.089C14.9992 17.6389 15 17.0566 15 16.2V12.8C15 11.9434 14.9992 11.3611 14.9624 10.911C14.9266 10.4726 14.8617 10.2484 14.782 10.092C14.5903 9.7157 14.2843 9.40973 13.908 9.21799C13.7516 9.1383 13.5274 9.07337 13.089 9.03755C12.6389 9.00078 12.0566 9 11.2 9H7.8C6.94342 9 6.36113 9.00078 5.91104 9.03755Z"></path></svg></span></span></span></button></div><div class="code-sample-body code-sample-body-small code-sample-body-with-header"><div class="code-block hidden"><pre class="hljs syntax-highlighter dark-mode code-sample-pre"><code class="language-javascript" style="white-space: pre;"><code style="float: left; padding-right: 10px;"><span class="react-syntax-highlighter-line-number">1
+</span><span class="react-syntax-highlighter-line-number">2
+</span><span class="react-syntax-highlighter-line-number">3
+</span><span class="react-syntax-highlighter-line-number">4
+</span><span class="react-syntax-highlighter-line-number">5
+</span><span class="react-syntax-highlighter-line-number">6
+</span><span class="react-syntax-highlighter-line-number">7
+</span><span class="react-syntax-highlighter-line-number">8
+</span><span class="react-syntax-highlighter-line-number">9
+</span><span class="react-syntax-highlighter-line-number">10
+</span><span class="react-syntax-highlighter-line-number">11
+</span><span class="react-syntax-highlighter-line-number">12
+</span><span class="react-syntax-highlighter-line-number">13
+</span><span class="react-syntax-highlighter-line-number">14
+</span><span class="react-syntax-highlighter-line-number">15
+</span><span class="react-syntax-highlighter-line-number">16
+</span><span class="react-syntax-highlighter-line-number">17
+</span><span class="react-syntax-highlighter-line-number">18
+</span><span class="react-syntax-highlighter-line-number">19
+</span></code><span><span class="hljs-keyword">import</span><span> OpenAI </span><span class="hljs-keyword">from</span><span> </span><span class="hljs-string">"openai"</span><span>;
+</span></span><span><span></span><span class="hljs-keyword">const</span><span> client = </span><span class="hljs-keyword">new</span><span> OpenAI();
+</span></span><span>
+</span><span><span></span><span class="hljs-keyword">const</span><span> response = </span><span class="hljs-keyword">await</span><span> client.responses.create({
+</span></span><span><span>    </span><span class="hljs-attr">model</span><span>: </span><span class="hljs-string">"gpt-5"</span><span>,
+</span></span><span><span>    </span><span class="hljs-attr">reasoning</span><span>: { </span><span class="hljs-attr">effort</span><span>: </span><span class="hljs-string">"low"</span><span> },
+</span></span><span><span>    </span><span class="hljs-attr">input</span><span>: [
+</span></span><span>        {
+</span><span><span>            </span><span class="hljs-attr">role</span><span>: </span><span class="hljs-string">"developer"</span><span>,
+</span></span><span><span>            </span><span class="hljs-attr">content</span><span>: </span><span class="hljs-string">"Talk like a pirate."</span><span>
+</span></span><span>        },
+</span><span>        {
+</span><span><span>            </span><span class="hljs-attr">role</span><span>: </span><span class="hljs-string">"user"</span><span>,
+</span></span><span><span>            </span><span class="hljs-attr">content</span><span>: </span><span class="hljs-string">"Are semicolons optional in JavaScript?"</span><span>,
+</span></span><span>        },
+</span><span>    ],
+</span><span>});
+</span><span>
+</span><span><span></span><span class="hljs-built_in">console</span><span>.log(response.output_text);</span></span></code></pre></div><div class="code-block"><pre class="hljs syntax-highlighter dark-mode code-sample-pre"><code class="language-python" style="white-space: pre;"><code style="float: left; padding-right: 10px;"><span class="react-syntax-highlighter-line-number">1
+</span><span class="react-syntax-highlighter-line-number">2
+</span><span class="react-syntax-highlighter-line-number">3
+</span><span class="react-syntax-highlighter-line-number">4
+</span><span class="react-syntax-highlighter-line-number">5
+</span><span class="react-syntax-highlighter-line-number">6
+</span><span class="react-syntax-highlighter-line-number">7
+</span><span class="react-syntax-highlighter-line-number">8
+</span><span class="react-syntax-highlighter-line-number">9
+</span><span class="react-syntax-highlighter-line-number">10
+</span><span class="react-syntax-highlighter-line-number">11
+</span><span class="react-syntax-highlighter-line-number">12
+</span><span class="react-syntax-highlighter-line-number">13
+</span><span class="react-syntax-highlighter-line-number">14
+</span><span class="react-syntax-highlighter-line-number">15
+</span><span class="react-syntax-highlighter-line-number">16
+</span><span class="react-syntax-highlighter-line-number">17
+</span><span class="react-syntax-highlighter-line-number">18
+</span><span class="react-syntax-highlighter-line-number">19
+</span></code><span><span class="hljs-keyword">from</span><span> openai </span><span class="hljs-keyword">import</span><span> OpenAI
+</span></span><span>client = OpenAI()
+</span><span>
+</span><span>response = client.responses.create(
+</span><span><span>    model=</span><span class="hljs-string">"gpt-5"</span><span>,
+</span></span><span><span>    reasoning={</span><span class="hljs-string">"effort"</span><span>: </span><span class="hljs-string">"low"</span><span>},
+</span></span><span><span>    </span><span class="hljs-built_in">input</span><span>=[
+</span></span><span>        {
+</span><span><span>            </span><span class="hljs-string">"role"</span><span>: </span><span class="hljs-string">"developer"</span><span>,
+</span></span><span><span>            </span><span class="hljs-string">"content"</span><span>: </span><span class="hljs-string">"Talk like a pirate."</span><span>
+</span></span><span>        },
+</span><span>        {
+</span><span><span>            </span><span class="hljs-string">"role"</span><span>: </span><span class="hljs-string">"user"</span><span>,
+</span></span><span><span>            </span><span class="hljs-string">"content"</span><span>: </span><span class="hljs-string">"Are semicolons optional in JavaScript?"</span><span>
+</span></span><span>        }
+</span><span>    ]
+</span><span>)
+</span><span>
+</span><span><span></span><span class="hljs-built_in">print</span><span>(response.output_text)</span></span></code></pre></div><div class="code-block hidden"><pre class="hljs syntax-highlighter dark-mode code-sample-pre"><code class="language-bash" style="white-space: pre;"><code style="float: left; padding-right: 10px;"><span class="react-syntax-highlighter-line-number">1
+</span><span class="react-syntax-highlighter-line-number">2
+</span><span class="react-syntax-highlighter-line-number">3
+</span><span class="react-syntax-highlighter-line-number">4
+</span><span class="react-syntax-highlighter-line-number">5
+</span><span class="react-syntax-highlighter-line-number">6
+</span><span class="react-syntax-highlighter-line-number">7
+</span><span class="react-syntax-highlighter-line-number">8
+</span><span class="react-syntax-highlighter-line-number">9
+</span><span class="react-syntax-highlighter-line-number">10
+</span><span class="react-syntax-highlighter-line-number">11
+</span><span class="react-syntax-highlighter-line-number">12
+</span><span class="react-syntax-highlighter-line-number">13
+</span><span class="react-syntax-highlighter-line-number">14
+</span><span class="react-syntax-highlighter-line-number">15
+</span><span class="react-syntax-highlighter-line-number">16
+</span><span class="react-syntax-highlighter-line-number">17
+</span></code><span><span>curl </span><span class="hljs-string">"https://api.openai.com/v1/responses"</span><span> \
+</span></span><span><span>    -H </span><span class="hljs-string">"Content-Type: application/json"</span><span> \
+</span></span><span><span>    -H </span><span class="hljs-string">"Authorization: Bearer </span><span class="hljs-string hljs-variable">$OPENAI_API_KEY</span><span class="hljs-string">"</span><span> \
+</span></span><span><span>    -d </span><span class="hljs-string">'{
+</span></span><span class="hljs-string">        "model": "gpt-5",
+</span><span class="hljs-string">        "reasoning": {"effort": "low"},
+</span><span class="hljs-string">        "input": [
+</span><span class="hljs-string">            {
+</span><span class="hljs-string">                "role": "developer",
+</span><span class="hljs-string">                "content": "Talk like a pirate."
+</span><span class="hljs-string">            },
+</span><span class="hljs-string">            {
+</span><span class="hljs-string">                "role": "user",
+</span><span class="hljs-string">                "content": "Are semicolons optional in JavaScript?"
+</span><span class="hljs-string">            }
+</span><span class="hljs-string">        ]
+</span><span class="hljs-string">    }'</span></code></pre></div></div></div>
+<div class="Hrx2F"><div class="az2qq" data-variant="outline" data-color="primary" data-actions-placement="end"><div class="rlGOC"><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 24 24"><path d="M13 12a1 1 0 1 0-2 0v4a1 1 0 1 0 2 0v-4Zm-1-2.5A1.25 1.25 0 1 0 12 7a1.25 1.25 0 0 0 0 2.5Z"></path><path fill-rule="evenodd" d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2ZM4 12a8 8 0 1 1 16 0 8 8 0 0 1-16 0Z" clip-rule="evenodd"></path></svg></div><div class="nCOFE"><div class="QoPCW"><div class="VZYeX"><p>Note that the <code>instructions</code> parameter only applies to the current response generation request. If you are <a href="/docs/guides/conversation-state" class="kZ98Q" data-underline="">managing conversation state</a> with the <code>previous_response_id</code> parameter, the <code>instructions</code> used on previous turns will not be present in the context.</p></div></div></div></div></div>
+<p>The <a target="_blank" rel="noopener noreferrer" href="https://model-spec.openai.com/2025-02-12.html#chain_of_command" class="kZ98Q" data-underline="">OpenAI model spec</a> describes how our models give different levels of priority to messages with different roles.</p>
+<table><thead><tr><th>developer</th><th>user</th><th>assistant</th></tr></thead><tbody><tr><td><p><code>developer</code> messages are instructions provided by the application
+developer, prioritized ahead of user messages.</p></td><td><p><code>user</code> messages are instructions provided by an end user, prioritized
+behind developer messages.</p></td><td><p>Messages generated by the model have the <code>assistant</code> role.</p></td></tr></tbody></table>
+<p>A multi-turn conversation may consist of several messages of these types, along with other content types provided by both you and the model. Learn more about <a href="/docs/guides/conversation-state" class="kZ98Q" data-underline="">managing conversation state here</a>.</p>
+<p>You could think about <code>developer</code> and <code>user</code> messages like a function and its arguments in a programming language.</p>
+<ul>
+<li><code>developer</code> messages provide the system's rules and business logic, like a function definition.</li>
+<li><code>user</code> messages provide inputs and configuration to which the <code>developer</code> message instructions are applied, like arguments to a function.</li>
+</ul>
+<div class="anchor-heading-wrapper"><h2 id="reusable-prompts" class="anchor-heading" data-name="reusable-prompts">Reusable prompts<svg viewBox="0 0 24 24" fill="currentColor" width="15" height="15" class="anchor-heading-icon" role="presentation"><path d="M18.2929 5.7071C16.4743 3.88849 13.5257 3.88849 11.7071 5.7071L10.7071 6.7071C10.3166 7.09763 9.68341 7.09763 9.29289 6.7071C8.90236 6.31658 8.90236 5.68341 9.29289 5.29289L10.2929 4.29289C12.8926 1.69322 17.1074 1.69322 19.7071 4.29289C22.3068 6.89255 22.3068 11.1074 19.7071 13.7071L18.7071 14.7071C18.3166 15.0976 17.6834 15.0976 17.2929 14.7071C16.9024 14.3166 16.9024 13.6834 17.2929 13.2929L18.2929 12.2929C20.1115 10.4743 20.1115 7.52572 18.2929 5.7071ZM15.7071 8.29289C16.0976 8.68341 16.0976 9.31658 15.7071 9.7071L9.7071 15.7071C9.31658 16.0976 8.68341 16.0976 8.29289 15.7071C7.90236 15.3166 7.90236 14.6834 8.29289 14.2929L14.2929 8.29289C14.6834 7.90236 15.3166 7.90236 15.7071 8.29289ZM6.7071 9.29289C7.09763 9.68341 7.09763 10.3166 6.7071 10.7071L5.7071 11.7071C3.88849 13.5257 3.88849 16.4743 5.7071 18.2929C7.52572 20.1115 10.4743 20.1115 12.2929 18.2929L13.2929 17.2929C13.6834 16.9024 14.3166 16.9024 14.7071 17.2929C15.0976 17.6834 15.0976 18.3166 14.7071 18.7071L13.7071 19.7071C11.1074 22.3068 6.89255 22.3068 4.29289 19.7071C1.69322 17.1074 1.69322 12.8926 4.29289 10.2929L5.29289 9.29289C5.68341 8.90236 6.31658 8.90236 6.7071 9.29289Z"></path></svg></h2></div>
+<p>In the OpenAI dashboard, you can develop reusable <a href="/chat/edit" class="kZ98Q" data-underline="">prompts</a> that you can use in API requests, rather than specifying the content of prompts in code. This way, you can more easily build and evaluate your prompts, and deploy improved versions of your prompts without changing your integration code.</p>
+<p>Here's how it works:</p>
+<ol>
+<li><strong>Create a reusable prompt</strong> in the <a href="/chat/edit" class="kZ98Q" data-underline="">dashboard</a> with placeholders like <code>{{customer_name}}</code>.</li>
+<li><strong>Use the prompt</strong> in your API request with the <code>prompt</code> parameter. The prompt parameter object has three properties you can configure:
+<ul>
+<li><code>id</code> — Unique identifier of your prompt, found in the dashboard</li>
+<li><code>version</code> — A specific version of your prompt (defaults to the "current" version as specified in the dashboard)</li>
+<li><code>variables</code> — A map of values to substitute in for variables in your prompt. The substitution values can either be strings, or other Response input message types like <code>input_image</code> or <code>input_file</code>. <a href="/docs/api-reference/responses/create" class="kZ98Q" data-underline="">See the full API reference</a>.</li>
+</ul>
+</li>
+</ol>
+<div class="mt-6"><div class="exclude-from-copy mb-6"><div role="group" dir="ltr" class="F5Sy7" data-size="md" aria-label="Content switcher" tabindex="0" style="outline: none;"><div class="V5HTp" style="width: 124px; transform: translateX(2px); transition: width 300ms var(--cubic-enter), transform 300ms var(--cubic-enter);"></div><button type="button" data-state="on" role="radio" aria-checked="true" class="VewWL" tabindex="-1" data-radix-collection-item=""><span class="relative">String variables</span></button><button type="button" data-state="off" role="radio" aria-checked="false" class="VewWL" tabindex="-1" data-radix-collection-item=""><span class="relative">Variables with file input</span></button></div></div><div><div class="hidden">String variables</div><div class=""><div class="code-sample dark-mode"><div class="code-sample-header"><div class="code-sample-title body-small">Generate text with a prompt template</div><div class="exclude-from-copy"><span class="fsluc" role="button" tabindex="0" data-variant="ghost" data-size="sm" data-selected="true" aria-disabled="false" id="select-trigger-:r19:" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="radix-:r1b:" data-state="closed"><span class="ktL9G">python</span><div class="FJZOe"><svg width="1em" height="1em" viewBox="0 0 10 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg" class="ygzs6"><path fill-rule="evenodd" clip-rule="evenodd" d="M4.34151 0.747423C4.71854 0.417526 5.28149 0.417526 5.65852 0.747423L9.65852 4.24742C10.0742 4.61111 10.1163 5.24287 9.75259 5.6585C9.38891 6.07414 8.75715 6.11626 8.34151 5.75258L5.00001 2.82877L1.65852 5.75258C1.24288 6.11626 0.61112 6.07414 0.247438 5.6585C-0.116244 5.24287 -0.0741267 4.61111 0.34151 4.24742L4.34151 0.747423ZM0.246065 10.3578C0.608879 9.94139 1.24055 9.89795 1.65695 10.2608L5.00001 13.1737L8.34308 10.2608C8.75948 9.89795 9.39115 9.94139 9.75396 10.3578C10.1168 10.7742 10.0733 11.4058 9.65695 11.7687L5.65695 15.2539C5.28043 15.582 4.7196 15.582 4.34308 15.2539L0.343082 11.7687C-0.0733128 11.4058 -0.116749 10.7742 0.246065 10.3578Z"></path></svg></div></span></div><button type="button" class="lkCln" data-color="primary" data-variant="ghost" data-size="sm" data-gutter-size="xs" data-icon-size="sm"><span class="NBPKZ"><span class="block relative w-[var(--button-icon-size)] h-[var(--button-icon-size)]" data-transition-position="absolute" style="--tg-will-change: transform, opacity; --tg-enter-opacity: 1; --tg-enter-transform: scale(1); --tg-enter-filter: none; --tg-enter-duration: 300ms; --tg-enter-delay: 150ms; --tg-enter-timing-function: var(--cubic-enter); --tg-exit-opacity: 0; --tg-exit-transform: scale(0.6); --tg-exit-filter: none; --tg-exit-duration: 150ms; --tg-exit-delay: 0ms; --tg-exit-timing-function: var(--cubic-exit); --tg-initial-opacity: 0; --tg-initial-transform: scale(0.6); --tg-initial-filter: none;"><span class="_4jUWi pdMy8"><svg viewBox="0 0 24 24" fill="currentColor" width="1em" height="1em"><path d="M12.7587 2H16.2413C17.0463 1.99999 17.7106 1.99998 18.2518 2.04419C18.8139 2.09012 19.3306 2.18868 19.816 2.43597C20.5686 2.81947 21.1805 3.43139 21.564 4.18404C21.8113 4.66937 21.9099 5.18608 21.9558 5.74817C22 6.28936 22 6.95372 22 7.75868V11.2413C22 12.0463 22 12.7106 21.9558 13.2518C21.9099 13.8139 21.8113 14.3306 21.564 14.816C21.1805 15.5686 20.5686 16.1805 19.816 16.564C19.3306 16.8113 18.8139 16.9099 18.2518 16.9558C17.8906 16.9853 17.4745 16.9951 16.9984 16.9984C16.9951 17.4745 16.9853 17.8906 16.9558 18.2518C16.9099 18.8139 16.8113 19.3306 16.564 19.816C16.1805 20.5686 15.5686 21.1805 14.816 21.564C14.3306 21.8113 13.8139 21.9099 13.2518 21.9558C12.7106 22 12.0463 22 11.2413 22H7.75868C6.95372 22 6.28936 22 5.74818 21.9558C5.18608 21.9099 4.66937 21.8113 4.18404 21.564C3.43139 21.1805 2.81947 20.5686 2.43597 19.816C2.18868 19.3306 2.09012 18.8139 2.04419 18.2518C1.99998 17.7106 1.99999 17.0463 2 16.2413V12.7587C1.99999 11.9537 1.99998 11.2894 2.04419 10.7482C2.09012 10.1861 2.18868 9.66937 2.43597 9.18404C2.81947 8.43139 3.43139 7.81947 4.18404 7.43598C4.66937 7.18868 5.18608 7.09012 5.74817 7.04419C6.10939 7.01468 6.52548 7.00487 7.00162 7.00162C7.00487 6.52548 7.01468 6.10939 7.04419 5.74817C7.09012 5.18608 7.18868 4.66937 7.43598 4.18404C7.81947 3.43139 8.43139 2.81947 9.18404 2.43597C9.66937 2.18868 10.1861 2.09012 10.7482 2.04419C11.2894 1.99998 11.9537 1.99999 12.7587 2ZM9.00176 7L11.2413 7C12.0463 6.99999 12.7106 6.99998 13.2518 7.04419C13.8139 7.09012 14.3306 7.18868 14.816 7.43598C15.5686 7.81947 16.1805 8.43139 16.564 9.18404C16.8113 9.66937 16.9099 10.1861 16.9558 10.7482C17 11.2894 17 11.9537 17 12.7587V14.9982C17.4455 14.9951 17.7954 14.9864 18.089 14.9624C18.5274 14.9266 18.7516 14.8617 18.908 14.782C19.2843 14.5903 19.5903 14.2843 19.782 13.908C19.8617 13.7516 19.9266 13.5274 19.9624 13.089C19.9992 12.6389 20 12.0566 20 11.2V7.8C20 6.94342 19.9992 6.36113 19.9624 5.91104C19.9266 5.47262 19.8617 5.24842 19.782 5.09202C19.5903 4.7157 19.2843 4.40973 18.908 4.21799C18.7516 4.1383 18.5274 4.07337 18.089 4.03755C17.6389 4.00078 17.0566 4 16.2 4H12.8C11.9434 4 11.3611 4.00078 10.911 4.03755C10.4726 4.07337 10.2484 4.1383 10.092 4.21799C9.7157 4.40973 9.40973 4.7157 9.21799 5.09202C9.1383 5.24842 9.07337 5.47262 9.03755 5.91104C9.01357 6.20463 9.00489 6.55447 9.00176 7ZM5.91104 9.03755C5.47262 9.07337 5.24842 9.1383 5.09202 9.21799C4.7157 9.40973 4.40973 9.7157 4.21799 10.092C4.1383 10.2484 4.07337 10.4726 4.03755 10.911C4.00078 11.3611 4 11.9434 4 12.8V16.2C4 17.0566 4.00078 17.6389 4.03755 18.089C4.07337 18.5274 4.1383 18.7516 4.21799 18.908C4.40973 19.2843 4.7157 19.5903 5.09202 19.782C5.24842 19.8617 5.47262 19.9266 5.91104 19.9624C6.36113 19.9992 6.94342 20 7.8 20H11.2C12.0566 20 12.6389 19.9992 13.089 19.9624C13.5274 19.9266 13.7516 19.8617 13.908 19.782C14.2843 19.5903 14.5903 19.2843 14.782 18.908C14.8617 18.7516 14.9266 18.5274 14.9624 18.089C14.9992 17.6389 15 17.0566 15 16.2V12.8C15 11.9434 14.9992 11.3611 14.9624 10.911C14.9266 10.4726 14.8617 10.2484 14.782 10.092C14.5903 9.7157 14.2843 9.40973 13.908 9.21799C13.7516 9.1383 13.5274 9.07337 13.089 9.03755C12.6389 9.00078 12.0566 9 11.2 9H7.8C6.94342 9 6.36113 9.00078 5.91104 9.03755Z"></path></svg></span></span></span></button></div><div class="code-sample-body code-sample-body-small code-sample-body-with-header"><div class="code-block hidden"><pre class="hljs syntax-highlighter dark-mode code-sample-pre"><code class="language-javascript" style="white-space: pre;"><code style="float: left; padding-right: 10px;"><span class="react-syntax-highlighter-line-number">1
+</span><span class="react-syntax-highlighter-line-number">2
+</span><span class="react-syntax-highlighter-line-number">3
+</span><span class="react-syntax-highlighter-line-number">4
+</span><span class="react-syntax-highlighter-line-number">5
+</span><span class="react-syntax-highlighter-line-number">6
+</span><span class="react-syntax-highlighter-line-number">7
+</span><span class="react-syntax-highlighter-line-number">8
+</span><span class="react-syntax-highlighter-line-number">9
+</span><span class="react-syntax-highlighter-line-number">10
+</span><span class="react-syntax-highlighter-line-number">11
+</span><span class="react-syntax-highlighter-line-number">12
+</span><span class="react-syntax-highlighter-line-number">13
+</span><span class="react-syntax-highlighter-line-number">14
+</span><span class="react-syntax-highlighter-line-number">15
+</span><span class="react-syntax-highlighter-line-number">16
+</span></code><span><span class="hljs-keyword">import</span><span> OpenAI </span><span class="hljs-keyword">from</span><span> </span><span class="hljs-string">"openai"</span><span>;
+</span></span><span><span></span><span class="hljs-keyword">const</span><span> client = </span><span class="hljs-keyword">new</span><span> OpenAI();
+</span></span><span>
+</span><span><span></span><span class="hljs-keyword">const</span><span> response = </span><span class="hljs-keyword">await</span><span> client.responses.create({
+</span></span><span><span>    </span><span class="hljs-attr">model</span><span>: </span><span class="hljs-string">"gpt-5"</span><span>,
+</span></span><span><span>    </span><span class="hljs-attr">prompt</span><span>: {
+</span></span><span><span>        </span><span class="hljs-attr">id</span><span>: </span><span class="hljs-string">"pmpt_abc123"</span><span>,
+</span></span><span><span>        </span><span class="hljs-attr">version</span><span>: </span><span class="hljs-string">"2"</span><span>,
+</span></span><span><span>        </span><span class="hljs-attr">variables</span><span>: {
+</span></span><span><span>            </span><span class="hljs-attr">customer_name</span><span>: </span><span class="hljs-string">"Jane Doe"</span><span>,
+</span></span><span><span>            </span><span class="hljs-attr">product</span><span>: </span><span class="hljs-string">"40oz juice box"</span><span>
+</span></span><span>        }
+</span><span>    }
+</span><span>});
+</span><span>
+</span><span><span></span><span class="hljs-built_in">console</span><span>.log(response.output_text);</span></span></code></pre></div><div class="code-block"><pre class="hljs syntax-highlighter dark-mode code-sample-pre"><code class="language-python" style="white-space: pre;"><code style="float: left; padding-right: 10px;"><span class="react-syntax-highlighter-line-number">1
+</span><span class="react-syntax-highlighter-line-number">2
+</span><span class="react-syntax-highlighter-line-number">3
+</span><span class="react-syntax-highlighter-line-number">4
+</span><span class="react-syntax-highlighter-line-number">5
+</span><span class="react-syntax-highlighter-line-number">6
+</span><span class="react-syntax-highlighter-line-number">7
+</span><span class="react-syntax-highlighter-line-number">8
+</span><span class="react-syntax-highlighter-line-number">9
+</span><span class="react-syntax-highlighter-line-number">10
+</span><span class="react-syntax-highlighter-line-number">11
+</span><span class="react-syntax-highlighter-line-number">12
+</span><span class="react-syntax-highlighter-line-number">13
+</span><span class="react-syntax-highlighter-line-number">14
+</span><span class="react-syntax-highlighter-line-number">15
+</span><span class="react-syntax-highlighter-line-number">16
+</span></code><span><span class="hljs-keyword">from</span><span> openai </span><span class="hljs-keyword">import</span><span> OpenAI
+</span></span><span>client = OpenAI()
+</span><span>
+</span><span>response = client.responses.create(
+</span><span><span>    model=</span><span class="hljs-string">"gpt-5"</span><span>,
+</span></span><span>    prompt={
+</span><span><span>        </span><span class="hljs-string">"id"</span><span>: </span><span class="hljs-string">"pmpt_abc123"</span><span>,
+</span></span><span><span>        </span><span class="hljs-string">"version"</span><span>: </span><span class="hljs-string">"2"</span><span>,
+</span></span><span><span>        </span><span class="hljs-string">"variables"</span><span>: {
+</span></span><span><span>            </span><span class="hljs-string">"customer_name"</span><span>: </span><span class="hljs-string">"Jane Doe"</span><span>,
+</span></span><span><span>            </span><span class="hljs-string">"product"</span><span>: </span><span class="hljs-string">"40oz juice box"</span><span>
+</span></span><span>        }
+</span><span>    }
+</span><span>)
+</span><span>
+</span><span><span></span><span class="hljs-built_in">print</span><span>(response.output_text)</span></span></code></pre></div><div class="code-block hidden"><pre class="hljs syntax-highlighter dark-mode code-sample-pre"><code class="language-bash" style="white-space: pre;"><code style="float: left; padding-right: 10px;"><span class="react-syntax-highlighter-line-number">1
+</span><span class="react-syntax-highlighter-line-number">2
+</span><span class="react-syntax-highlighter-line-number">3
+</span><span class="react-syntax-highlighter-line-number">4
+</span><span class="react-syntax-highlighter-line-number">5
+</span><span class="react-syntax-highlighter-line-number">6
+</span><span class="react-syntax-highlighter-line-number">7
+</span><span class="react-syntax-highlighter-line-number">8
+</span><span class="react-syntax-highlighter-line-number">9
+</span><span class="react-syntax-highlighter-line-number">10
+</span><span class="react-syntax-highlighter-line-number">11
+</span><span class="react-syntax-highlighter-line-number">12
+</span><span class="react-syntax-highlighter-line-number">13
+</span><span class="react-syntax-highlighter-line-number">14
+</span></code><span><span>curl https://api.openai.com/v1/responses \
+</span></span><span><span>  -H </span><span class="hljs-string">"Authorization: Bearer </span><span class="hljs-string hljs-variable">$OPENAI_API_KEY</span><span class="hljs-string">"</span><span> \
+</span></span><span><span>  -H </span><span class="hljs-string">"Content-Type: application/json"</span><span> \
+</span></span><span><span>  -d </span><span class="hljs-string">'{
+</span></span><span class="hljs-string">    "model": "gpt-5",
+</span><span class="hljs-string">    "prompt": {
+</span><span class="hljs-string">      "id": "pmpt_abc123",
+</span><span class="hljs-string">      "version": "2",
+</span><span class="hljs-string">      "variables": {
+</span><span class="hljs-string">        "customer_name": "Jane Doe",
+</span><span class="hljs-string">        "product": "40oz juice box"
+</span><span class="hljs-string">      }
+</span><span class="hljs-string">    }
+</span><span class="hljs-string">  }'</span></code></pre></div></div></div></div></div><div><div class="hidden">Variables with file input</div><div class="hidden"><div class="code-sample dark-mode"><div class="code-sample-header"><div class="code-sample-title body-small">Prompt template with file input variable</div><div class="exclude-from-copy"><span class="fsluc" role="button" tabindex="0" data-variant="ghost" data-size="sm" data-selected="true" aria-disabled="false" id="select-trigger-:r1c:" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="radix-:r1e:" data-state="closed"><span class="ktL9G">python</span><div class="FJZOe"><svg width="1em" height="1em" viewBox="0 0 10 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg" class="ygzs6"><path fill-rule="evenodd" clip-rule="evenodd" d="M4.34151 0.747423C4.71854 0.417526 5.28149 0.417526 5.65852 0.747423L9.65852 4.24742C10.0742 4.61111 10.1163 5.24287 9.75259 5.6585C9.38891 6.07414 8.75715 6.11626 8.34151 5.75258L5.00001 2.82877L1.65852 5.75258C1.24288 6.11626 0.61112 6.07414 0.247438 5.6585C-0.116244 5.24287 -0.0741267 4.61111 0.34151 4.24742L4.34151 0.747423ZM0.246065 10.3578C0.608879 9.94139 1.24055 9.89795 1.65695 10.2608L5.00001 13.1737L8.34308 10.2608C8.75948 9.89795 9.39115 9.94139 9.75396 10.3578C10.1168 10.7742 10.0733 11.4058 9.65695 11.7687L5.65695 15.2539C5.28043 15.582 4.7196 15.582 4.34308 15.2539L0.343082 11.7687C-0.0733128 11.4058 -0.116749 10.7742 0.246065 10.3578Z"></path></svg></div></span></div><button type="button" class="lkCln" data-color="primary" data-variant="ghost" data-size="sm" data-gutter-size="xs" data-icon-size="sm"><span class="NBPKZ"><span class="block relative w-[var(--button-icon-size)] h-[var(--button-icon-size)]" data-transition-position="absolute" style="--tg-will-change: transform, opacity; --tg-enter-opacity: 1; --tg-enter-transform: scale(1); --tg-enter-filter: none; --tg-enter-duration: 300ms; --tg-enter-delay: 150ms; --tg-enter-timing-function: var(--cubic-enter); --tg-exit-opacity: 0; --tg-exit-transform: scale(0.6); --tg-exit-filter: none; --tg-exit-duration: 150ms; --tg-exit-delay: 0ms; --tg-exit-timing-function: var(--cubic-exit); --tg-initial-opacity: 0; --tg-initial-transform: scale(0.6); --tg-initial-filter: none;"><span class="_4jUWi pdMy8"><svg viewBox="0 0 24 24" fill="currentColor" width="1em" height="1em"><path d="M12.7587 2H16.2413C17.0463 1.99999 17.7106 1.99998 18.2518 2.04419C18.8139 2.09012 19.3306 2.18868 19.816 2.43597C20.5686 2.81947 21.1805 3.43139 21.564 4.18404C21.8113 4.66937 21.9099 5.18608 21.9558 5.74817C22 6.28936 22 6.95372 22 7.75868V11.2413C22 12.0463 22 12.7106 21.9558 13.2518C21.9099 13.8139 21.8113 14.3306 21.564 14.816C21.1805 15.5686 20.5686 16.1805 19.816 16.564C19.3306 16.8113 18.8139 16.9099 18.2518 16.9558C17.8906 16.9853 17.4745 16.9951 16.9984 16.9984C16.9951 17.4745 16.9853 17.8906 16.9558 18.2518C16.9099 18.8139 16.8113 19.3306 16.564 19.816C16.1805 20.5686 15.5686 21.1805 14.816 21.564C14.3306 21.8113 13.8139 21.9099 13.2518 21.9558C12.7106 22 12.0463 22 11.2413 22H7.75868C6.95372 22 6.28936 22 5.74818 21.9558C5.18608 21.9099 4.66937 21.8113 4.18404 21.564C3.43139 21.1805 2.81947 20.5686 2.43597 19.816C2.18868 19.3306 2.09012 18.8139 2.04419 18.2518C1.99998 17.7106 1.99999 17.0463 2 16.2413V12.7587C1.99999 11.9537 1.99998 11.2894 2.04419 10.7482C2.09012 10.1861 2.18868 9.66937 2.43597 9.18404C2.81947 8.43139 3.43139 7.81947 4.18404 7.43598C4.66937 7.18868 5.18608 7.09012 5.74817 7.04419C6.10939 7.01468 6.52548 7.00487 7.00162 7.00162C7.00487 6.52548 7.01468 6.10939 7.04419 5.74817C7.09012 5.18608 7.18868 4.66937 7.43598 4.18404C7.81947 3.43139 8.43139 2.81947 9.18404 2.43597C9.66937 2.18868 10.1861 2.09012 10.7482 2.04419C11.2894 1.99998 11.9537 1.99999 12.7587 2ZM9.00176 7L11.2413 7C12.0463 6.99999 12.7106 6.99998 13.2518 7.04419C13.8139 7.09012 14.3306 7.18868 14.816 7.43598C15.5686 7.81947 16.1805 8.43139 16.564 9.18404C16.8113 9.66937 16.9099 10.1861 16.9558 10.7482C17 11.2894 17 11.9537 17 12.7587V14.9982C17.4455 14.9951 17.7954 14.9864 18.089 14.9624C18.5274 14.9266 18.7516 14.8617 18.908 14.782C19.2843 14.5903 19.5903 14.2843 19.782 13.908C19.8617 13.7516 19.9266 13.5274 19.9624 13.089C19.9992 12.6389 20 12.0566 20 11.2V7.8C20 6.94342 19.9992 6.36113 19.9624 5.91104C19.9266 5.47262 19.8617 5.24842 19.782 5.09202C19.5903 4.7157 19.2843 4.40973 18.908 4.21799C18.7516 4.1383 18.5274 4.07337 18.089 4.03755C17.6389 4.00078 17.0566 4 16.2 4H12.8C11.9434 4 11.3611 4.00078 10.911 4.03755C10.4726 4.07337 10.2484 4.1383 10.092 4.21799C9.7157 4.40973 9.40973 4.7157 9.21799 5.09202C9.1383 5.24842 9.07337 5.47262 9.03755 5.91104C9.01357 6.20463 9.00489 6.55447 9.00176 7ZM5.91104 9.03755C5.47262 9.07337 5.24842 9.1383 5.09202 9.21799C4.7157 9.40973 4.40973 9.7157 4.21799 10.092C4.1383 10.2484 4.07337 10.4726 4.03755 10.911C4.00078 11.3611 4 11.9434 4 12.8V16.2C4 17.0566 4.00078 17.6389 4.03755 18.089C4.07337 18.5274 4.1383 18.7516 4.21799 18.908C4.40973 19.2843 4.7157 19.5903 5.09202 19.782C5.24842 19.8617 5.47262 19.9266 5.91104 19.9624C6.36113 19.9992 6.94342 20 7.8 20H11.2C12.0566 20 12.6389 19.9992 13.089 19.9624C13.5274 19.9266 13.7516 19.8617 13.908 19.782C14.2843 19.5903 14.5903 19.2843 14.782 18.908C14.8617 18.7516 14.9266 18.5274 14.9624 18.089C14.9992 17.6389 15 17.0566 15 16.2V12.8C15 11.9434 14.9992 11.3611 14.9624 10.911C14.9266 10.4726 14.8617 10.2484 14.782 10.092C14.5903 9.7157 14.2843 9.40973 13.908 9.21799C13.7516 9.1383 13.5274 9.07337 13.089 9.03755C12.6389 9.00078 12.0566 9 11.2 9H7.8C6.94342 9 6.36113 9.00078 5.91104 9.03755Z"></path></svg></span></span></span></button></div><div class="code-sample-body code-sample-body-small code-sample-body-with-header"><div class="code-block hidden"><pre class="hljs syntax-highlighter dark-mode code-sample-pre"><code class="language-javascript" style="white-space: pre;"><code style="float: left; padding-right: 10px;"><span class="react-syntax-highlighter-line-number">1
+</span><span class="react-syntax-highlighter-line-number">2
+</span><span class="react-syntax-highlighter-line-number">3
+</span><span class="react-syntax-highlighter-line-number">4
+</span><span class="react-syntax-highlighter-line-number">5
+</span><span class="react-syntax-highlighter-line-number">6
+</span><span class="react-syntax-highlighter-line-number">7
+</span><span class="react-syntax-highlighter-line-number">8
+</span><span class="react-syntax-highlighter-line-number">9
+</span><span class="react-syntax-highlighter-line-number">10
+</span><span class="react-syntax-highlighter-line-number">11
+</span><span class="react-syntax-highlighter-line-number">12
+</span><span class="react-syntax-highlighter-line-number">13
+</span><span class="react-syntax-highlighter-line-number">14
+</span><span class="react-syntax-highlighter-line-number">15
+</span><span class="react-syntax-highlighter-line-number">16
+</span><span class="react-syntax-highlighter-line-number">17
+</span><span class="react-syntax-highlighter-line-number">18
+</span><span class="react-syntax-highlighter-line-number">19
+</span><span class="react-syntax-highlighter-line-number">20
+</span><span class="react-syntax-highlighter-line-number">21
+</span><span class="react-syntax-highlighter-line-number">22
+</span><span class="react-syntax-highlighter-line-number">23
+</span><span class="react-syntax-highlighter-line-number">24
+</span><span class="react-syntax-highlighter-line-number">25
+</span></code><span><span class="hljs-keyword">import</span><span> fs </span><span class="hljs-keyword">from</span><span> </span><span class="hljs-string">"fs"</span><span>;
+</span></span><span><span></span><span class="hljs-keyword">import</span><span> OpenAI </span><span class="hljs-keyword">from</span><span> </span><span class="hljs-string">"openai"</span><span>;
+</span></span><span><span></span><span class="hljs-keyword">const</span><span> client = </span><span class="hljs-keyword">new</span><span> OpenAI();
+</span></span><span>
+</span><span><span></span><span class="hljs-comment">// Upload a PDF we will reference in the prompt variables</span><span>
+</span></span><span><span></span><span class="hljs-keyword">const</span><span> file = </span><span class="hljs-keyword">await</span><span> client.files.create({
+</span></span><span><span>    </span><span class="hljs-attr">file</span><span>: fs.createReadStream(</span><span class="hljs-string">"draconomicon.pdf"</span><span>),
+</span></span><span><span>    </span><span class="hljs-attr">purpose</span><span>: </span><span class="hljs-string">"user_data"</span><span>,
+</span></span><span>});
+</span><span>
+</span><span><span></span><span class="hljs-keyword">const</span><span> response = </span><span class="hljs-keyword">await</span><span> client.responses.create({
+</span></span><span><span>    </span><span class="hljs-attr">model</span><span>: </span><span class="hljs-string">"gpt-5"</span><span>,
+</span></span><span><span>    </span><span class="hljs-attr">prompt</span><span>: {
+</span></span><span><span>        </span><span class="hljs-attr">id</span><span>: </span><span class="hljs-string">"pmpt_abc123"</span><span>,
+</span></span><span><span>        </span><span class="hljs-attr">variables</span><span>: {
+</span></span><span><span>            </span><span class="hljs-attr">topic</span><span>: </span><span class="hljs-string">"Dragons"</span><span>,
+</span></span><span><span>            </span><span class="hljs-attr">reference_pdf</span><span>: {
+</span></span><span><span>                </span><span class="hljs-attr">type</span><span>: </span><span class="hljs-string">"input_file"</span><span>,
+</span></span><span><span>                </span><span class="hljs-attr">file_id</span><span>: file.id,
+</span></span><span>            },
+</span><span>        },
+</span><span>    },
+</span><span>});
+</span><span>
+</span><span><span></span><span class="hljs-built_in">console</span><span>.log(response.output_text);</span></span></code></pre></div><div class="code-block"><pre class="hljs syntax-highlighter dark-mode code-sample-pre"><code class="language-python" style="white-space: pre;"><code style="float: left; padding-right: 10px;"><span class="react-syntax-highlighter-line-number">1
+</span><span class="react-syntax-highlighter-line-number">2
+</span><span class="react-syntax-highlighter-line-number">3
+</span><span class="react-syntax-highlighter-line-number">4
+</span><span class="react-syntax-highlighter-line-number">5
+</span><span class="react-syntax-highlighter-line-number">6
+</span><span class="react-syntax-highlighter-line-number">7
+</span><span class="react-syntax-highlighter-line-number">8
+</span><span class="react-syntax-highlighter-line-number">9
+</span><span class="react-syntax-highlighter-line-number">10
+</span><span class="react-syntax-highlighter-line-number">11
+</span><span class="react-syntax-highlighter-line-number">12
+</span><span class="react-syntax-highlighter-line-number">13
+</span><span class="react-syntax-highlighter-line-number">14
+</span><span class="react-syntax-highlighter-line-number">15
+</span><span class="react-syntax-highlighter-line-number">16
+</span><span class="react-syntax-highlighter-line-number">17
+</span><span class="react-syntax-highlighter-line-number">18
+</span><span class="react-syntax-highlighter-line-number">19
+</span><span class="react-syntax-highlighter-line-number">20
+</span><span class="react-syntax-highlighter-line-number">21
+</span><span class="react-syntax-highlighter-line-number">22
+</span><span class="react-syntax-highlighter-line-number">23
+</span><span class="react-syntax-highlighter-line-number">24
+</span><span class="react-syntax-highlighter-line-number">25
+</span></code><span><span class="hljs-keyword">import</span><span> openai, pathlib
+</span></span><span>
+</span><span>client = openai.OpenAI()
+</span><span>
+</span><span><span></span><span class="hljs-comment"># Upload a PDF we will reference in the variables</span><span>
+</span></span><span>file = client.files.create(
+</span><span><span>    file=</span><span class="hljs-built_in">open</span><span>(</span><span class="hljs-string">"draconomicon.pdf"</span><span>, </span><span class="hljs-string">"rb"</span><span>),
+</span></span><span><span>    purpose=</span><span class="hljs-string">"user_data"</span><span>,
+</span></span><span>)
+</span><span>
+</span><span>response = client.responses.create(
+</span><span><span>    model=</span><span class="hljs-string">"gpt-5"</span><span>,
+</span></span><span>    prompt={
+</span><span><span>        </span><span class="hljs-string">"id"</span><span>: </span><span class="hljs-string">"pmpt_abc123"</span><span>,
+</span></span><span><span>        </span><span class="hljs-string">"variables"</span><span>: {
+</span></span><span><span>            </span><span class="hljs-string">"topic"</span><span>: </span><span class="hljs-string">"Dragons"</span><span>,
+</span></span><span><span>            </span><span class="hljs-string">"reference_pdf"</span><span>: {
+</span></span><span><span>                </span><span class="hljs-string">"type"</span><span>: </span><span class="hljs-string">"input_file"</span><span>,
+</span></span><span><span>                </span><span class="hljs-string">"file_id"</span><span>: file.</span><span class="hljs-built_in">id</span><span>,
+</span></span><span>            },
+</span><span>        },
+</span><span>    },
+</span><span>)
+</span><span>
+</span><span><span></span><span class="hljs-built_in">print</span><span>(response.output_text)</span></span></code></pre></div><div class="code-block hidden"><pre class="hljs syntax-highlighter dark-mode code-sample-pre"><code class="language-bash" style="white-space: pre;"><code style="float: left; padding-right: 10px;"><span class="react-syntax-highlighter-line-number">1
+</span><span class="react-syntax-highlighter-line-number">2
+</span><span class="react-syntax-highlighter-line-number">3
+</span><span class="react-syntax-highlighter-line-number">4
+</span><span class="react-syntax-highlighter-line-number">5
+</span><span class="react-syntax-highlighter-line-number">6
+</span><span class="react-syntax-highlighter-line-number">7
+</span><span class="react-syntax-highlighter-line-number">8
+</span><span class="react-syntax-highlighter-line-number">9
+</span><span class="react-syntax-highlighter-line-number">10
+</span><span class="react-syntax-highlighter-line-number">11
+</span><span class="react-syntax-highlighter-line-number">12
+</span><span class="react-syntax-highlighter-line-number">13
+</span><span class="react-syntax-highlighter-line-number">14
+</span></code><span><span class="hljs-comment"># Assume you have already uploaded the PDF and obtained FILE_ID</span><span>
+</span></span><span><span>curl https://api.openai.com/v1/responses   -H </span><span class="hljs-string">"Authorization: Bearer </span><span class="hljs-string hljs-variable">$OPENAI_API_KEY</span><span class="hljs-string">"</span><span>   -H </span><span class="hljs-string">"Content-Type: application/json"</span><span>   -d </span><span class="hljs-string">'{
+</span></span><span class="hljs-string">    "model": "gpt-5",
+</span><span class="hljs-string">    "prompt": {
+</span><span class="hljs-string">      "id": "pmpt_abc123",
+</span><span class="hljs-string">      "variables": {
+</span><span class="hljs-string">        "topic": "Dragons",
+</span><span class="hljs-string">        "reference_pdf": {
+</span><span class="hljs-string">          "type": "input_file",
+</span><span class="hljs-string">          "file_id": "file-abc123"
+</span><span class="hljs-string">        }
+</span><span class="hljs-string">      }
+</span><span class="hljs-string">    }
+</span><span class="hljs-string">  }'</span></code></pre></div></div></div></div></div></div>
+<div class="anchor-heading-wrapper"><h2 id="next-steps" class="anchor-heading" data-name="next-steps">Next steps<svg viewBox="0 0 24 24" fill="currentColor" width="15" height="15" class="anchor-heading-icon" role="presentation"><path d="M18.2929 5.7071C16.4743 3.88849 13.5257 3.88849 11.7071 5.7071L10.7071 6.7071C10.3166 7.09763 9.68341 7.09763 9.29289 6.7071C8.90236 6.31658 8.90236 5.68341 9.29289 5.29289L10.2929 4.29289C12.8926 1.69322 17.1074 1.69322 19.7071 4.29289C22.3068 6.89255 22.3068 11.1074 19.7071 13.7071L18.7071 14.7071C18.3166 15.0976 17.6834 15.0976 17.2929 14.7071C16.9024 14.3166 16.9024 13.6834 17.2929 13.2929L18.2929 12.2929C20.1115 10.4743 20.1115 7.52572 18.2929 5.7071ZM15.7071 8.29289C16.0976 8.68341 16.0976 9.31658 15.7071 9.7071L9.7071 15.7071C9.31658 16.0976 8.68341 16.0976 8.29289 15.7071C7.90236 15.3166 7.90236 14.6834 8.29289 14.2929L14.2929 8.29289C14.6834 7.90236 15.3166 7.90236 15.7071 8.29289ZM6.7071 9.29289C7.09763 9.68341 7.09763 10.3166 6.7071 10.7071L5.7071 11.7071C3.88849 13.5257 3.88849 16.4743 5.7071 18.2929C7.52572 20.1115 10.4743 20.1115 12.2929 18.2929L13.2929 17.2929C13.6834 16.9024 14.3166 16.9024 14.7071 17.2929C15.0976 17.6834 15.0976 18.3166 14.7071 18.7071L13.7071 19.7071C11.1074 22.3068 6.89255 22.3068 4.29289 19.7071C1.69322 17.1074 1.69322 12.8926 4.29289 10.2929L5.29289 9.29289C5.68341 8.90236 6.31658 8.90236 6.7071 9.29289Z"></path></svg></h2></div>
+<p>Now that you known the basics of text inputs and outputs, you might want to check out one of these resources next.</p>
+<a href="/chat/edit"><div class="icon-item mt-2"><div class="icon-item-icon"><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 24 24"><path fill-rule="evenodd" d="M15.24 3.486v.002l-1.056 4.517h5.823c1.726 0 2.596 2.021 1.518 3.3l-.002.003-9.308 10.965-.002.002c-1.397 1.656-3.922.223-3.454-1.76v-.003l1.057-4.517H3.993c-1.726 0-2.596-2.021-1.519-3.3l.003-.003 9.308-10.965.002-.002c1.397-1.656 3.922-.223 3.454 1.76Zm-1.95-.444-1.34 5.735a.998.998 0 0 0 .973 1.226h7.074a.04.04 0 0 1 .003.01.045.045 0 0 1-.004.005l-9.287 10.94 1.341-5.735a.998.998 0 0 0-.973-1.226H4.003a.041.041 0 0 1-.003-.01l.004-.005 9.287-10.94Z" clip-rule="evenodd"></path></svg></div><div class="icon-item-right"><div class="icon-item-title"><div class="icon-item-title body-large">Build a prompt in the Playground</div><div class="pointer"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24"><path fill-rule="evenodd" d="M9.293 7.293a1 1 0 0 1 1.414 0l4 4a1 1 0 0 1 0 1.414l-4 4a1 1 0 0 1-1.414-1.414L12.586 12 9.293 8.707a1 1 0 0 1 0-1.414Z" clip-rule="evenodd"></path></svg></div></div><div class="icon-item-desc body-small"><p>Use the Playground to develop and iterate on prompts.</p></div></div></div></a>
+<a href="/docs/guides/structured-outputs"><div class="icon-item mt-2"><div class="icon-item-icon"><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 24 24"><path fill-rule="evenodd" d="M12.5 3.444a1 1 0 0 0-1 0l-6.253 3.61 6.768 3.807 6.955-3.682-6.47-3.735Zm7.16 5.632L13 12.602v7.666l6.16-3.556a1 1 0 0 0 .5-.867V9.076ZM11 20.268v-7.683L4.34 8.839v7.006a1 1 0 0 0 .5.867L11 20.268Zm-.5-18.557a3 3 0 0 1 3 0l6.66 3.846a3 3 0 0 1 1.5 2.598v7.69a3 3 0 0 1-1.5 2.598L13.5 22.29a3 3 0 0 1-3 0l-6.66-3.846a3 3 0 0 1-1.5-2.598v-7.69a3 3 0 0 1 1.5-2.598L10.5 1.71Z" clip-rule="evenodd"></path></svg></div><div class="icon-item-right"><div class="icon-item-title"><div class="icon-item-title body-large">Generate JSON data with Structured Outputs</div><div class="pointer"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24"><path fill-rule="evenodd" d="M9.293 7.293a1 1 0 0 1 1.414 0l4 4a1 1 0 0 1 0 1.414l-4 4a1 1 0 0 1-1.414-1.414L12.586 12 9.293 8.707a1 1 0 0 1 0-1.414Z" clip-rule="evenodd"></path></svg></div></div><div class="icon-item-desc body-small"><p>Ensure JSON data emitted from a model conforms to a JSON schema.</p></div></div></div></a>
+<a href="/docs/api-reference/responses"><div class="icon-item mt-2"><div class="icon-item-icon"><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 24 24"><path fill-rule="evenodd" d="M14.447 7.106a1 1 0 0 1 .447 1.341l-4 8a1 1 0 1 1-1.788-.894l4-8a1 1 0 0 1 1.341-.447ZM6.6 7.2a1 1 0 0 1 .2 1.4L4.25 12l2.55 3.4a1 1 0 0 1-1.6 1.2l-3-4a1 1 0 0 1 0-1.2l3-4a1 1 0 0 1 1.4-.2Zm10.8 0a1 1 0 0 1 1.4.2l3 4a1 1 0 0 1 0 1.2l-3 4a1 1 0 0 1-1.6-1.2l2.55-3.4-2.55-3.4a1 1 0 0 1 .2-1.4Z" clip-rule="evenodd"></path></svg></div><div class="icon-item-right"><div class="icon-item-title"><div class="icon-item-title body-large">Full API reference</div><div class="pointer"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24"><path fill-rule="evenodd" d="M9.293 7.293a1 1 0 0 1 1.414 0l4 4a1 1 0 0 1 0 1.414l-4 4a1 1 0 0 1-1.414-1.414L12.586 12 9.293 8.707a1 1 0 0 1 0-1.414Z" clip-rule="evenodd"></path></svg></div></div><div class="icon-item-desc body-small"><p>Check out all the options for text generation in the API reference.</p></div></div></div></a></div></div><div class="S7rz6"><nav class="LQneS"><div class="jXvCY"><div class="-nkvM"><div class="LaMoi" style="--active-track-top: 119px; --active-track-height: 24px;"></div></div><ul class="EKpi7"><li class="QegKL"><a class="kbmsS" data-active="false" href="#page-top"><span class="OjNLJ" aria-hidden="true">Text input and output</span>Text input and output</a></li><li class="QegKL"><a class="kbmsS" data-active="false" href="#prompt-engineering"><span class="OjNLJ" aria-hidden="true">Prompt engineering</span>Prompt engineering</a></li><li class="QegKL"><a class="kbmsS" data-active="false" href="#message-roles-and-instruction-following"><span class="OjNLJ" aria-hidden="true">Message roles and instruction following</span>Message roles and instruction following</a></li><li class="QegKL"><a class="kbmsS" data-active="true" href="#reusable-prompts"><span class="OjNLJ" aria-hidden="true">Reusable prompts</span>Reusable prompts</a></li><li class="QegKL"><a class="kbmsS" data-active="false" href="#next-steps"><span class="OjNLJ" aria-hidden="true">Next steps</span>Next steps</a></li></ul></div></nav></div></div></div></div>

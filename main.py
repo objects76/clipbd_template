@@ -21,11 +21,12 @@ from config import Config
 import q_and_a
 from dunstify import notify_send, notify_cont, notify_close
 import webpage
+from window_utils import copy_html_text, copy_youtube_url
 import youtube
 from enum import Enum
 from exceptions import TemplateNotFoundError, TemplateFormatError, ContentNotFoundError
 import locale
-from llm import run_web_llm
+from llm import openai_inference, run_web_llm
 
 VERSION = "1.0.0"
 DEBUG = True
@@ -98,7 +99,7 @@ def get_command(items: list[ClipboardData], auto: bool = False, data_type: str =
         text_data = str(item.data) if isinstance(item.data, str) else ""
         if len(text_data) < 300:
             if not is_url(text_data):
-                raise Warning("No valid text:"+text_data)
+                raise Warning("No valid text:\n"+text_data[:100])
             url_text = text_data
         else:
             long_text = text_data
@@ -159,10 +160,22 @@ def get_command(items: list[ClipboardData], auto: bool = False, data_type: str =
     else:
         return command, None
 
+def is_valid_clipboard_data(items:list[ClipboardData]) -> bool:
+    for item in items:
+        if item.type != 'text': continue
+        text_data = str(item.data) if isinstance(item.data, str) else ""
+        if len(text_data) < 300:
+            if not is_url(text_data):
+                return False
+    return len(items) > 0
+
 def main(args) -> int:
     command, subtype = None, None
     try:
         Config(args.template)
+        #
+        # context
+        #
         items:list[ClipboardData] = []
 
         cb_cached = ClipboardCache.get_data()
@@ -173,11 +186,13 @@ def main(args) -> int:
         clipboard_data:ClipboardData|None = get_clipboard_data()
         if clipboard_data is not None:
             items.append(clipboard_data)
-        if len(items) == 0:
-            raise Warning("No clipboard data")
-
         if DEBUG: print(f"items: len: {len(items)}, {[item.type for item in items]}")
-
+        if not is_valid_clipboard_data(items):
+            # get content from active window
+            if copy_youtube_url() or copy_html_text():
+                items = [get_clipboard_data()] # type:ignore
+            else:
+                raise Warning("No valid content found in clipboard data")
 
         cmdinfo = get_command(items, args.auto, items[0].type)
         if cmdinfo is None:
@@ -237,24 +252,30 @@ def main(args) -> int:
             print(f'Template length: {len(template)} characters')
             print(f'Formatted output length: {len(formatted)} characters')
 
+        #
+        # ai processing
+        #
         if formatted:
-            if args.auto:
-                run_web_llm("Default", "https://www.chatgpt.com", wait_title="chatgpt")
+            if Config.use_api:
+                notify_cont(command.name, "ai processing...")
+                result = openai_inference(formatted, )
+                Path("asset/result.md").write_text(result)
+                subprocess.run(["mdviewer.app", "asset/result.md"], check=False)
+            else:
+                # if args.auto:
+                run_web_llm(Config.browser_profile, Config.webai, wait_title=Config.webai_title)
 
-            if command == Commands.IMAGE_ANALYSIS:
-                paste() # paste image to chatgpt
-                time.sleep(1.5)
+                if command == Commands.IMAGE_ANALYSIS:
+                    paste() # paste image to chatgpt
+                    time.sleep(1.5)
 
-            # for line in formatted.split('\n'):
-            #     subprocess.run(['xdotool', 'type', '--delay', '5', line], check=False)
-            #     subprocess.run(['xdotool', 'key', '--clearmodifiers', 'shift+Return'], check=False)
-            set_clipboard_data( ClipboardData(type="text", data=formatted) ) # set formatted text to clipboard
-            paste(return_key=args.auto) # paste formatted text to chatgpt
+                set_clipboard_data( ClipboardData(type="text", data=formatted) ) # set formatted text to clipboard
+                paste(return_key=args.auto) # paste formatted text to chatgpt
 
-            if Config.clear_generated:
-                clear_clipboard()
-            # elif command == Commands.IMAGE_ANALYSIS:
-            #     set_clipboard_data(clipboard_data) # restore original image
+                if Config.clear_generated:
+                    clear_clipboard()
+                # elif command == Commands.IMAGE_ANALYSIS:
+                #     set_clipboard_data(clipboard_data) # restore original image
 
         notify_close()
         ClipboardCache.clear()
@@ -276,11 +297,9 @@ def main(args) -> int:
         return 1
 
 def test():
-    try:
-        raise ContentNotFoundError("test")
-    except Exception as e:
-        print(type(e).__name__)
-        print(str(e))
+    Config("asset/template2.yaml")
+
+    run_web_llm(Config.browser_profile, Config.webai, wait_title=Config.webai_title)
     exit(0)
 
 

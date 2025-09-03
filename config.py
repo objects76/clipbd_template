@@ -10,6 +10,11 @@ from exceptions import ConfigurationError
 class Config:
     clipbd_transcript: bool = False
     clear_generated: bool = False
+    webai: str = "https://www.chatgpt.com"
+    browser_profile: str = "Default"
+    webai_title: str = "chatgpt"
+    markdown_editor: str = "mdviewer.app"
+    use_api: bool = False
 
     def __init__(self, config_path: str):
         template_yaml = Path(config_path).expanduser()
@@ -21,10 +26,23 @@ class Config:
         Config.clipbd_transcript = config.get('clipbd_transcript', Config.clipbd_transcript)
         Config.clear_generated = config.get('clear_generated', Config.clear_generated)
 
+        Config.webai = config.get('webai', Config.webai)
+        Config.browser_profile = config.get('browser_profile', Config.browser_profile)
+        Config.webai_title = config.get('webai_title', Config.webai_title)
+
+        Config.markdown_editor = config.get('markdown_editor', Config.markdown_editor)
+        Config.use_api = config.get('use_api', Config.use_api)
+
 
 
 if __name__ == '__main__':
-    # config = Config('~/.config/rofi/template.yaml')
+    config = Config('asset/template2.yaml')
+    print(f"clipbd_transcript: {Config.clipbd_transcript}")
+    print(f"clear_generated: {Config.clear_generated}")
 
-    print(Config.clipbd_transcript)
-    print(Config.clear_generated)
+    print(f"markdown_editor: {Config.markdown_editor}")
+    print(f"use_api: {Config.use_api}")
+
+    print(f"webai: {Config.webai}")
+    print(f"browser_profile: {Config.browser_profile}")
+    print(f"webai_title: {Config.webai_title}")
