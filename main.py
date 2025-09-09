@@ -109,29 +109,7 @@ def get_command(items: list[ClipboardData], auto: bool = False, data_type: str =
     if auto:
         command = Commands.SUMMARY if data_type == 'text' else Commands.IMAGE_ANALYSIS
     else:
-        cmd = [
-            'rofi', '-dmenu', '-no-custom',
-            '-theme-str', 'window {width: 10%;} entry { enabled: false; }',
-            '-p', f'Choose {VERSION}:',
-            '-dpi', '192',
-            '-lines', str(len(Commands)),
-            '-no-fixed-num-lines',
-        ]
-
-        if data_type == 'image':
-            commands = [cmd.value for cmd in Commands if cmd == Commands.IMAGE_ANALYSIS]
-        else:
-            commands = [cmd.value for cmd in Commands if cmd != Commands.IMAGE_ANALYSIS]
-
-        rofi = subprocess.run(
-            cmd,
-            input='\n'.join(commands),
-            text=True,
-            capture_output=True,
-            timeout=30  # Prevent hanging
-        )
-
-        choice = (rofi.stdout or '').strip()
+        choice = get_dmenu(commands, 0)
 
         if not choice:
             return None

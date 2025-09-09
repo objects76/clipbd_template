@@ -230,7 +230,7 @@ TEMPLATES:
     </content_text>
 
 
-  translate(youtube transcript) to korean: |-
+  transcript to korean: |-
     {{
       "task": "translate youtube transcript into Korean",
       "instructions": [

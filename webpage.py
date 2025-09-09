@@ -7,7 +7,19 @@ from text_info2 import html_to_md
 
 
 
-def get_html(url: str) -> str:
+def from_html_text(html_text: str):
+    result = { "source_url": "Not provided" }
+
+    # medium filtering
+    soup = BeautifulSoup(html_text, "html.parser")
+    node = soup.find('article', attrs={'class': 'meteredContent'})
+    node = node or soup.find('section')
+    node = node or soup
+    return str(node)
+
+
+
+def get_html_from_url(url: str) -> str:
     """Fetch raw HTML content from URL with timeout handling.
 
     Args:
@@ -30,28 +42,15 @@ def get_html(url: str) -> str:
             }
         )
         response.raise_for_status()
-        return response.text
+        return from_html_text(response.text)
+
     elif parsed.scheme == 'file':
         with open(parsed.path, 'r', encoding='utf-8') as f:
-            return f.read()
+            return from_html_text(f.read())
     else:
         raise WebExtractionError(f"Unsupported URL scheme: {parsed.scheme}")
 
 
-def from_html_text(html_text: str):
-    result = { "source_url": "Not provided" }
-
-    # medium filtering
-    soup = BeautifulSoup(html_text, "html.parser")
-    node = soup.find('article', attrs={'class': 'meteredContent'})
-    node = node or soup.find('section')
-    node = node or soup
-
-    result["content_format"] = "markdown"
-    result["content_text"] = html_to_md( str(node) )
-
-
-    return result
 
 if __name__ == "__main__":
     # html to md test
