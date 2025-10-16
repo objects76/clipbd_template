@@ -5,6 +5,9 @@
 *.egg-info
 tmp/
 .vscode/
+.serena/
+.cursor/
+.claude/
 .venv/
 temp/
 .env
