@@ -3,6 +3,9 @@ import subprocess
 import time
 import re
 
+def dbg(*args, **kwargs):
+    # print(*args, **kwargs)
+    pass
 
 def get_window_class(window_id):
     cmd = ["xprop", "-id", window_id, "WM_CLASS"]
@@ -30,7 +33,7 @@ def wait_page_loaded(window_id:str, needle:str, timeout=2):
     for _ in range(timeout*10):
         result = subprocess.run(['xdotool', 'getwindowname', window_id], capture_output=True, text=True, check=True)
         if needle in result.stdout.strip():
-            print('page loaded: ', result.stdout.strip())
+            dbg('page loaded: ', result.stdout.strip())
             return True
         time.sleep(0.1)
     return False
@@ -52,7 +55,7 @@ def copy_html_text(window_id:str|None = None):
         subprocess.run(['xdotool', 'key', '--window', window_id, 'ctrl+a','ctrl+c','ctrl+w'], check=True)
         # html_text = subprocess.run(['xclip', '-selection', 'clipboard', '-o'], capture_output=True, text=True, check=True)
         # return html_text.stdout.strip()
-        print('html text copied from window', title)
+        dbg('html text copied from window', title)
         return True
     return False
 
@@ -61,7 +64,7 @@ def copy_youtube_url(window_id:str|None = None):
     title, wm_class = get_window_info(window_id)
     if "microsoft-edge" in wm_class and "youtube" in title.lower():
         get_url(window_id)
-        print('url copied from window', title)
+        dbg('url copied from window', title)
         return True
     return False
 

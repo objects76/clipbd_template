@@ -54,8 +54,15 @@ def get_html_from_url(url: str) -> str:
 
 if __name__ == "__main__":
     # html to md test
+    from ck_clipboard import get_clipboard_data
     from pathlib import Path
-    html_text = Path("asset/docs.html").read_text(encoding='utf-8')
-    md_text = html_to_md(html_text)
-    Path("asset/docs.md").write_text(html_to_md(html_text))
+    # html_text = Path("asset/docs.html").read_text(encoding='utf-8')
+    # md_text = html_to_md(html_text)
+    # Path("asset/docs.md").write_text(html_to_md(html_text))
 
+    cb_data = get_clipboard_data()
+    if cb_data is not None:
+        text = str(cb_data.data)
+        md_text = html_to_md(text)
+        with open("tmp.md", "w") as f:
+            f.write(md_text)

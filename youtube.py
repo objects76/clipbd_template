@@ -54,10 +54,28 @@ def download_transcript(
     ytt_api = YouTubeTranscriptApi()
     try:
         transcript_list = ytt_api.list(video_id)
+
+        # Get available languages
+        available_languages = []
+        for transcript in transcript_list:
+            available_languages.append(transcript.language_code)
+
+        # Try to find a matching language (including variants like en-US for en)
+        matched_codes = []
+        for pref_code in language_codes:
+            for avail_code in available_languages:
+                if avail_code == pref_code or avail_code.startswith(pref_code + '-'):
+                    matched_codes.append(avail_code)
+                    break
+
+        # If no match found, use any available language
+        if not matched_codes:
+            matched_codes = available_languages[:1]  # Use first available
+
         try:
-            transcript = transcript_list.find_manually_created_transcript(language_codes)
+            transcript = transcript_list.find_manually_created_transcript(matched_codes)
         except Exception as e:
-            transcript = transcript_list.find_generated_transcript(language_codes)
+            transcript = transcript_list.find_generated_transcript(matched_codes)
 
         transcript = transcript.fetch(preserve_formatting=False)
 
@@ -95,5 +113,15 @@ def get_youtube_content(url:str, transcript:str = "") -> dict:
     return {"video_id": video_id, "transcript": transcript}
 
 
+def play_youtube_video(video_id: str):
+    import webbrowser
+    # set edge://flags, autoplay: enable
+    url = f"https://www.youtube.com/embed/{video_id}?start=10&end=30&autoplay=1"
+    webbrowser.open(url, new=2)  # new=2 for new tab
+
 if __name__ == '__main__':
-    print(download_transcript("k_5NcmxWlVg"))
+    # print(download_transcript("9ctOnQKoxv8"))
+    # https://www.youtube.com/embed/9ctOnQKoxv8?start=10&end=30&autoplay=1
+    print("\nTesting play_youtube_video function:")
+    play_youtube_video("9ctOnQKoxv8")
+

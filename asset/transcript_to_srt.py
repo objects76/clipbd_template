@@ -26,62 +26,40 @@ def convert_to_srt(input_file: str, output_file: str) -> None:
     with open(input_file, 'r', encoding='utf-8') as f:
         lines = [line.strip() for line in f.readlines() if line.strip()]
 
-    srt_entries = []
-    entry_number = 1
+    entries = []
 
     i = 0
     while i < len(lines):
         # Check if current line is a timestamp
         if re.match(r'^\d+:\d{2}$', lines[i]):
-            timestamp = lines[i]
-
-            # Get English and Korean text (next 2 lines)
-            english_text = lines[i + 1] if i + 1 < len(lines) else ""
-            korean_text = lines[i + 2] if i + 2 < len(lines) else ""
-
-            # Skip entries with placeholder text
-            if "[English text not available]" in english_text or "[Korean text not available]" in korean_text:
-                i += 3
-                continue
-
-            # Parse current timestamp
-            curr_min, curr_sec = parse_timestamp(timestamp)
-
-            # Find next valid timestamp for end time
-            next_min, next_sec = curr_min, curr_sec + 3  # Default 3 second duration
-
-            # Look ahead for next timestamp
-            j = i + 3
-            while j < len(lines):
-                if re.match(r'^\d+:\d{2}$', lines[j]):
-                    # Check if this entry has valid content
-                    has_valid_content = False
-                    if j + 2 < len(lines):
-                        next_english = lines[j + 1]
-                        next_korean = lines[j + 2]
-                        if ("[English text not available]" not in next_english and
-                            "[Korean text not available]" not in next_korean):
-                            has_valid_content = True
-
-                    if has_valid_content:
-                        next_min, next_sec = parse_timestamp(lines[j])
-                        break
-                j += 1
-
-            # Format SRT entry
-            start_time = format_srt_time(curr_min, curr_sec)
-            end_time = format_srt_time(next_min, next_sec)
-
-            # Combine English and Korean text
-            subtitle_text = f"{english_text}\n{korean_text}"
-
-            srt_entry = f"{entry_number}\n{start_time} --> {end_time}\n{subtitle_text}\n"
-            srt_entries.append(srt_entry)
-
-            entry_number += 1
-            i += 3
+            entries.append( lines[i:i+2] )
+            i += 2
         else:
             i += 1
+
+    srt_entries = []
+    for entry_number, (timestamp, subtitle_text) in enumerate(entries[:-1], start=1):
+        curr_min, curr_sec = parse_timestamp(timestamp)
+
+        next_timestamp, next_transcript = entries[entry_number]
+        next_min, next_sec = parse_timestamp(next_timestamp)
+
+        # Format SRT entry
+        start_time = format_srt_time(curr_min, curr_sec)
+        end_time = format_srt_time(next_min, next_sec)
+
+        srt_entry = f"{entry_number}\n{start_time} --> {end_time}\n{subtitle_text.strip()}\n"
+        srt_entries.append(srt_entry)
+
+    # last one
+    timestamp, subtitle_text = entries[-1]
+    curr_min, curr_sec = parse_timestamp(timestamp)
+    next_min, next_sec = curr_min, curr_sec + 3
+    start_time = format_srt_time(curr_min, curr_sec)
+    end_time = format_srt_time(next_min, next_sec)
+    srt_entry = f"{entry_number}\n{start_time} --> {end_time}\n{subtitle_text.strip()}\n"
+    srt_entries.append(srt_entry)
+
 
     # Write SRT file
     with open(output_file, 'w', encoding='utf-8') as f:
@@ -90,8 +68,8 @@ def convert_to_srt(input_file: str, output_file: str) -> None:
 def main():
     """Main function to convert transcript to SRT."""
 
-    input_file = "asset/transcript_merged.txt"
-    output_file = "asset/transcript.srt"
+    input_file = "asset/transcript_ko.txt"
+    output_file = Path(input_file).with_suffix(".srt")
 
     try:
         print("Converting merged transcript to SRT format...")
@@ -119,6 +97,7 @@ def main():
 
     except Exception as e:
         print(f"❌ Error: {e}")
+        raise
         return 1
 
     return 0

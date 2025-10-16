@@ -1,0 +1,9365 @@
+1
+00:00:00,320 --> 00:00:02,149
+
+Hello everybody, Adam Lusk here and
+
+2
+00:00:02,149 --> 00:00:02,159
+Hello everybody, Adam Lusk here and
+ 
+
+3
+00:00:02,159 --> 00:00:03,510
+Hello everybody, Adam Lusk here and
+today we're going to be talking about
+
+4
+00:00:03,510 --> 00:00:03,520
+today we're going to be talking about
+ 
+
+5
+00:00:03,520 --> 00:00:06,470
+today we're going to be talking about
+static and distilled embedding models.
+
+6
+00:00:06,470 --> 00:00:06,480
+static and distilled embedding models.
+ 
+
+7
+00:00:06,480 --> 00:00:08,710
+static and distilled embedding models.
+Essentially, a few older techniques of
+
+8
+00:00:08,710 --> 00:00:08,720
+Essentially, a few older techniques of
+ 
+
+9
+00:00:08,720 --> 00:00:10,470
+Essentially, a few older techniques of
+using static based embeddings, which
+
+10
+00:00:10,470 --> 00:00:10,480
+using static based embeddings, which
+ 
+
+11
+00:00:10,480 --> 00:00:12,870
+using static based embeddings, which
+we'll get into in a bit, have resurfaced
+
+12
+00:00:12,870 --> 00:00:12,880
+we'll get into in a bit, have resurfaced
+ 
+
+13
+00:00:12,880 --> 00:00:15,270
+we'll get into in a bit, have resurfaced
+with some modern updates to create
+
+14
+00:00:15,270 --> 00:00:15,280
+with some modern updates to create
+ 
+
+15
+00:00:15,280 --> 00:00:18,070
+with some modern updates to create
+embedding models that are both 400 times
+
+16
+00:00:18,070 --> 00:00:18,080
+embedding models that are both 400 times
+ 
+
+17
+00:00:18,080 --> 00:00:20,630
+embedding models that are both 400 times
+faster without losing a whole lot of
+
+18
+00:00:20,630 --> 00:00:20,640
+faster without losing a whole lot of
+ 
+
+19
+00:00:20,640 --> 00:00:22,630
+faster without losing a whole lot of
+quality. If you know anything about me,
+
+20
+00:00:22,630 --> 00:00:22,640
+quality. If you know anything about me,
+ 
+
+21
+00:00:22,640 --> 00:00:25,029
+quality. If you know anything about me,
+I put a lot of time into optimizing the
+
+22
+00:00:25,029 --> 00:00:25,039
+I put a lot of time into optimizing the
+ 
+
+23
+00:00:25,039 --> 00:00:27,349
+I put a lot of time into optimizing the
+retrieval step of a retrieval augmented
+
+24
+00:00:27,349 --> 00:00:27,359
+retrieval step of a retrieval augmented
+ 
+
+25
+00:00:27,359 --> 00:00:29,269
+retrieval step of a retrieval augmented
+generation pipeline, which heavily
+
+26
+00:00:29,269 --> 00:00:29,279
+generation pipeline, which heavily
+ 
+
+27
+00:00:29,279 --> 00:00:31,669
+generation pipeline, which heavily
+relies on the embedding model. As a
+
+28
+00:00:31,669 --> 00:00:31,679
+relies on the embedding model. As a
+ 
+
+29
+00:00:31,679 --> 00:00:33,590
+relies on the embedding model. As a
+quick refresher, embedding models play a
+
+30
+00:00:33,590 --> 00:00:33,600
+quick refresher, embedding models play a
+ 
+
+31
+00:00:33,600 --> 00:00:35,630
+quick refresher, embedding models play a
+huge part in the machine learning
+
+32
+00:00:35,630 --> 00:00:35,640
+huge part in the machine learning
+ 
+
+33
+00:00:35,640 --> 00:00:38,470
+huge part in the machine learning
+ecosystem, allowing us to do things like
+
+34
+00:00:38,470 --> 00:00:38,480
+ecosystem, allowing us to do things like
+ 
+
+35
+00:00:38,480 --> 00:00:40,709
+ecosystem, allowing us to do things like
+textual similarities, semantic search,
+
+36
+00:00:40,709 --> 00:00:40,719
+textual similarities, semantic search,
+ 
+
+37
+00:00:40,719 --> 00:00:42,950
+textual similarities, semantic search,
+paraphrase mining. It's even the kind of
+
+38
+00:00:42,950 --> 00:00:42,960
+paraphrase mining. It's even the kind of
+ 
+
+39
+00:00:42,960 --> 00:00:44,630
+paraphrase mining. It's even the kind of
+models that are behind actually
+
+40
+00:00:44,630 --> 00:00:44,640
+models that are behind actually
+ 
+
+41
+00:00:44,640 --> 00:00:46,389
+models that are behind actually
+highlighting the piece of text in an
+
+42
+00:00:46,389 --> 00:00:46,399
+highlighting the piece of text in an
+ 
+
+43
+00:00:46,399 --> 00:00:48,630
+highlighting the piece of text in an
+article that's best to answer a question
+
+44
+00:00:48,630 --> 00:00:48,640
+article that's best to answer a question
+ 
+
+45
+00:00:48,640 --> 00:00:50,869
+article that's best to answer a question
+that you input if you Google it. They're
+
+46
+00:00:50,869 --> 00:00:50,879
+that you input if you Google it. They're
+ 
+
+47
+00:00:50,879 --> 00:00:52,310
+that you input if you Google it. They're
+pretty much trained through large
+
+48
+00:00:52,310 --> 00:00:52,320
+pretty much trained through large
+ 
+
+49
+00:00:52,320 --> 00:00:55,189
+pretty much trained through large
+corpuses of text and content to be able
+
+50
+00:00:55,189 --> 00:00:55,199
+corpuses of text and content to be able
+ 
+
+51
+00:00:55,199 --> 00:00:57,110
+corpuses of text and content to be able
+to take in some form of unstructured
+
+52
+00:00:57,110 --> 00:00:57,120
+to take in some form of unstructured
+ 
+
+53
+00:00:57,120 --> 00:01:00,150
+to take in some form of unstructured
+data. Generally in our context, we're
+
+54
+00:01:00,150 --> 00:01:00,160
+data. Generally in our context, we're
+ 
+
+55
+00:01:00,160 --> 00:01:01,430
+data. Generally in our context, we're
+going to be working with something like
+
+56
+00:01:01,430 --> 00:01:01,440
+going to be working with something like
+ 
+
+57
+00:01:01,440 --> 00:01:04,189
+going to be working with something like
+text, running it through a machine
+
+58
+00:01:04,189 --> 00:01:04,199
+text, running it through a machine
+ 
+
+59
+00:01:04,199 --> 00:01:06,630
+text, running it through a machine
+learningbased model, and then outputting
+
+60
+00:01:06,630 --> 00:01:06,640
+learningbased model, and then outputting
+ 
+
+61
+00:01:06,640 --> 00:01:09,910
+learningbased model, and then outputting
+a semantically rich representation in
+
+62
+00:01:09,910 --> 00:01:09,920
+a semantically rich representation in
+ 
+
+63
+00:01:09,920 --> 00:01:13,429
+a semantically rich representation in
+numbers of that data object. What that
+
+64
+00:01:13,429 --> 00:01:13,439
+numbers of that data object. What that
+ 
+
+65
+00:01:13,439 --> 00:01:14,950
+numbers of that data object. What that
+means is we're essentially converting
+
+66
+00:01:14,950 --> 00:01:14,960
+means is we're essentially converting
+ 
+
+67
+00:01:14,960 --> 00:01:16,870
+means is we're essentially converting
+something like text and natural language
+
+68
+00:01:16,870 --> 00:01:16,880
+something like text and natural language
+ 
+
+69
+00:01:16,880 --> 00:01:18,630
+something like text and natural language
+into numbers. And those numbers are
+
+70
+00:01:18,630 --> 00:01:18,640
+into numbers. And those numbers are
+ 
+
+71
+00:01:18,640 --> 00:01:20,950
+into numbers. And those numbers are
+going to capture the actual semantic
+
+72
+00:01:20,950 --> 00:01:20,960
+going to capture the actual semantic
+ 
+
+73
+00:01:20,960 --> 00:01:23,590
+going to capture the actual semantic
+richness and meaning of the text, which
+
+74
+00:01:23,590 --> 00:01:23,600
+richness and meaning of the text, which
+ 
+
+75
+00:01:23,600 --> 00:01:24,710
+richness and meaning of the text, which
+allows us to do things like
+
+76
+00:01:24,710 --> 00:01:24,720
+allows us to do things like
+ 
+
+77
+00:01:24,720 --> 00:01:26,789
+allows us to do things like
+mathematically compare how similar
+
+78
+00:01:26,789 --> 00:01:26,799
+mathematically compare how similar
+ 
+
+79
+00:01:26,799 --> 00:01:28,789
+mathematically compare how similar
+things are because we're now able to
+
+80
+00:01:28,789 --> 00:01:28,799
+things are because we're now able to
+ 
+
+81
+00:01:28,799 --> 00:01:30,789
+things are because we're now able to
+represent them as numbers. These kinds
+
+82
+00:01:30,789 --> 00:01:30,799
+represent them as numbers. These kinds
+ 
+
+83
+00:01:30,799 --> 00:01:32,789
+represent them as numbers. These kinds
+of models predate the large language
+
+84
+00:01:32,789 --> 00:01:32,799
+of models predate the large language
+ 
+
+85
+00:01:32,799 --> 00:01:35,190
+of models predate the large language
+model as we know it and are some of the
+
+86
+00:01:35,190 --> 00:01:35,200
+model as we know it and are some of the
+ 
+
+87
+00:01:35,200 --> 00:01:37,670
+model as we know it and are some of the
+original forms of language modeling that
+
+88
+00:01:37,670 --> 00:01:37,680
+original forms of language modeling that
+ 
+
+89
+00:01:37,680 --> 00:01:39,990
+original forms of language modeling that
+was actually very successful. We've seen
+
+90
+00:01:39,990 --> 00:01:40,000
+was actually very successful. We've seen
+ 
+
+91
+00:01:40,000 --> 00:01:41,429
+was actually very successful. We've seen
+advances with things like BERT or
+
+92
+00:01:41,429 --> 00:01:41,439
+advances with things like BERT or
+ 
+
+93
+00:01:41,439 --> 00:01:43,590
+advances with things like BERT or
+birectional encoder representations from
+
+94
+00:01:43,590 --> 00:01:43,600
+birectional encoder representations from
+ 
+
+95
+00:01:43,600 --> 00:01:45,749
+birectional encoder representations from
+transformers coming out of Google pretty
+
+96
+00:01:45,749 --> 00:01:45,759
+transformers coming out of Google pretty
+ 
+
+97
+00:01:45,759 --> 00:01:48,149
+transformers coming out of Google pretty
+much revolutionizing this field and some
+
+98
+00:01:48,149 --> 00:01:48,159
+much revolutionizing this field and some
+ 
+
+99
+00:01:48,159 --> 00:01:50,149
+much revolutionizing this field and some
+of the most downloaded models are
+
+100
+00:01:50,149 --> 00:01:50,159
+of the most downloaded models are
+ 
+
+101
+00:01:50,159 --> 00:01:52,230
+of the most downloaded models are
+embedding or encoder models like all
+
+102
+00:01:52,230 --> 00:01:52,240
+embedding or encoder models like all
+ 
+
+103
+00:01:52,240 --> 00:01:55,270
+embedding or encoder models like all
+many LML6V2 here that boasts an
+
+104
+00:01:55,270 --> 00:01:55,280
+many LML6V2 here that boasts an
+ 
+
+105
+00:01:55,280 --> 00:01:57,910
+many LML6V2 here that boasts an
+impressive almost 83 million downloads a
+
+106
+00:01:57,910 --> 00:01:57,920
+impressive almost 83 million downloads a
+ 
+
+107
+00:01:57,920 --> 00:01:59,429
+impressive almost 83 million downloads a
+month. If you want to learn more of the
+
+108
+00:01:59,429 --> 00:01:59,439
+month. If you want to learn more of the
+ 
+
+109
+00:01:59,439 --> 00:02:01,350
+month. If you want to learn more of the
+specifics of exactly how things like
+
+110
+00:02:01,350 --> 00:02:01,360
+specifics of exactly how things like
+ 
+
+111
+00:02:01,360 --> 00:02:03,429
+specifics of exactly how things like
+BERT models and transformer models that
+
+112
+00:02:03,429 --> 00:02:03,439
+BERT models and transformer models that
+ 
+
+113
+00:02:03,439 --> 00:02:05,190
+BERT models and transformer models that
+do these sentence encoding actually
+
+114
+00:02:05,190 --> 00:02:05,200
+do these sentence encoding actually
+ 
+
+115
+00:02:05,200 --> 00:02:07,429
+do these sentence encoding actually
+works, I implore you to check out my
+
+116
+00:02:07,429 --> 00:02:07,439
+works, I implore you to check out my
+ 
+
+117
+00:02:07,439 --> 00:02:09,109
+works, I implore you to check out my
+other video, which I'll have linked
+
+118
+00:02:09,109 --> 00:02:09,119
+other video, which I'll have linked
+ 
+
+119
+00:02:09,119 --> 00:02:10,790
+other video, which I'll have linked
+right above here. But one of the core
+
+120
+00:02:10,790 --> 00:02:10,800
+right above here. But one of the core
+ 
+
+121
+00:02:10,800 --> 00:02:12,229
+right above here. But one of the core
+issues that's been identified with
+
+122
+00:02:12,229 --> 00:02:12,239
+issues that's been identified with
+ 
+
+123
+00:02:12,239 --> 00:02:14,470
+issues that's been identified with
+modern-day embedding models like the
+
+124
+00:02:14,470 --> 00:02:14,480
+modern-day embedding models like the
+ 
+
+125
+00:02:14,480 --> 00:02:17,350
+modern-day embedding models like the
+lovely alin here, is that there's still
+
+126
+00:02:17,350 --> 00:02:17,360
+lovely alin here, is that there's still
+ 
+
+127
+00:02:17,360 --> 00:02:21,589
+lovely alin here, is that there's still
+a roughly large amount of parameters.
+
+128
+00:02:21,589 --> 00:02:21,599
+a roughly large amount of parameters.
+ 
+
+129
+00:02:21,599 --> 00:02:23,670
+a roughly large amount of parameters.
+While relatively trivial in comparison
+
+130
+00:02:23,670 --> 00:02:23,680
+While relatively trivial in comparison
+ 
+
+131
+00:02:23,680 --> 00:02:26,550
+While relatively trivial in comparison
+to some of the 70 and 100 billion plus
+
+132
+00:02:26,550 --> 00:02:26,560
+to some of the 70 and 100 billion plus
+ 
+
+133
+00:02:26,560 --> 00:02:28,470
+to some of the 70 and 100 billion plus
+parameter models that we see with large
+
+134
+00:02:28,470 --> 00:02:28,480
+parameter models that we see with large
+ 
+
+135
+00:02:28,480 --> 00:02:31,510
+parameter models that we see with large
+language models, they can still reach
+
+136
+00:02:31,510 --> 00:02:31,520
+language models, they can still reach
+ 
+
+137
+00:02:31,520 --> 00:02:34,070
+language models, they can still reach
+pretty decent parameter sizings, which
+
+138
+00:02:34,070 --> 00:02:34,080
+pretty decent parameter sizings, which
+ 
+
+139
+00:02:34,080 --> 00:02:35,750
+pretty decent parameter sizings, which
+in turn means that you need some pretty
+
+140
+00:02:35,750 --> 00:02:35,760
+in turn means that you need some pretty
+ 
+
+141
+00:02:35,760 --> 00:02:37,910
+in turn means that you need some pretty
+decent hardware to be able to run large
+
+142
+00:02:37,910 --> 00:02:37,920
+decent hardware to be able to run large
+ 
+
+143
+00:02:37,920 --> 00:02:40,309
+decent hardware to be able to run large
+scale tasks on these kind of things. So
+
+144
+00:02:40,309 --> 00:02:40,319
+scale tasks on these kind of things. So
+ 
+
+145
+00:02:40,319 --> 00:02:41,830
+scale tasks on these kind of things. So
+today we're going to be looking at a few
+
+146
+00:02:41,830 --> 00:02:41,840
+today we're going to be looking at a few
+ 
+
+147
+00:02:41,840 --> 00:02:43,350
+today we're going to be looking at a few
+different efficiency gains that we can
+
+148
+00:02:43,350 --> 00:02:43,360
+different efficiency gains that we can
+ 
+
+149
+00:02:43,360 --> 00:02:45,270
+different efficiency gains that we can
+get using some older techniques with a
+
+150
+00:02:45,270 --> 00:02:45,280
+get using some older techniques with a
+ 
+
+151
+00:02:45,280 --> 00:02:47,589
+get using some older techniques with a
+modern twist with the static embedding
+
+152
+00:02:47,589 --> 00:02:47,599
+modern twist with the static embedding
+ 
+
+153
+00:02:47,599 --> 00:02:50,150
+modern twist with the static embedding
+models and also showing how you can use
+
+154
+00:02:50,150 --> 00:02:50,160
+models and also showing how you can use
+ 
+
+155
+00:02:50,160 --> 00:02:52,390
+models and also showing how you can use
+an existing model and distill it down
+
+156
+00:02:52,390 --> 00:02:52,400
+an existing model and distill it down
+ 
+
+157
+00:02:52,400 --> 00:02:54,869
+an existing model and distill it down
+into a static embedding model itself to
+
+158
+00:02:54,869 --> 00:02:54,879
+into a static embedding model itself to
+ 
+
+159
+00:02:54,879 --> 00:02:57,190
+into a static embedding model itself to
+push the performance and efficiency of
+
+160
+00:02:57,190 --> 00:02:57,200
+push the performance and efficiency of
+ 
+
+161
+00:02:57,200 --> 00:02:59,430
+push the performance and efficiency of
+embedding models. But before we do that,
+
+162
+00:02:59,430 --> 00:02:59,440
+embedding models. But before we do that,
+ 
+
+163
+00:02:59,440 --> 00:03:01,190
+embedding models. But before we do that,
+a quick word from the sponsor of today's
+
+164
+00:03:01,190 --> 00:03:01,200
+a quick word from the sponsor of today's
+ 
+
+165
+00:03:01,200 --> 00:03:03,430
+a quick word from the sponsor of today's
+video, Brilliant. Brilliant helps you
+
+166
+00:03:03,430 --> 00:03:03,440
+video, Brilliant. Brilliant helps you
+ 
+
+167
+00:03:03,440 --> 00:03:05,430
+video, Brilliant. Brilliant helps you
+get smarter every day with thousands of
+
+168
+00:03:05,430 --> 00:03:05,440
+get smarter every day with thousands of
+ 
+
+169
+00:03:05,440 --> 00:03:07,910
+get smarter every day with thousands of
+interactive lessons in math, science,
+
+170
+00:03:07,910 --> 00:03:07,920
+interactive lessons in math, science,
+ 
+
+171
+00:03:07,920 --> 00:03:09,830
+interactive lessons in math, science,
+programming, data analysis, and
+
+172
+00:03:09,830 --> 00:03:09,840
+programming, data analysis, and
+ 
+
+173
+00:03:09,840 --> 00:03:12,070
+programming, data analysis, and
+artificial intelligence. A lot of people
+
+174
+00:03:12,070 --> 00:03:12,080
+artificial intelligence. A lot of people
+ 
+
+175
+00:03:12,080 --> 00:03:14,149
+artificial intelligence. A lot of people
+ask me how I stay on top of the
+
+176
+00:03:14,149 --> 00:03:14,159
+ask me how I stay on top of the
+ 
+
+177
+00:03:14,159 --> 00:03:16,630
+ask me how I stay on top of the
+everchanging field of AI. And it's not
+
+178
+00:03:16,630 --> 00:03:16,640
+everchanging field of AI. And it's not
+ 
+
+179
+00:03:16,640 --> 00:03:18,710
+everchanging field of AI. And it's not
+by doing everything all at once, but
+
+180
+00:03:18,710 --> 00:03:18,720
+by doing everything all at once, but
+ 
+
+181
+00:03:18,720 --> 00:03:20,390
+by doing everything all at once, but
+rather learning a little bit every
+
+182
+00:03:20,390 --> 00:03:20,400
+rather learning a little bit every
+ 
+
+183
+00:03:20,400 --> 00:03:22,149
+rather learning a little bit every
+single day and applying what I know.
+
+184
+00:03:22,149 --> 00:03:22,159
+single day and applying what I know.
+ 
+
+185
+00:03:22,159 --> 00:03:23,750
+single day and applying what I know.
+With Brilliant, you can start to build
+
+186
+00:03:23,750 --> 00:03:23,760
+With Brilliant, you can start to build
+ 
+
+187
+00:03:23,760 --> 00:03:25,430
+With Brilliant, you can start to build
+those daily habits of learning something
+
+188
+00:03:25,430 --> 00:03:25,440
+those daily habits of learning something
+ 
+
+189
+00:03:25,440 --> 00:03:27,589
+those daily habits of learning something
+and applying something new every day.
+
+190
+00:03:27,589 --> 00:03:27,599
+and applying something new every day.
+ 
+
+191
+00:03:27,599 --> 00:03:29,190
+and applying something new every day.
+With just a few minutes, you can turn
+
+192
+00:03:29,190 --> 00:03:29,200
+With just a few minutes, you can turn
+ 
+
+193
+00:03:29,200 --> 00:03:31,110
+With just a few minutes, you can turn
+your mindless scrolling into actual
+
+194
+00:03:31,110 --> 00:03:31,120
+your mindless scrolling into actual
+ 
+
+195
+00:03:31,120 --> 00:03:33,350
+your mindless scrolling into actual
+productive time, jumping into useful and
+
+196
+00:03:33,350 --> 00:03:33,360
+productive time, jumping into useful and
+ 
+
+197
+00:03:33,360 --> 00:03:35,270
+productive time, jumping into useful and
+applicable topics for both your personal
+
+198
+00:03:35,270 --> 00:03:35,280
+applicable topics for both your personal
+ 
+
+199
+00:03:35,280 --> 00:03:37,110
+applicable topics for both your personal
+and professional life. One of the
+
+200
+00:03:37,110 --> 00:03:37,120
+and professional life. One of the
+ 
+
+201
+00:03:37,120 --> 00:03:38,869
+and professional life. One of the
+courses that I think is particularly
+
+202
+00:03:38,869 --> 00:03:38,879
+courses that I think is particularly
+ 
+
+203
+00:03:38,879 --> 00:03:40,630
+courses that I think is particularly
+beneficial is the programming with
+
+204
+00:03:40,630 --> 00:03:40,640
+beneficial is the programming with
+ 
+
+205
+00:03:40,640 --> 00:03:42,789
+beneficial is the programming with
+Python course. It's something I use
+
+206
+00:03:42,789 --> 00:03:42,799
+Python course. It's something I use
+ 
+
+207
+00:03:42,799 --> 00:03:44,710
+Python course. It's something I use
+every single day, and Brilliant's newly
+
+208
+00:03:44,710 --> 00:03:44,720
+every single day, and Brilliant's newly
+ 
+
+209
+00:03:44,720 --> 00:03:46,710
+every single day, and Brilliant's newly
+updated programming courses are a great
+
+210
+00:03:46,710 --> 00:03:46,720
+updated programming courses are a great
+ 
+
+211
+00:03:46,720 --> 00:03:49,350
+updated programming courses are a great
+way to build a foundation in coding. Not
+
+212
+00:03:49,350 --> 00:03:49,360
+way to build a foundation in coding. Not
+ 
+
+213
+00:03:49,360 --> 00:03:51,030
+way to build a foundation in coding. Not
+only can you do things like get familiar
+
+214
+00:03:51,030 --> 00:03:51,040
+only can you do things like get familiar
+ 
+
+215
+00:03:51,040 --> 00:03:53,110
+only can you do things like get familiar
+with Python and start building programs
+
+216
+00:03:53,110 --> 00:03:53,120
+with Python and start building programs
+ 
+
+217
+00:03:53,120 --> 00:03:55,030
+with Python and start building programs
+from day one, but the more important
+
+218
+00:03:55,030 --> 00:03:55,040
+from day one, but the more important
+ 
+
+219
+00:03:55,040 --> 00:03:56,630
+from day one, but the more important
+thing is that Brilliant's course here
+
+220
+00:03:56,630 --> 00:03:56,640
+thing is that Brilliant's course here
+ 
+
+221
+00:03:56,640 --> 00:03:58,470
+thing is that Brilliant's course here
+helps you develop an intuition for
+
+222
+00:03:58,470 --> 00:03:58,480
+helps you develop an intuition for
+ 
+
+223
+00:03:58,480 --> 00:04:00,390
+helps you develop an intuition for
+computer logic. So, not only will you
+
+224
+00:04:00,390 --> 00:04:00,400
+computer logic. So, not only will you
+ 
+
+225
+00:04:00,400 --> 00:04:02,149
+computer logic. So, not only will you
+learn strong fundamentals about
+
+226
+00:04:02,149 --> 00:04:02,159
+learn strong fundamentals about
+ 
+
+227
+00:04:02,159 --> 00:04:03,990
+learn strong fundamentals about
+programming, but also a little bit of
+
+228
+00:04:03,990 --> 00:04:04,000
+programming, but also a little bit of
+ 
+
+229
+00:04:04,000 --> 00:04:05,910
+programming, but also a little bit of
+how to get yourself in the mindset of a
+
+230
+00:04:05,910 --> 00:04:05,920
+how to get yourself in the mindset of a
+ 
+
+231
+00:04:05,920 --> 00:04:07,750
+how to get yourself in the mindset of a
+programmer. To try everything Brilliant
+
+232
+00:04:07,750 --> 00:04:07,760
+programmer. To try everything Brilliant
+ 
+
+233
+00:04:07,760 --> 00:04:09,750
+programmer. To try everything Brilliant
+has to offer for free for a full 30
+
+234
+00:04:09,750 --> 00:04:09,760
+has to offer for free for a full 30
+ 
+
+235
+00:04:09,760 --> 00:04:11,470
+has to offer for free for a full 30
+days, visit
+
+236
+00:04:11,470 --> 00:04:11,480
+days, visit
+ 
+
+237
+00:04:11,480 --> 00:04:13,429
+days, visit
+brilliant.org/adamlusk or scan the QR
+
+238
+00:04:13,429 --> 00:04:13,439
+brilliant.org/adamlusk or scan the QR
+ 
+
+239
+00:04:13,439 --> 00:04:15,429
+brilliant.org/adamlusk or scan the QR
+code on screen or you can click on the
+
+240
+00:04:15,429 --> 00:04:15,439
+code on screen or you can click on the
+ 
+
+241
+00:04:15,439 --> 00:04:17,110
+code on screen or you can click on the
+link in the description. You'll also get
+
+242
+00:04:17,110 --> 00:04:17,120
+link in the description. You'll also get
+ 
+
+243
+00:04:17,120 --> 00:04:19,590
+link in the description. You'll also get
+20% off an annual premium subscription.
+
+244
+00:04:19,590 --> 00:04:19,600
+20% off an annual premium subscription.
+ 
+
+245
+00:04:19,600 --> 00:04:21,030
+20% off an annual premium subscription.
+Thank you to Brilliant for the sponsor.
+
+246
+00:04:21,030 --> 00:04:21,040
+Thank you to Brilliant for the sponsor.
+ 
+
+247
+00:04:21,040 --> 00:04:22,629
+Thank you to Brilliant for the sponsor.
+Now, back to the video. So, the first
+
+248
+00:04:22,629 --> 00:04:22,639
+Now, back to the video. So, the first
+ 
+
+249
+00:04:22,639 --> 00:04:24,070
+Now, back to the video. So, the first
+thing that we're going to go over is
+
+250
+00:04:24,070 --> 00:04:24,080
+thing that we're going to go over is
+ 
+
+251
+00:04:24,080 --> 00:04:25,909
+thing that we're going to go over is
+what are static embeddings? And to do
+
+252
+00:04:25,909 --> 00:04:25,919
+what are static embeddings? And to do
+ 
+
+253
+00:04:25,919 --> 00:04:27,830
+what are static embeddings? And to do
+this, we're going to look at one of the
+
+254
+00:04:27,830 --> 00:04:27,840
+this, we're going to look at one of the
+ 
+
+255
+00:04:27,840 --> 00:04:30,870
+this, we're going to look at one of the
+earliest, most popular static embedding
+
+256
+00:04:30,870 --> 00:04:30,880
+earliest, most popular static embedding
+ 
+
+257
+00:04:30,880 --> 00:04:33,590
+earliest, most popular static embedding
+models, Word Tube Vec, which came out in
+
+258
+00:04:33,590 --> 00:04:33,600
+models, Word Tube Vec, which came out in
+ 
+
+259
+00:04:33,600 --> 00:04:37,030
+models, Word Tube Vec, which came out in
+September of 2013, which in AI years
+
+260
+00:04:37,030 --> 00:04:37,040
+September of 2013, which in AI years
+ 
+
+261
+00:04:37,040 --> 00:04:40,950
+September of 2013, which in AI years
+seems ages ago, and is a cool model that
+
+262
+00:04:40,950 --> 00:04:40,960
+seems ages ago, and is a cool model that
+ 
+
+263
+00:04:40,960 --> 00:04:43,510
+seems ages ago, and is a cool model that
+came once again out of Google. And so
+
+264
+00:04:43,510 --> 00:04:43,520
+came once again out of Google. And so
+ 
+
+265
+00:04:43,520 --> 00:04:45,749
+came once again out of Google. And so
+what Google showed is two novel model
+
+266
+00:04:45,749 --> 00:04:45,759
+what Google showed is two novel model
+ 
+
+267
+00:04:45,759 --> 00:04:48,070
+what Google showed is two novel model
+architectures for computing continuous
+
+268
+00:04:48,070 --> 00:04:48,080
+architectures for computing continuous
+ 
+
+269
+00:04:48,080 --> 00:04:50,230
+architectures for computing continuous
+vector representations of words from
+
+270
+00:04:50,230 --> 00:04:50,240
+vector representations of words from
+ 
+
+271
+00:04:50,240 --> 00:04:52,550
+vector representations of words from
+very large data sets or essentially
+
+272
+00:04:52,550 --> 00:04:52,560
+very large data sets or essentially
+ 
+
+273
+00:04:52,560 --> 00:04:54,310
+very large data sets or essentially
+being able to take large corpuses of
+
+274
+00:04:54,310 --> 00:04:54,320
+being able to take large corpuses of
+ 
+
+275
+00:04:54,320 --> 00:04:55,990
+being able to take large corpuses of
+text and training a model to be able to
+
+276
+00:04:55,990 --> 00:04:56,000
+text and training a model to be able to
+ 
+
+277
+00:04:56,000 --> 00:04:58,469
+text and training a model to be able to
+effectively represent the text as
+
+278
+00:04:58,469 --> 00:04:58,479
+effectively represent the text as
+ 
+
+279
+00:04:58,479 --> 00:05:00,310
+effectively represent the text as
+numbers. And so while this idea of
+
+280
+00:05:00,310 --> 00:05:00,320
+numbers. And so while this idea of
+ 
+
+281
+00:05:00,320 --> 00:05:02,390
+numbers. And so while this idea of
+encoding and representation is shared
+
+282
+00:05:02,390 --> 00:05:02,400
+encoding and representation is shared
+ 
+
+283
+00:05:02,400 --> 00:05:03,990
+encoding and representation is shared
+across both static and dynamic
+
+284
+00:05:03,990 --> 00:05:04,000
+across both static and dynamic
+ 
+
+285
+00:05:04,000 --> 00:05:05,790
+across both static and dynamic
+contextual or transformer-based
+
+286
+00:05:05,790 --> 00:05:05,800
+contextual or transformer-based
+ 
+
+287
+00:05:05,800 --> 00:05:08,070
+contextual or transformer-based
+embeddings, what the actual core
+
+288
+00:05:08,070 --> 00:05:08,080
+embeddings, what the actual core
+ 
+
+289
+00:05:08,080 --> 00:05:11,110
+embeddings, what the actual core
+difference between static and the more
+
+290
+00:05:11,110 --> 00:05:11,120
+difference between static and the more
+ 
+
+291
+00:05:11,120 --> 00:05:13,110
+difference between static and the more
+popular these days transformer-based
+
+292
+00:05:13,110 --> 00:05:13,120
+popular these days transformer-based
+ 
+
+293
+00:05:13,120 --> 00:05:16,070
+popular these days transformer-based
+embeddings are is that static embeddings
+
+294
+00:05:16,070 --> 00:05:16,080
+embeddings are is that static embeddings
+ 
+
+295
+00:05:16,080 --> 00:05:19,029
+embeddings are is that static embeddings
+are going to be a predefined per token
+
+296
+00:05:19,029 --> 00:05:19,039
+are going to be a predefined per token
+ 
+
+297
+00:05:19,039 --> 00:05:21,189
+are going to be a predefined per token
+level embedding. Jumping down to a
+
+298
+00:05:21,189 --> 00:05:21,199
+level embedding. Jumping down to a
+ 
+
+299
+00:05:21,199 --> 00:05:23,749
+level embedding. Jumping down to a
+couple of diagrams here to show exactly
+
+300
+00:05:23,749 --> 00:05:23,759
+couple of diagrams here to show exactly
+ 
+
+301
+00:05:23,759 --> 00:05:25,830
+couple of diagrams here to show exactly
+what we mean here is that the advantage
+
+302
+00:05:25,830 --> 00:05:25,840
+what we mean here is that the advantage
+ 
+
+303
+00:05:25,840 --> 00:05:27,830
+what we mean here is that the advantage
+that the transformer-based embedding
+
+304
+00:05:27,830 --> 00:05:27,840
+that the transformer-based embedding
+ 
+
+305
+00:05:27,840 --> 00:05:29,830
+that the transformer-based embedding
+model has is that it's able to use of
+
+306
+00:05:29,830 --> 00:05:29,840
+model has is that it's able to use of
+ 
+
+307
+00:05:29,840 --> 00:05:31,670
+model has is that it's able to use of
+course the attention mechanism to be
+
+308
+00:05:31,670 --> 00:05:31,680
+course the attention mechanism to be
+ 
+
+309
+00:05:31,680 --> 00:05:34,790
+course the attention mechanism to be
+able to give more contextual meaning to
+
+310
+00:05:34,790 --> 00:05:34,800
+able to give more contextual meaning to
+ 
+
+311
+00:05:34,800 --> 00:05:36,710
+able to give more contextual meaning to
+specific words. So every time you
+
+312
+00:05:36,710 --> 00:05:36,720
+specific words. So every time you
+ 
+
+313
+00:05:36,720 --> 00:05:38,550
+specific words. So every time you
+actually encode a sentence, each one of
+
+314
+00:05:38,550 --> 00:05:38,560
+actually encode a sentence, each one of
+ 
+
+315
+00:05:38,560 --> 00:05:40,870
+actually encode a sentence, each one of
+the words in the sentence is going to be
+
+316
+00:05:40,870 --> 00:05:40,880
+the words in the sentence is going to be
+ 
+
+317
+00:05:40,880 --> 00:05:43,029
+the words in the sentence is going to be
+considered as it relates and correlates
+
+318
+00:05:43,029 --> 00:05:43,039
+considered as it relates and correlates
+ 
+
+319
+00:05:43,039 --> 00:05:45,990
+considered as it relates and correlates
+to every other word in a in the entire
+
+320
+00:05:45,990 --> 00:05:46,000
+to every other word in a in the entire
+ 
+
+321
+00:05:46,000 --> 00:05:48,550
+to every other word in a in the entire
+sentence. This can highly change the
+
+322
+00:05:48,550 --> 00:05:48,560
+sentence. This can highly change the
+ 
+
+323
+00:05:48,560 --> 00:05:50,550
+sentence. This can highly change the
+actual definition and meaning of the
+
+324
+00:05:50,550 --> 00:05:50,560
+actual definition and meaning of the
+ 
+
+325
+00:05:50,560 --> 00:05:52,550
+actual definition and meaning of the
+word. Looking at something like I have
+
+326
+00:05:52,550 --> 00:05:52,560
+word. Looking at something like I have
+ 
+
+327
+00:05:52,560 --> 00:05:54,629
+word. Looking at something like I have
+no interest in hearing about the rising
+
+328
+00:05:54,629 --> 00:05:54,639
+no interest in hearing about the rising
+ 
+
+329
+00:05:54,639 --> 00:05:56,950
+no interest in hearing about the rising
+interest rate of the bank, we can see
+
+330
+00:05:56,950 --> 00:05:56,960
+interest rate of the bank, we can see
+ 
+
+331
+00:05:56,960 --> 00:05:59,590
+interest rate of the bank, we can see
+that interest here means something more
+
+332
+00:05:59,590 --> 00:05:59,600
+that interest here means something more
+ 
+
+333
+00:05:59,600 --> 00:06:02,310
+that interest here means something more
+like desire or intrigue. Whereas the
+
+334
+00:06:02,310 --> 00:06:02,320
+like desire or intrigue. Whereas the
+ 
+
+335
+00:06:02,320 --> 00:06:05,189
+like desire or intrigue. Whereas the
+second interest means more monetary and
+
+336
+00:06:05,189 --> 00:06:05,199
+second interest means more monetary and
+ 
+
+337
+00:06:05,199 --> 00:06:06,790
+second interest means more monetary and
+physical. Now, the beauty of the
+
+338
+00:06:06,790 --> 00:06:06,800
+physical. Now, the beauty of the
+ 
+
+339
+00:06:06,800 --> 00:06:08,870
+physical. Now, the beauty of the
+transformer and attention mechanism
+
+340
+00:06:08,870 --> 00:06:08,880
+transformer and attention mechanism
+ 
+
+341
+00:06:08,880 --> 00:06:10,710
+transformer and attention mechanism
+within some of the more modern
+
+342
+00:06:10,710 --> 00:06:10,720
+within some of the more modern
+ 
+
+343
+00:06:10,720 --> 00:06:12,790
+within some of the more modern
+approaches here is that we can very
+
+344
+00:06:12,790 --> 00:06:12,800
+approaches here is that we can very
+ 
+
+345
+00:06:12,800 --> 00:06:15,510
+approaches here is that we can very
+granularly identify the different
+
+346
+00:06:15,510 --> 00:06:15,520
+granularly identify the different
+ 
+
+347
+00:06:15,520 --> 00:06:17,830
+granularly identify the different
+meanings of this word interest as it
+
+348
+00:06:17,830 --> 00:06:17,840
+meanings of this word interest as it
+ 
+
+349
+00:06:17,840 --> 00:06:19,270
+meanings of this word interest as it
+relates to everything else in the
+
+350
+00:06:19,270 --> 00:06:19,280
+relates to everything else in the
+ 
+
+351
+00:06:19,280 --> 00:06:21,350
+relates to everything else in the
+sentence. So, it's very contextual and
+
+352
+00:06:21,350 --> 00:06:21,360
+sentence. So, it's very contextual and
+ 
+
+353
+00:06:21,360 --> 00:06:23,749
+sentence. So, it's very contextual and
+dynamic. Static on the other hand is
+
+354
+00:06:23,749 --> 00:06:23,759
+dynamic. Static on the other hand is
+ 
+
+355
+00:06:23,759 --> 00:06:26,950
+dynamic. Static on the other hand is
+going to have one assigned embedding for
+
+356
+00:06:26,950 --> 00:06:26,960
+going to have one assigned embedding for
+ 
+
+357
+00:06:26,960 --> 00:06:30,550
+going to have one assigned embedding for
+every single individual word or subword
+
+358
+00:06:30,550 --> 00:06:30,560
+every single individual word or subword
+ 
+
+359
+00:06:30,560 --> 00:06:32,790
+every single individual word or subword
+token level. So rather than calculating
+
+360
+00:06:32,790 --> 00:06:32,800
+token level. So rather than calculating
+ 
+
+361
+00:06:32,800 --> 00:06:35,110
+token level. So rather than calculating
+the entirety of the representation of
+
+362
+00:06:35,110 --> 00:06:35,120
+the entirety of the representation of
+ 
+
+363
+00:06:35,120 --> 00:06:37,350
+the entirety of the representation of
+the sentence every single time, we're
+
+364
+00:06:37,350 --> 00:06:37,360
+the sentence every single time, we're
+ 
+
+365
+00:06:37,360 --> 00:06:38,950
+the sentence every single time, we're
+essentially going to be creating a
+
+366
+00:06:38,950 --> 00:06:38,960
+essentially going to be creating a
+ 
+
+367
+00:06:38,960 --> 00:06:41,430
+essentially going to be creating a
+lookup table where each word or subword
+
+368
+00:06:41,430 --> 00:06:41,440
+lookup table where each word or subword
+ 
+
+369
+00:06:41,440 --> 00:06:43,350
+lookup table where each word or subword
+is going to have a corresponding vector
+
+370
+00:06:43,350 --> 00:06:43,360
+is going to have a corresponding vector
+ 
+
+371
+00:06:43,360 --> 00:06:45,270
+is going to have a corresponding vector
+that's learned through the mass scale
+
+372
+00:06:45,270 --> 00:06:45,280
+that's learned through the mass scale
+ 
+
+373
+00:06:45,280 --> 00:06:47,350
+that's learned through the mass scale
+machine learning on a large corpus of
+
+374
+00:06:47,350 --> 00:06:47,360
+machine learning on a large corpus of
+ 
+
+375
+00:06:47,360 --> 00:06:49,189
+machine learning on a large corpus of
+text. How does this happen? Well, we can
+
+376
+00:06:49,189 --> 00:06:49,199
+text. How does this happen? Well, we can
+ 
+
+377
+00:06:49,199 --> 00:06:52,150
+text. How does this happen? Well, we can
+look at the two specific ideas that the
+
+378
+00:06:52,150 --> 00:06:52,160
+look at the two specific ideas that the
+ 
+
+379
+00:06:52,160 --> 00:06:54,469
+look at the two specific ideas that the
+Google paper introduced. Continuous bag
+
+380
+00:06:54,469 --> 00:06:54,479
+Google paper introduced. Continuous bag
+ 
+
+381
+00:06:54,479 --> 00:06:56,150
+Google paper introduced. Continuous bag
+of words or from now on I'll just say
+
+382
+00:06:56,150 --> 00:06:56,160
+of words or from now on I'll just say
+ 
+
+383
+00:06:56,160 --> 00:06:58,550
+of words or from now on I'll just say
+SIBO and skip Graham. These are
+
+384
+00:06:58,550 --> 00:06:58,560
+SIBO and skip Graham. These are
+ 
+
+385
+00:06:58,560 --> 00:06:59,670
+SIBO and skip Graham. These are
+essentially going to be training
+
+386
+00:06:59,670 --> 00:06:59,680
+essentially going to be training
+ 
+
+387
+00:06:59,680 --> 00:07:01,670
+essentially going to be training
+objectives where the model during its
+
+388
+00:07:01,670 --> 00:07:01,680
+objectives where the model during its
+ 
+
+389
+00:07:01,680 --> 00:07:03,830
+objectives where the model during its
+training is going to be trying to do a
+
+390
+00:07:03,830 --> 00:07:03,840
+training is going to be trying to do a
+ 
+
+391
+00:07:03,840 --> 00:07:05,909
+training is going to be trying to do a
+specific task and through this task and
+
+392
+00:07:05,909 --> 00:07:05,919
+specific task and through this task and
+ 
+
+393
+00:07:05,919 --> 00:07:08,070
+specific task and through this task and
+through many many thousands and millions
+
+394
+00:07:08,070 --> 00:07:08,080
+through many many thousands and millions
+ 
+
+395
+00:07:08,080 --> 00:07:10,629
+through many many thousands and millions
+if not hundreds of millions of examples
+
+396
+00:07:10,629 --> 00:07:10,639
+if not hundreds of millions of examples
+ 
+
+397
+00:07:10,639 --> 00:07:13,589
+if not hundreds of millions of examples
+is going to learn how the actual human
+
+398
+00:07:13,589 --> 00:07:13,599
+is going to learn how the actual human
+ 
+
+399
+00:07:13,599 --> 00:07:15,909
+is going to learn how the actual human
+language works to be able to do this
+
+400
+00:07:15,909 --> 00:07:15,919
+language works to be able to do this
+ 
+
+401
+00:07:15,919 --> 00:07:18,070
+language works to be able to do this
+representation accurately. So for
+
+402
+00:07:18,070 --> 00:07:18,080
+representation accurately. So for
+ 
+
+403
+00:07:18,080 --> 00:07:19,589
+representation accurately. So for
+something like skipgram gram what we're
+
+404
+00:07:19,589 --> 00:07:19,599
+something like skipgram gram what we're
+ 
+
+405
+00:07:19,599 --> 00:07:21,350
+something like skipgram gram what we're
+doing is going to be predicting the
+
+406
+00:07:21,350 --> 00:07:21,360
+doing is going to be predicting the
+ 
+
+407
+00:07:21,360 --> 00:07:23,270
+doing is going to be predicting the
+surrounding words in a context window
+
+408
+00:07:23,270 --> 00:07:23,280
+surrounding words in a context window
+ 
+
+409
+00:07:23,280 --> 00:07:26,550
+surrounding words in a context window
+given a center word. So for the example
+
+410
+00:07:26,550 --> 00:07:26,560
+given a center word. So for the example
+ 
+
+411
+00:07:26,560 --> 00:07:28,550
+given a center word. So for the example
+of a context window of three and the
+
+412
+00:07:28,550 --> 00:07:28,560
+of a context window of three and the
+ 
+
+413
+00:07:28,560 --> 00:07:30,390
+of a context window of three and the
+sentence, the quick brown fox jumps over
+
+414
+00:07:30,390 --> 00:07:30,400
+sentence, the quick brown fox jumps over
+ 
+
+415
+00:07:30,400 --> 00:07:32,790
+sentence, the quick brown fox jumps over
+the lazy dog. If we look at this middle
+
+416
+00:07:32,790 --> 00:07:32,800
+the lazy dog. If we look at this middle
+ 
+
+417
+00:07:32,800 --> 00:07:36,550
+the lazy dog. If we look at this middle
+example here and have the word fox, the
+
+418
+00:07:36,550 --> 00:07:36,560
+example here and have the word fox, the
+ 
+
+419
+00:07:36,560 --> 00:07:38,550
+example here and have the word fox, the
+predicted words that we would want are
+
+420
+00:07:38,550 --> 00:07:38,560
+predicted words that we would want are
+ 
+
+421
+00:07:38,560 --> 00:07:41,510
+predicted words that we would want are
+the quick brown and jumps over the or
+
+422
+00:07:41,510 --> 00:07:41,520
+the quick brown and jumps over the or
+ 
+
+423
+00:07:41,520 --> 00:07:44,230
+the quick brown and jumps over the or
+for something like the at the start, we
+
+424
+00:07:44,230 --> 00:07:44,240
+for something like the at the start, we
+ 
+
+425
+00:07:44,240 --> 00:07:47,110
+for something like the at the start, we
+would want to predict quick brown fox.
+
+426
+00:07:47,110 --> 00:07:47,120
+would want to predict quick brown fox.
+ 
+
+427
+00:07:47,120 --> 00:07:49,110
+would want to predict quick brown fox.
+And then continuous bag of words is a
+
+428
+00:07:49,110 --> 00:07:49,120
+And then continuous bag of words is a
+ 
+
+429
+00:07:49,120 --> 00:07:50,870
+And then continuous bag of words is a
+little bit of the inverse of skipgram
+
+430
+00:07:50,870 --> 00:07:50,880
+little bit of the inverse of skipgram
+ 
+
+431
+00:07:50,880 --> 00:07:53,350
+little bit of the inverse of skipgram
+gram where given the surrounding words
+
+432
+00:07:53,350 --> 00:07:53,360
+gram where given the surrounding words
+ 
+
+433
+00:07:53,360 --> 00:07:55,909
+gram where given the surrounding words
+we are going to predict the center word.
+
+434
+00:07:55,909 --> 00:07:55,919
+we are going to predict the center word.
+ 
+
+435
+00:07:55,919 --> 00:07:58,790
+we are going to predict the center word.
+So given the quick brown jumps overthe',
+
+436
+00:07:58,790 --> 00:07:58,800
+So given the quick brown jumps overthe',
+ 
+
+437
+00:07:58,800 --> 00:08:01,670
+So given the quick brown jumps overthe',
+we would want to predict fox. Now if
+
+438
+00:08:01,670 --> 00:08:01,680
+we would want to predict fox. Now if
+ 
+
+439
+00:08:01,680 --> 00:08:03,189
+we would want to predict fox. Now if
+you're unfamiliar with how kind of you
+
+440
+00:08:03,189 --> 00:08:03,199
+you're unfamiliar with how kind of you
+ 
+
+441
+00:08:03,199 --> 00:08:04,550
+you're unfamiliar with how kind of you
+know machine learning and language
+
+442
+00:08:04,550 --> 00:08:04,560
+know machine learning and language
+ 
+
+443
+00:08:04,560 --> 00:08:06,790
+know machine learning and language
+models are trained like this, what's
+
+444
+00:08:06,790 --> 00:08:06,800
+models are trained like this, what's
+ 
+
+445
+00:08:06,800 --> 00:08:09,350
+models are trained like this, what's
+going to go on is many thousands and
+
+446
+00:08:09,350 --> 00:08:09,360
+going to go on is many thousands and
+ 
+
+447
+00:08:09,360 --> 00:08:11,189
+going to go on is many thousands and
+millions of these examples are going to
+
+448
+00:08:11,189 --> 00:08:11,199
+millions of these examples are going to
+ 
+
+449
+00:08:11,199 --> 00:08:13,189
+millions of these examples are going to
+be shown to the model. The model is
+
+450
+00:08:13,189 --> 00:08:13,199
+be shown to the model. The model is
+ 
+
+451
+00:08:13,199 --> 00:08:15,629
+be shown to the model. The model is
+going to be trying to predict either
+
+452
+00:08:15,629 --> 00:08:15,639
+going to be trying to predict either
+ 
+
+453
+00:08:15,639 --> 00:08:18,790
+going to be trying to predict either
+these outside words if using a skipgram
+
+454
+00:08:18,790 --> 00:08:18,800
+these outside words if using a skipgram
+ 
+
+455
+00:08:18,800 --> 00:08:21,830
+these outside words if using a skipgram
+model or the inner target word given the
+
+456
+00:08:21,830 --> 00:08:21,840
+model or the inner target word given the
+ 
+
+457
+00:08:21,840 --> 00:08:24,230
+model or the inner target word given the
+continuous bag of words approach. And
+
+458
+00:08:24,230 --> 00:08:24,240
+continuous bag of words approach. And
+ 
+
+459
+00:08:24,240 --> 00:08:26,070
+continuous bag of words approach. And
+what's going to happen is that the
+
+460
+00:08:26,070 --> 00:08:26,080
+what's going to happen is that the
+ 
+
+461
+00:08:26,080 --> 00:08:27,909
+what's going to happen is that the
+output from the model which might be
+
+462
+00:08:27,909 --> 00:08:27,919
+output from the model which might be
+ 
+
+463
+00:08:27,919 --> 00:08:30,150
+output from the model which might be
+something like quick brown fox in
+
+464
+00:08:30,150 --> 00:08:30,160
+something like quick brown fox in
+ 
+
+465
+00:08:30,160 --> 00:08:32,790
+something like quick brown fox in
+comparison to the when this is ran
+
+466
+00:08:32,790 --> 00:08:32,800
+comparison to the when this is ran
+ 
+
+467
+00:08:32,800 --> 00:08:35,430
+comparison to the when this is ran
+through are going to be compared to the
+
+468
+00:08:35,430 --> 00:08:35,440
+through are going to be compared to the
+ 
+
+469
+00:08:35,440 --> 00:08:37,670
+through are going to be compared to the
+actual expectation in the ground truth.
+
+470
+00:08:37,670 --> 00:08:37,680
+actual expectation in the ground truth.
+ 
+
+471
+00:08:37,680 --> 00:08:39,509
+actual expectation in the ground truth.
+And then given the accuracy of the model
+
+472
+00:08:39,509 --> 00:08:39,519
+And then given the accuracy of the model
+ 
+
+473
+00:08:39,519 --> 00:08:40,630
+And then given the accuracy of the model
+to actually be able to do that
+
+474
+00:08:40,630 --> 00:08:40,640
+to actually be able to do that
+ 
+
+475
+00:08:40,640 --> 00:08:42,709
+to actually be able to do that
+prediction, what we're going to do is
+
+476
+00:08:42,709 --> 00:08:42,719
+prediction, what we're going to do is
+ 
+
+477
+00:08:42,719 --> 00:08:44,630
+prediction, what we're going to do is
+update all of the inner numbers or the
+
+478
+00:08:44,630 --> 00:08:44,640
+update all of the inner numbers or the
+ 
+
+479
+00:08:44,640 --> 00:08:47,030
+update all of the inner numbers or the
+weights and biases within the model to
+
+480
+00:08:47,030 --> 00:08:47,040
+weights and biases within the model to
+ 
+
+481
+00:08:47,040 --> 00:08:49,509
+weights and biases within the model to
+maximize that accuracy. So over time,
+
+482
+00:08:49,509 --> 00:08:49,519
+maximize that accuracy. So over time,
+ 
+
+483
+00:08:49,519 --> 00:08:51,430
+maximize that accuracy. So over time,
+the model will become better at actually
+
+484
+00:08:51,430 --> 00:08:51,440
+the model will become better at actually
+ 
+
+485
+00:08:51,440 --> 00:08:53,750
+the model will become better at actually
+doing this specific task. And if we look
+
+486
+00:08:53,750 --> 00:08:53,760
+doing this specific task. And if we look
+ 
+
+487
+00:08:53,760 --> 00:08:56,230
+doing this specific task. And if we look
+at something like languages here, that
+
+488
+00:08:56,230 --> 00:08:56,240
+at something like languages here, that
+ 
+
+489
+00:08:56,240 --> 00:08:58,230
+at something like languages here, that
+means that it's going to build a better
+
+490
+00:08:58,230 --> 00:08:58,240
+means that it's going to build a better
+ 
+
+491
+00:08:58,240 --> 00:09:00,949
+means that it's going to build a better
+internal understanding of language or be
+
+492
+00:09:00,949 --> 00:09:00,959
+internal understanding of language or be
+ 
+
+493
+00:09:00,959 --> 00:09:03,509
+internal understanding of language or be
+able to model language. Thus, using
+
+494
+00:09:03,509 --> 00:09:03,519
+able to model language. Thus, using
+ 
+
+495
+00:09:03,519 --> 00:09:05,509
+able to model language. Thus, using
+these kind of fill-in-the-blank or
+
+496
+00:09:05,509 --> 00:09:05,519
+these kind of fill-in-the-blank or
+ 
+
+497
+00:09:05,519 --> 00:09:08,630
+these kind of fill-in-the-blank or
+predict around approaches to training
+
+498
+00:09:08,630 --> 00:09:08,640
+predict around approaches to training
+ 
+
+499
+00:09:08,640 --> 00:09:11,110
+predict around approaches to training
+language-based models can help actually
+
+500
+00:09:11,110 --> 00:09:11,120
+language-based models can help actually
+ 
+
+501
+00:09:11,120 --> 00:09:13,190
+language-based models can help actually
+instill and generalize over the many
+
+502
+00:09:13,190 --> 00:09:13,200
+instill and generalize over the many
+ 
+
+503
+00:09:13,200 --> 00:09:15,110
+instill and generalize over the many
+millions of examples that tend to be
+
+504
+00:09:15,110 --> 00:09:15,120
+millions of examples that tend to be
+ 
+
+505
+00:09:15,120 --> 00:09:17,990
+millions of examples that tend to be
+shown to actually do have some sort of
+
+506
+00:09:17,990 --> 00:09:18,000
+shown to actually do have some sort of
+ 
+
+507
+00:09:18,000 --> 00:09:19,990
+shown to actually do have some sort of
+inherent understanding of how language
+
+508
+00:09:19,990 --> 00:09:20,000
+inherent understanding of how language
+ 
+
+509
+00:09:20,000 --> 00:09:22,550
+inherent understanding of how language
+works pretty much because you're able to
+
+510
+00:09:22,550 --> 00:09:22,560
+works pretty much because you're able to
+ 
+
+511
+00:09:22,560 --> 00:09:24,630
+works pretty much because you're able to
+understand what words go where. These
+
+512
+00:09:24,630 --> 00:09:24,640
+understand what words go where. These
+ 
+
+513
+00:09:24,640 --> 00:09:26,070
+understand what words go where. These
+two approaches are not the only ones
+
+514
+00:09:26,070 --> 00:09:26,080
+two approaches are not the only ones
+ 
+
+515
+00:09:26,080 --> 00:09:27,509
+two approaches are not the only ones
+that have been used to train static
+
+516
+00:09:27,509 --> 00:09:27,519
+that have been used to train static
+ 
+
+517
+00:09:27,519 --> 00:09:30,150
+that have been used to train static
+embedding models. We've also seen the
+
+518
+00:09:30,150 --> 00:09:30,160
+embedding models. We've also seen the
+ 
+
+519
+00:09:30,160 --> 00:09:32,790
+embedding models. We've also seen the
+idea of word co-occurrences and
+
+520
+00:09:32,790 --> 00:09:32,800
+idea of word co-occurrences and
+ 
+
+521
+00:09:32,800 --> 00:09:35,829
+idea of word co-occurrences and
+frequency pop up. Things like the glove
+
+522
+00:09:35,829 --> 00:09:35,839
+frequency pop up. Things like the glove
+ 
+
+523
+00:09:35,839 --> 00:09:39,030
+frequency pop up. Things like the glove
+model or global vectors for word
+
+524
+00:09:39,030 --> 00:09:39,040
+model or global vectors for word
+ 
+
+525
+00:09:39,040 --> 00:09:41,350
+model or global vectors for word
+representation coming out of Stanford
+
+526
+00:09:41,350 --> 00:09:41,360
+representation coming out of Stanford
+ 
+
+527
+00:09:41,360 --> 00:09:43,670
+representation coming out of Stanford
+use this co-occurrence matrix in an
+
+528
+00:09:43,670 --> 00:09:43,680
+use this co-occurrence matrix in an
+ 
+
+529
+00:09:43,680 --> 00:09:45,670
+use this co-occurrence matrix in an
+interesting way which essentially posits
+
+530
+00:09:45,670 --> 00:09:45,680
+interesting way which essentially posits
+ 
+
+531
+00:09:45,680 --> 00:09:48,790
+interesting way which essentially posits
+that words tend to be grouped together
+
+532
+00:09:48,790 --> 00:09:48,800
+that words tend to be grouped together
+ 
+
+533
+00:09:48,800 --> 00:09:51,350
+that words tend to be grouped together
+and in training with something that
+
+534
+00:09:51,350 --> 00:09:51,360
+and in training with something that
+ 
+
+535
+00:09:51,360 --> 00:09:53,910
+and in training with something that
+follows a occurrence or frequency based
+
+536
+00:09:53,910 --> 00:09:53,920
+follows a occurrence or frequency based
+ 
+
+537
+00:09:53,920 --> 00:09:55,750
+follows a occurrence or frequency based
+approach we can capture that
+
+538
+00:09:55,750 --> 00:09:55,760
+approach we can capture that
+ 
+
+539
+00:09:55,760 --> 00:09:58,470
+approach we can capture that
+distribution of semantics of language
+
+540
+00:09:58,470 --> 00:09:58,480
+distribution of semantics of language
+ 
+
+541
+00:09:58,480 --> 00:10:00,630
+distribution of semantics of language
+based on kind of this specific
+
+542
+00:10:00,630 --> 00:10:00,640
+based on kind of this specific
+ 
+
+543
+00:10:00,640 --> 00:10:02,790
+based on kind of this specific
+principle. Now before we actually show
+
+544
+00:10:02,790 --> 00:10:02,800
+principle. Now before we actually show
+ 
+
+545
+00:10:02,800 --> 00:10:04,949
+principle. Now before we actually show
+some of these static embedding models in
+
+546
+00:10:04,949 --> 00:10:04,959
+some of these static embedding models in
+ 
+
+547
+00:10:04,959 --> 00:10:07,990
+some of these static embedding models in
+action, I do want to talk very quickly
+
+548
+00:10:07,990 --> 00:10:08,000
+action, I do want to talk very quickly
+ 
+
+549
+00:10:08,000 --> 00:10:10,710
+action, I do want to talk very quickly
+about the act of tokenization.
+
+550
+00:10:10,710 --> 00:10:10,720
+about the act of tokenization.
+ 
+
+551
+00:10:10,720 --> 00:10:12,630
+about the act of tokenization.
+Tokenization plays a very big part in
+
+552
+00:10:12,630 --> 00:10:12,640
+Tokenization plays a very big part in
+ 
+
+553
+00:10:12,640 --> 00:10:13,990
+Tokenization plays a very big part in
+this because essentially it's going to
+
+554
+00:10:13,990 --> 00:10:14,000
+this because essentially it's going to
+ 
+
+555
+00:10:14,000 --> 00:10:16,389
+this because essentially it's going to
+create what is known as the vocabulary
+
+556
+00:10:16,389 --> 00:10:16,399
+create what is known as the vocabulary
+ 
+
+557
+00:10:16,399 --> 00:10:19,990
+create what is known as the vocabulary
+for these models or the entire range of
+
+558
+00:10:19,990 --> 00:10:20,000
+for these models or the entire range of
+ 
+
+559
+00:10:20,000 --> 00:10:22,150
+for these models or the entire range of
+different words or parts of words or
+
+560
+00:10:22,150 --> 00:10:22,160
+different words or parts of words or
+ 
+
+561
+00:10:22,160 --> 00:10:24,949
+different words or parts of words or
+combinations of characters that are
+
+562
+00:10:24,949 --> 00:10:24,959
+combinations of characters that are
+ 
+
+563
+00:10:24,959 --> 00:10:26,870
+combinations of characters that are
+going to be learned and understood over
+
+564
+00:10:26,870 --> 00:10:26,880
+going to be learned and understood over
+ 
+
+565
+00:10:26,880 --> 00:10:29,110
+going to be learned and understood over
+this training process. It's likely that
+
+566
+00:10:29,110 --> 00:10:29,120
+this training process. It's likely that
+ 
+
+567
+00:10:29,120 --> 00:10:30,550
+this training process. It's likely that
+you're familiar with tokenization
+
+568
+00:10:30,550 --> 00:10:30,560
+you're familiar with tokenization
+ 
+
+569
+00:10:30,560 --> 00:10:32,150
+you're familiar with tokenization
+because of how it applies to language
+
+570
+00:10:32,150 --> 00:10:32,160
+because of how it applies to language
+ 
+
+571
+00:10:32,160 --> 00:10:34,310
+because of how it applies to language
+models. We're taking raw text.
+
+572
+00:10:34,310 --> 00:10:34,320
+models. We're taking raw text.
+ 
+
+573
+00:10:34,320 --> 00:10:36,470
+models. We're taking raw text.
+Essentially, it's going to be split into
+
+574
+00:10:36,470 --> 00:10:36,480
+Essentially, it's going to be split into
+ 
+
+575
+00:10:36,480 --> 00:10:38,949
+Essentially, it's going to be split into
+all of these individual components. So,
+
+576
+00:10:38,949 --> 00:10:38,959
+all of these individual components. So,
+ 
+
+577
+00:10:38,959 --> 00:10:40,870
+all of these individual components. So,
+something like many is going to be one
+
+578
+00:10:40,870 --> 00:10:40,880
+something like many is going to be one
+ 
+
+579
+00:10:40,880 --> 00:10:43,430
+something like many is going to be one
+token, but then this space and words is
+
+580
+00:10:43,430 --> 00:10:43,440
+token, but then this space and words is
+ 
+
+581
+00:10:43,440 --> 00:10:45,750
+token, but then this space and words is
+going to be another token, and it's
+
+582
+00:10:45,750 --> 00:10:45,760
+going to be another token, and it's
+ 
+
+583
+00:10:45,760 --> 00:10:49,190
+going to be another token, and it's
+going to take an entire sequence here
+
+584
+00:10:49,190 --> 00:10:49,200
+going to take an entire sequence here
+ 
+
+585
+00:10:49,200 --> 00:10:51,670
+going to take an entire sequence here
+and essentially chop it up into
+
+586
+00:10:51,670 --> 00:10:51,680
+and essentially chop it up into
+ 
+
+587
+00:10:51,680 --> 00:10:53,829
+and essentially chop it up into
+individual pieces. These of course do
+
+588
+00:10:53,829 --> 00:10:53,839
+individual pieces. These of course do
+ 
+
+589
+00:10:53,839 --> 00:10:56,550
+individual pieces. These of course do
+not usually take the form of just
+
+590
+00:10:56,550 --> 00:10:56,560
+not usually take the form of just
+ 
+
+591
+00:10:56,560 --> 00:10:58,630
+not usually take the form of just
+playing characters like this. Rather
+
+592
+00:10:58,630 --> 00:10:58,640
+playing characters like this. Rather
+ 
+
+593
+00:10:58,640 --> 00:11:00,790
+playing characters like this. Rather
+they become the numbers and then these
+
+594
+00:11:00,790 --> 00:11:00,800
+they become the numbers and then these
+ 
+
+595
+00:11:00,800 --> 00:11:04,069
+they become the numbers and then these
+numbers correspond back to the specific
+
+596
+00:11:04,069 --> 00:11:04,079
+numbers correspond back to the specific
+ 
+
+597
+00:11:04,079 --> 00:11:07,030
+numbers correspond back to the specific
+text. So that in the life cycle of
+
+598
+00:11:07,030 --> 00:11:07,040
+text. So that in the life cycle of
+ 
+
+599
+00:11:07,040 --> 00:11:08,230
+text. So that in the life cycle of
+actually interacting with something like
+
+600
+00:11:08,230 --> 00:11:08,240
+actually interacting with something like
+ 
+
+601
+00:11:08,240 --> 00:11:10,389
+actually interacting with something like
+a language model if you input a prompt
+
+602
+00:11:10,389 --> 00:11:10,399
+a language model if you input a prompt
+ 
+
+603
+00:11:10,399 --> 00:11:12,310
+a language model if you input a prompt
+maybe it's something like this it gets
+
+604
+00:11:12,310 --> 00:11:12,320
+maybe it's something like this it gets
+ 
+
+605
+00:11:12,320 --> 00:11:14,150
+maybe it's something like this it gets
+converted to numbers. Those numbers are
+
+606
+00:11:14,150 --> 00:11:14,160
+converted to numbers. Those numbers are
+ 
+
+607
+00:11:14,160 --> 00:11:17,190
+converted to numbers. Those numbers are
+then input into the LLM which is then
+
+608
+00:11:17,190 --> 00:11:17,200
+then input into the LLM which is then
+ 
+
+609
+00:11:17,200 --> 00:11:20,069
+then input into the LLM which is then
+able to be calculated and do the next
+
+610
+00:11:20,069 --> 00:11:20,079
+able to be calculated and do the next
+ 
+
+611
+00:11:20,079 --> 00:11:22,790
+able to be calculated and do the next
+token predictions. And then those next
+
+612
+00:11:22,790 --> 00:11:22,800
+token predictions. And then those next
+ 
+
+613
+00:11:22,800 --> 00:11:24,630
+token predictions. And then those next
+predicted tokens from the language model
+
+614
+00:11:24,630 --> 00:11:24,640
+predicted tokens from the language model
+ 
+
+615
+00:11:24,640 --> 00:11:26,790
+predicted tokens from the language model
+are then mapped back to the text to give
+
+616
+00:11:26,790 --> 00:11:26,800
+are then mapped back to the text to give
+ 
+
+617
+00:11:26,800 --> 00:11:29,990
+are then mapped back to the text to give
+us our plain English or any language for
+
+618
+00:11:29,990 --> 00:11:30,000
+us our plain English or any language for
+ 
+
+619
+00:11:30,000 --> 00:11:32,230
+us our plain English or any language for
+that matter output. Now, this plays a
+
+620
+00:11:32,230 --> 00:11:32,240
+that matter output. Now, this plays a
+ 
+
+621
+00:11:32,240 --> 00:11:33,910
+that matter output. Now, this plays a
+part because essentially every single
+
+622
+00:11:33,910 --> 00:11:33,920
+part because essentially every single
+ 
+
+623
+00:11:33,920 --> 00:11:35,990
+part because essentially every single
+one of those tokens is going to have a
+
+624
+00:11:35,990 --> 00:11:36,000
+one of those tokens is going to have a
+ 
+
+625
+00:11:36,000 --> 00:11:37,829
+one of those tokens is going to have a
+corresponding embedding that is learned
+
+626
+00:11:37,829 --> 00:11:37,839
+corresponding embedding that is learned
+ 
+
+627
+00:11:37,839 --> 00:11:39,509
+corresponding embedding that is learned
+through the training process of these
+
+628
+00:11:39,509 --> 00:11:39,519
+through the training process of these
+ 
+
+629
+00:11:39,519 --> 00:11:41,590
+through the training process of these
+static embedding models because as
+
+630
+00:11:41,590 --> 00:11:41,600
+static embedding models because as
+ 
+
+631
+00:11:41,600 --> 00:11:43,190
+static embedding models because as
+mentioned, we're essentially going to be
+
+632
+00:11:43,190 --> 00:11:43,200
+mentioned, we're essentially going to be
+ 
+
+633
+00:11:43,200 --> 00:11:45,910
+mentioned, we're essentially going to be
+creating a learned lookup table where
+
+634
+00:11:45,910 --> 00:11:45,920
+creating a learned lookup table where
+ 
+
+635
+00:11:45,920 --> 00:11:49,110
+creating a learned lookup table where
+then as we pop in some sequence of text,
+
+636
+00:11:49,110 --> 00:11:49,120
+then as we pop in some sequence of text,
+ 
+
+637
+00:11:49,120 --> 00:11:51,350
+then as we pop in some sequence of text,
+each of the individual words or however
+
+638
+00:11:51,350 --> 00:11:51,360
+each of the individual words or however
+ 
+
+639
+00:11:51,360 --> 00:11:53,509
+each of the individual words or however
+it's tokenized are going to be split up
+
+640
+00:11:53,509 --> 00:11:53,519
+it's tokenized are going to be split up
+ 
+
+641
+00:11:53,519 --> 00:11:55,829
+it's tokenized are going to be split up
+and then all of the premputed embeddings
+
+642
+00:11:55,829 --> 00:11:55,839
+and then all of the premputed embeddings
+ 
+
+643
+00:11:55,839 --> 00:11:57,670
+and then all of the premputed embeddings
+are going to be mapped back to those
+
+644
+00:11:57,670 --> 00:11:57,680
+are going to be mapped back to those
+ 
+
+645
+00:11:57,680 --> 00:11:59,910
+are going to be mapped back to those
+tokens. For the sake of example, we
+
+646
+00:11:59,910 --> 00:11:59,920
+tokens. For the sake of example, we
+ 
+
+647
+00:11:59,920 --> 00:12:03,350
+tokens. For the sake of example, we
+generally look at full words split up as
+
+648
+00:12:03,350 --> 00:12:03,360
+generally look at full words split up as
+ 
+
+649
+00:12:03,360 --> 00:12:06,790
+generally look at full words split up as
+individual tokens. But in general, as we
+
+650
+00:12:06,790 --> 00:12:06,800
+individual tokens. But in general, as we
+ 
+
+651
+00:12:06,800 --> 00:12:08,550
+individual tokens. But in general, as we
+just saw, it can be a little bit more
+
+652
+00:12:08,550 --> 00:12:08,560
+just saw, it can be a little bit more
+ 
+
+653
+00:12:08,560 --> 00:12:10,629
+just saw, it can be a little bit more
+complicated than that. However, creating
+
+654
+00:12:10,629 --> 00:12:10,639
+complicated than that. However, creating
+ 
+
+655
+00:12:10,639 --> 00:12:12,990
+complicated than that. However, creating
+a fixed vocabulary using something like
+
+656
+00:12:12,990 --> 00:12:13,000
+a fixed vocabulary using something like
+ 
+
+657
+00:12:13,000 --> 00:12:15,829
+a fixed vocabulary using something like
+tokenization is taking first your first
+
+658
+00:12:15,829 --> 00:12:15,839
+tokenization is taking first your first
+ 
+
+659
+00:12:15,839 --> 00:12:18,629
+tokenization is taking first your first
+corpus of text and converting it all and
+
+660
+00:12:18,629 --> 00:12:18,639
+corpus of text and converting it all and
+ 
+
+661
+00:12:18,639 --> 00:12:20,829
+corpus of text and converting it all and
+mapping all of those words using a
+
+662
+00:12:20,829 --> 00:12:20,839
+mapping all of those words using a
+ 
+
+663
+00:12:20,839 --> 00:12:24,310
+mapping all of those words using a
+tokenizer into the actual numbers. We
+
+664
+00:12:24,310 --> 00:12:24,320
+tokenizer into the actual numbers. We
+ 
+
+665
+00:12:24,320 --> 00:12:26,310
+tokenizer into the actual numbers. We
+then usually identify all of the unique
+
+666
+00:12:26,310 --> 00:12:26,320
+then usually identify all of the unique
+ 
+
+667
+00:12:26,320 --> 00:12:28,310
+then usually identify all of the unique
+word tokens, apply some sort of
+
+668
+00:12:28,310 --> 00:12:28,320
+word tokens, apply some sort of
+ 
+
+669
+00:12:28,320 --> 00:12:30,710
+word tokens, apply some sort of
+frequency threshold to exclude very rare
+
+670
+00:12:30,710 --> 00:12:30,720
+frequency threshold to exclude very rare
+ 
+
+671
+00:12:30,720 --> 00:12:33,670
+frequency threshold to exclude very rare
+words, and then often we set some form
+
+672
+00:12:33,670 --> 00:12:33,680
+words, and then often we set some form
+ 
+
+673
+00:12:33,680 --> 00:12:36,710
+words, and then often we set some form
+of maximum vocabulary size. Usually this
+
+674
+00:12:36,710 --> 00:12:36,720
+of maximum vocabulary size. Usually this
+ 
+
+675
+00:12:36,720 --> 00:12:40,389
+of maximum vocabulary size. Usually this
+is around 32,000 or upwards depending on
+
+676
+00:12:40,389 --> 00:12:40,399
+is around 32,000 or upwards depending on
+ 
+
+677
+00:12:40,399 --> 00:12:42,629
+is around 32,000 or upwards depending on
+how crazy you want to get. And then
+
+678
+00:12:42,629 --> 00:12:42,639
+how crazy you want to get. And then
+ 
+
+679
+00:12:42,639 --> 00:12:44,629
+how crazy you want to get. And then
+different special tokens such as
+
+680
+00:12:44,629 --> 00:12:44,639
+different special tokens such as
+ 
+
+681
+00:12:44,639 --> 00:12:47,110
+different special tokens such as
+representing out of vocabulary words or
+
+682
+00:12:47,110 --> 00:12:47,120
+representing out of vocabulary words or
+ 
+
+683
+00:12:47,120 --> 00:12:50,150
+representing out of vocabulary words or
+other maybe unique Unicode characters
+
+684
+00:12:50,150 --> 00:12:50,160
+other maybe unique Unicode characters
+ 
+
+685
+00:12:50,160 --> 00:12:52,310
+other maybe unique Unicode characters
+are going to be input in. That was a
+
+686
+00:12:52,310 --> 00:12:52,320
+are going to be input in. That was a
+ 
+
+687
+00:12:52,320 --> 00:12:54,949
+are going to be input in. That was a
+very very simplified explanation. So I
+
+688
+00:12:54,949 --> 00:12:54,959
+very very simplified explanation. So I
+ 
+
+689
+00:12:54,959 --> 00:12:56,150
+very very simplified explanation. So I
+definitely recommend and we'll be
+
+690
+00:12:56,150 --> 00:12:56,160
+definitely recommend and we'll be
+ 
+
+691
+00:12:56,160 --> 00:12:57,829
+definitely recommend and we'll be
+linking in the description below to
+
+692
+00:12:57,829 --> 00:12:57,839
+linking in the description below to
+ 
+
+693
+00:12:57,839 --> 00:12:59,750
+linking in the description below to
+watch the greatest to ever do it. Andre
+
+694
+00:12:59,750 --> 00:12:59,760
+watch the greatest to ever do it. Andre
+ 
+
+695
+00:12:59,760 --> 00:13:02,710
+watch the greatest to ever do it. Andre
+Carpathy here. Build the GPT tokenizer
+
+696
+00:13:02,710 --> 00:13:02,720
+Carpathy here. Build the GPT tokenizer
+ 
+
+697
+00:13:02,720 --> 00:13:04,710
+Carpathy here. Build the GPT tokenizer
+from scratch. This will certainly help
+
+698
+00:13:04,710 --> 00:13:04,720
+from scratch. This will certainly help
+ 
+
+699
+00:13:04,720 --> 00:13:07,949
+from scratch. This will certainly help
+you understand the wacky wild world of
+
+700
+00:13:07,949 --> 00:13:07,959
+you understand the wacky wild world of
+ 
+
+701
+00:13:07,959 --> 00:13:09,750
+you understand the wacky wild world of
+tokenization. But when we're actually
+
+702
+00:13:09,750 --> 00:13:09,760
+tokenization. But when we're actually
+ 
+
+703
+00:13:09,760 --> 00:13:12,069
+tokenization. But when we're actually
+inputting a sentence like we love NLP
+
+704
+00:13:12,069 --> 00:13:12,079
+inputting a sentence like we love NLP
+ 
+
+705
+00:13:12,079 --> 00:13:14,470
+inputting a sentence like we love NLP
+back into a static embedding model, it's
+
+706
+00:13:14,470 --> 00:13:14,480
+back into a static embedding model, it's
+ 
+
+707
+00:13:14,480 --> 00:13:16,949
+back into a static embedding model, it's
+going to undergo the same tokenization
+
+708
+00:13:16,949 --> 00:13:16,959
+going to undergo the same tokenization
+ 
+
+709
+00:13:16,959 --> 00:13:19,590
+going to undergo the same tokenization
+and then essentially all of the words
+
+710
+00:13:19,590 --> 00:13:19,600
+and then essentially all of the words
+ 
+
+711
+00:13:19,600 --> 00:13:21,350
+and then essentially all of the words
+are going to be mapped back to the
+
+712
+00:13:21,350 --> 00:13:21,360
+are going to be mapped back to the
+ 
+
+713
+00:13:21,360 --> 00:13:24,069
+are going to be mapped back to the
+vocabulary of this model. So within our
+
+714
+00:13:24,069 --> 00:13:24,079
+vocabulary of this model. So within our
+ 
+
+715
+00:13:24,079 --> 00:13:26,069
+vocabulary of this model. So within our
+vocabulary, we are going to have a
+
+716
+00:13:26,069 --> 00:13:26,079
+vocabulary, we are going to have a
+ 
+
+717
+00:13:26,079 --> 00:13:27,509
+vocabulary, we are going to have a
+corresponding learn vector
+
+718
+00:13:27,509 --> 00:13:27,519
+corresponding learn vector
+ 
+
+719
+00:13:27,519 --> 00:13:29,509
+corresponding learn vector
+representation of each one of these
+
+720
+00:13:29,509 --> 00:13:29,519
+representation of each one of these
+ 
+
+721
+00:13:29,519 --> 00:13:31,509
+representation of each one of these
+words. Now having the representation of
+
+722
+00:13:31,509 --> 00:13:31,519
+words. Now having the representation of
+ 
+
+723
+00:13:31,519 --> 00:13:33,829
+words. Now having the representation of
+each word is kind of useful but
+
+724
+00:13:33,829 --> 00:13:33,839
+each word is kind of useful but
+ 
+
+725
+00:13:33,839 --> 00:13:35,829
+each word is kind of useful but
+generally you want to encode sequences
+
+726
+00:13:35,829 --> 00:13:35,839
+generally you want to encode sequences
+ 
+
+727
+00:13:35,839 --> 00:13:37,910
+generally you want to encode sequences
+of words which is where we actually
+
+728
+00:13:37,910 --> 00:13:37,920
+of words which is where we actually
+ 
+
+729
+00:13:37,920 --> 00:13:39,949
+of words which is where we actually
+start looking into different pooling
+
+730
+00:13:39,949 --> 00:13:39,959
+start looking into different pooling
+ 
+
+731
+00:13:39,959 --> 00:13:42,949
+start looking into different pooling
+mechanisms. So with static embeddings
+
+732
+00:13:42,949 --> 00:13:42,959
+mechanisms. So with static embeddings
+ 
+
+733
+00:13:42,959 --> 00:13:44,470
+mechanisms. So with static embeddings
+we're not going to do anything too
+
+734
+00:13:44,470 --> 00:13:44,480
+we're not going to do anything too
+ 
+
+735
+00:13:44,480 --> 00:13:47,790
+we're not going to do anything too
+fancy. Generally the embeddings for each
+
+736
+00:13:47,790 --> 00:13:47,800
+fancy. Generally the embeddings for each
+ 
+
+737
+00:13:47,800 --> 00:13:50,629
+fancy. Generally the embeddings for each
+individual word are going to be combined
+
+738
+00:13:50,629 --> 00:13:50,639
+individual word are going to be combined
+ 
+
+739
+00:13:50,639 --> 00:13:52,629
+individual word are going to be combined
+in some way. And there's a few different
+
+740
+00:13:52,629 --> 00:13:52,639
+in some way. And there's a few different
+ 
+
+741
+00:13:52,639 --> 00:13:54,550
+in some way. And there's a few different
+ways of actually doing that. You may do
+
+742
+00:13:54,550 --> 00:13:54,560
+ways of actually doing that. You may do
+ 
+
+743
+00:13:54,560 --> 00:13:56,710
+ways of actually doing that. You may do
+just a simple averaging approach or
+
+744
+00:13:56,710 --> 00:13:56,720
+just a simple averaging approach or
+ 
+
+745
+00:13:56,720 --> 00:13:58,629
+just a simple averaging approach or
+taking the arithmetic mean of all of the
+
+746
+00:13:58,629 --> 00:13:58,639
+taking the arithmetic mean of all of the
+ 
+
+747
+00:13:58,639 --> 00:14:01,030
+taking the arithmetic mean of all of the
+word vectors giving equal weight to each
+
+748
+00:14:01,030 --> 00:14:01,040
+word vectors giving equal weight to each
+ 
+
+749
+00:14:01,040 --> 00:14:03,590
+word vectors giving equal weight to each
+one of those words. But there's also a
+
+750
+00:14:03,590 --> 00:14:03,600
+one of those words. But there's also a
+ 
+
+751
+00:14:03,600 --> 00:14:05,910
+one of those words. But there's also a
+couple different approaches of applying
+
+752
+00:14:05,910 --> 00:14:05,920
+couple different approaches of applying
+ 
+
+753
+00:14:05,920 --> 00:14:07,590
+couple different approaches of applying
+in different weighted averaging
+
+754
+00:14:07,590 --> 00:14:07,600
+in different weighted averaging
+ 
+
+755
+00:14:07,600 --> 00:14:09,829
+in different weighted averaging
+techniques like term frequency, inverse
+
+756
+00:14:09,829 --> 00:14:09,839
+techniques like term frequency, inverse
+ 
+
+757
+00:14:09,839 --> 00:14:11,990
+techniques like term frequency, inverse
+document frequency, and smooth inverse
+
+758
+00:14:11,990 --> 00:14:12,000
+document frequency, and smooth inverse
+ 
+
+759
+00:14:12,000 --> 00:14:14,949
+document frequency, and smooth inverse
+frequency are essentially going to look
+
+760
+00:14:14,949 --> 00:14:14,959
+frequency are essentially going to look
+ 
+
+761
+00:14:14,959 --> 00:14:19,670
+frequency are essentially going to look
+at the frequency of words and give less
+
+762
+00:14:19,670 --> 00:14:19,680
+at the frequency of words and give less
+ 
+
+763
+00:14:19,680 --> 00:14:22,069
+at the frequency of words and give less
+of an influence to common words and
+
+764
+00:14:22,069 --> 00:14:22,079
+of an influence to common words and
+ 
+
+765
+00:14:22,079 --> 00:14:24,389
+of an influence to common words and
+emphasize more distinctive terms. which
+
+766
+00:14:24,389 --> 00:14:24,399
+emphasize more distinctive terms. which
+ 
+
+767
+00:14:24,399 --> 00:14:25,829
+emphasize more distinctive terms. which
+for an example sentence of something
+
+768
+00:14:25,829 --> 00:14:25,839
+for an example sentence of something
+ 
+
+769
+00:14:25,839 --> 00:14:27,509
+for an example sentence of something
+like I have no interest in hearing about
+
+770
+00:14:27,509 --> 00:14:27,519
+like I have no interest in hearing about
+ 
+
+771
+00:14:27,519 --> 00:14:30,310
+like I have no interest in hearing about
+the rising interest rate of the bank, we
+
+772
+00:14:30,310 --> 00:14:30,320
+the rising interest rate of the bank, we
+ 
+
+773
+00:14:30,320 --> 00:14:31,910
+the rising interest rate of the bank, we
+would give less of an importance to
+
+774
+00:14:31,910 --> 00:14:31,920
+would give less of an importance to
+ 
+
+775
+00:14:31,920 --> 00:14:35,350
+would give less of an importance to
+things like of the or about the and more
+
+776
+00:14:35,350 --> 00:14:35,360
+things like of the or about the and more
+ 
+
+777
+00:14:35,360 --> 00:14:37,509
+things like of the or about the and more
+emphasis on things like interest or bank
+
+778
+00:14:37,509 --> 00:14:37,519
+emphasis on things like interest or bank
+ 
+
+779
+00:14:37,519 --> 00:14:39,509
+emphasis on things like interest or bank
+or no. But with that, let's actually
+
+780
+00:14:39,509 --> 00:14:39,519
+or no. But with that, let's actually
+ 
+
+781
+00:14:39,519 --> 00:14:42,629
+or no. But with that, let's actually
+take a look at word tovec in action. So
+
+782
+00:14:42,629 --> 00:14:42,639
+take a look at word tovec in action. So
+ 
+
+783
+00:14:42,639 --> 00:14:45,829
+take a look at word tovec in action. So
+I can import word tovec using the static
+
+784
+00:14:45,829 --> 00:14:45,839
+I can import word tovec using the static
+ 
+
+785
+00:14:45,839 --> 00:14:48,550
+I can import word tovec using the static
+vectors package which is a useful
+
+786
+00:14:48,550 --> 00:14:48,560
+vectors package which is a useful
+ 
+
+787
+00:14:48,560 --> 00:14:50,550
+vectors package which is a useful
+maintained package for working with
+
+788
+00:14:50,550 --> 00:14:50,560
+maintained package for working with
+ 
+
+789
+00:14:50,560 --> 00:14:52,710
+maintained package for working with
+static embedding models. Then we can go
+
+790
+00:14:52,710 --> 00:14:52,720
+static embedding models. Then we can go
+ 
+
+791
+00:14:52,720 --> 00:14:55,990
+static embedding models. Then we can go
+down the line and see which if you've
+
+792
+00:14:55,990 --> 00:14:56,000
+down the line and see which if you've
+ 
+
+793
+00:14:56,000 --> 00:14:57,910
+down the line and see which if you've
+looked at any major content around
+
+794
+00:14:57,910 --> 00:14:57,920
+looked at any major content around
+ 
+
+795
+00:14:57,920 --> 00:14:59,350
+looked at any major content around
+embedding models, you'll probably see
+
+796
+00:14:59,350 --> 00:14:59,360
+embedding models, you'll probably see
+ 
+
+797
+00:14:59,360 --> 00:15:01,590
+embedding models, you'll probably see
+the example and the common example that
+
+798
+00:15:01,590 --> 00:15:01,600
+the example and the common example that
+ 
+
+799
+00:15:01,600 --> 00:15:03,750
+the example and the common example that
+I'll be doing. But we can do something
+
+800
+00:15:03,750 --> 00:15:03,760
+I'll be doing. But we can do something
+ 
+
+801
+00:15:03,760 --> 00:15:06,710
+I'll be doing. But we can do something
+like get the embedding for the word
+
+802
+00:15:06,710 --> 00:15:06,720
+like get the embedding for the word
+ 
+
+803
+00:15:06,720 --> 00:15:09,430
+like get the embedding for the word
+king. And so you'll see that king here
+
+804
+00:15:09,430 --> 00:15:09,440
+king. And so you'll see that king here
+ 
+
+805
+00:15:09,440 --> 00:15:14,310
+king. And so you'll see that king here
+has now become a large array of numbers.
+
+806
+00:15:14,310 --> 00:15:14,320
+has now become a large array of numbers.
+ 
+
+807
+00:15:14,320 --> 00:15:16,230
+has now become a large array of numbers.
+And each one of these numbers is going
+
+808
+00:15:16,230 --> 00:15:16,240
+And each one of these numbers is going
+ 
+
+809
+00:15:16,240 --> 00:15:19,590
+And each one of these numbers is going
+to represent a learned dimension about
+
+810
+00:15:19,590 --> 00:15:19,600
+to represent a learned dimension about
+ 
+
+811
+00:15:19,600 --> 00:15:22,550
+to represent a learned dimension about
+the word king. These dimensions can be
+
+812
+00:15:22,550 --> 00:15:22,560
+the word king. These dimensions can be
+ 
+
+813
+00:15:22,560 --> 00:15:24,389
+the word king. These dimensions can be
+thought of similar to how you and I
+
+814
+00:15:24,389 --> 00:15:24,399
+thought of similar to how you and I
+ 
+
+815
+00:15:24,399 --> 00:15:26,710
+thought of similar to how you and I
+might understand dimensions like we live
+
+816
+00:15:26,710 --> 00:15:26,720
+might understand dimensions like we live
+ 
+
+817
+00:15:26,720 --> 00:15:29,189
+might understand dimensions like we live
+in a three-dimensional world. But
+
+818
+00:15:29,189 --> 00:15:29,199
+in a three-dimensional world. But
+ 
+
+819
+00:15:29,199 --> 00:15:32,230
+in a three-dimensional world. But
+thoughts and ideas and things like the
+
+820
+00:15:32,230 --> 00:15:32,240
+thoughts and ideas and things like the
+ 
+
+821
+00:15:32,240 --> 00:15:35,269
+thoughts and ideas and things like the
+word king have a lot of different
+
+822
+00:15:35,269 --> 00:15:35,279
+word king have a lot of different
+ 
+
+823
+00:15:35,279 --> 00:15:38,069
+word king have a lot of different
+dimensions of understanding to them. In
+
+824
+00:15:38,069 --> 00:15:38,079
+dimensions of understanding to them. In
+ 
+
+825
+00:15:38,079 --> 00:15:40,629
+dimensions of understanding to them. In
+our case here, we've captured 300
+
+826
+00:15:40,629 --> 00:15:40,639
+our case here, we've captured 300
+ 
+
+827
+00:15:40,639 --> 00:15:43,990
+our case here, we've captured 300
+dimensions of the word king in this
+
+828
+00:15:43,990 --> 00:15:44,000
+dimensions of the word king in this
+ 
+
+829
+00:15:44,000 --> 00:15:47,030
+dimensions of the word king in this
+vector. And these dimensions can also be
+
+830
+00:15:47,030 --> 00:15:47,040
+vector. And these dimensions can also be
+ 
+
+831
+00:15:47,040 --> 00:15:49,910
+vector. And these dimensions can also be
+thought of almost geometrically as well
+
+832
+00:15:49,910 --> 00:15:49,920
+thought of almost geometrically as well
+ 
+
+833
+00:15:49,920 --> 00:15:53,069
+thought of almost geometrically as well
+as vector representations are considered
+
+834
+00:15:53,069 --> 00:15:53,079
+as vector representations are considered
+ 
+
+835
+00:15:53,079 --> 00:15:56,710
+as vector representations are considered
+highdimension representations of these
+
+836
+00:15:56,710 --> 00:15:56,720
+highdimension representations of these
+ 
+
+837
+00:15:56,720 --> 00:15:59,189
+highdimension representations of these
+things or ideas. But the intuitive and
+
+838
+00:15:59,189 --> 00:15:59,199
+things or ideas. But the intuitive and
+ 
+
+839
+00:15:59,199 --> 00:16:01,269
+things or ideas. But the intuitive and
+easy approach here is to think that each
+
+840
+00:16:01,269 --> 00:16:01,279
+easy approach here is to think that each
+ 
+
+841
+00:16:01,279 --> 00:16:03,030
+easy approach here is to think that each
+one of these dimensions kind of
+
+842
+00:16:03,030 --> 00:16:03,040
+one of these dimensions kind of
+ 
+
+843
+00:16:03,040 --> 00:16:06,310
+one of these dimensions kind of
+encapsulates a little bit of the nuances
+
+844
+00:16:06,310 --> 00:16:06,320
+encapsulates a little bit of the nuances
+ 
+
+845
+00:16:06,320 --> 00:16:10,389
+encapsulates a little bit of the nuances
+of the idea of the word king. So we can
+
+846
+00:16:10,389 --> 00:16:10,399
+of the idea of the word king. So we can
+ 
+
+847
+00:16:10,399 --> 00:16:13,590
+of the idea of the word king. So we can
+see that getting the vector for man,
+
+848
+00:16:13,590 --> 00:16:13,600
+see that getting the vector for man,
+ 
+
+849
+00:16:13,600 --> 00:16:18,310
+see that getting the vector for man,
+woman and queen respectively gives us
+
+850
+00:16:18,310 --> 00:16:18,320
+woman and queen respectively gives us
+ 
+
+851
+00:16:18,320 --> 00:16:21,790
+woman and queen respectively gives us
+some different 300 dimension vector
+
+852
+00:16:21,790 --> 00:16:21,800
+some different 300 dimension vector
+ 
+
+853
+00:16:21,800 --> 00:16:23,670
+some different 300 dimension vector
+representations. Now this might be a
+
+854
+00:16:23,670 --> 00:16:23,680
+representations. Now this might be a
+ 
+
+855
+00:16:23,680 --> 00:16:24,949
+representations. Now this might be a
+little bit difficult to wrap your head
+
+856
+00:16:24,949 --> 00:16:24,959
+little bit difficult to wrap your head
+ 
+
+857
+00:16:24,959 --> 00:16:28,310
+little bit difficult to wrap your head
+around as we literally can only imagine
+
+858
+00:16:28,310 --> 00:16:28,320
+around as we literally can only imagine
+ 
+
+859
+00:16:28,320 --> 00:16:31,829
+around as we literally can only imagine
+in upwards of three dimensions. But what
+
+860
+00:16:31,829 --> 00:16:31,839
+in upwards of three dimensions. But what
+ 
+
+861
+00:16:31,839 --> 00:16:34,550
+in upwards of three dimensions. But what
+we can do is actually look at how these
+
+862
+00:16:34,550 --> 00:16:34,560
+we can do is actually look at how these
+ 
+
+863
+00:16:34,560 --> 00:16:37,110
+we can do is actually look at how these
+numbers and dimensions can be used. And
+
+864
+00:16:37,110 --> 00:16:37,120
+numbers and dimensions can be used. And
+ 
+
+865
+00:16:37,120 --> 00:16:39,030
+numbers and dimensions can be used. And
+the the biggest approach and most common
+
+866
+00:16:39,030 --> 00:16:39,040
+the the biggest approach and most common
+ 
+
+867
+00:16:39,040 --> 00:16:41,670
+the the biggest approach and most common
+one especially for a lot of AI related
+
+868
+00:16:41,670 --> 00:16:41,680
+one especially for a lot of AI related
+ 
+
+869
+00:16:41,680 --> 00:16:44,470
+one especially for a lot of AI related
+pipelines today are going to be doing
+
+870
+00:16:44,470 --> 00:16:44,480
+pipelines today are going to be doing
+ 
+
+871
+00:16:44,480 --> 00:16:47,110
+pipelines today are going to be doing
+some form of semantic similarity or
+
+872
+00:16:47,110 --> 00:16:47,120
+some form of semantic similarity or
+ 
+
+873
+00:16:47,120 --> 00:16:49,590
+some form of semantic similarity or
+based on the semantic dense vector
+
+874
+00:16:49,590 --> 00:16:49,600
+based on the semantic dense vector
+ 
+
+875
+00:16:49,600 --> 00:16:52,550
+based on the semantic dense vector
+representations that we have output per
+
+876
+00:16:52,550 --> 00:16:52,560
+representations that we have output per
+ 
+
+877
+00:16:52,560 --> 00:16:55,670
+representations that we have output per
+each one of these different sequences or
+
+878
+00:16:55,670 --> 00:16:55,680
+each one of these different sequences or
+ 
+
+879
+00:16:55,680 --> 00:16:58,150
+each one of these different sequences or
+individual words. We can actually
+
+880
+00:16:58,150 --> 00:16:58,160
+individual words. We can actually
+ 
+
+881
+00:16:58,160 --> 00:17:00,389
+individual words. We can actually
+directly and mathematically compare them
+
+882
+00:17:00,389 --> 00:17:00,399
+directly and mathematically compare them
+ 
+
+883
+00:17:00,399 --> 00:17:01,990
+directly and mathematically compare them
+together. You can think of this
+
+884
+00:17:01,990 --> 00:17:02,000
+together. You can think of this
+ 
+
+885
+00:17:02,000 --> 00:17:04,470
+together. You can think of this
+literally and very similarly to how you
+
+886
+00:17:04,470 --> 00:17:04,480
+literally and very similarly to how you
+ 
+
+887
+00:17:04,480 --> 00:17:06,390
+literally and very similarly to how you
+might actually calculate the distance
+
+888
+00:17:06,390 --> 00:17:06,400
+might actually calculate the distance
+ 
+
+889
+00:17:06,400 --> 00:17:10,789
+might actually calculate the distance
+between two points on a xy line except
+
+890
+00:17:10,789 --> 00:17:10,799
+between two points on a xy line except
+ 
+
+891
+00:17:10,799 --> 00:17:12,470
+between two points on a xy line except
+in this case we're not looking at two
+
+892
+00:17:12,470 --> 00:17:12,480
+in this case we're not looking at two
+ 
+
+893
+00:17:12,480 --> 00:17:13,990
+in this case we're not looking at two
+dimensions. We're looking at the
+
+894
+00:17:13,990 --> 00:17:14,000
+dimensions. We're looking at the
+ 
+
+895
+00:17:14,000 --> 00:17:18,309
+dimensions. We're looking at the
+distance between these points in 300
+
+896
+00:17:18,309 --> 00:17:18,319
+distance between these points in 300
+ 
+
+897
+00:17:18,319 --> 00:17:20,230
+distance between these points in 300
+dimensions. So a little bit more
+
+898
+00:17:20,230 --> 00:17:20,240
+dimensions. So a little bit more
+ 
+
+899
+00:17:20,240 --> 00:17:21,829
+dimensions. So a little bit more
+difficult to wrap your head around. But
+
+900
+00:17:21,829 --> 00:17:21,839
+difficult to wrap your head around. But
+ 
+
+901
+00:17:21,839 --> 00:17:22,870
+difficult to wrap your head around. But
+if you want to think about it
+
+902
+00:17:22,870 --> 00:17:22,880
+if you want to think about it
+ 
+
+903
+00:17:22,880 --> 00:17:24,470
+if you want to think about it
+geometrically that's kind of what's
+
+904
+00:17:24,470 --> 00:17:24,480
+geometrically that's kind of what's
+ 
+
+905
+00:17:24,480 --> 00:17:27,029
+geometrically that's kind of what's
+going on. A very popular thing to do is
+
+906
+00:17:27,029 --> 00:17:27,039
+going on. A very popular thing to do is
+ 
+
+907
+00:17:27,039 --> 00:17:28,950
+going on. A very popular thing to do is
+actually use cosine similarity which is
+
+908
+00:17:28,950 --> 00:17:28,960
+actually use cosine similarity which is
+ 
+
+909
+00:17:28,960 --> 00:17:31,510
+actually use cosine similarity which is
+more going to compare the actual angles
+
+910
+00:17:31,510 --> 00:17:31,520
+more going to compare the actual angles
+ 
+
+911
+00:17:31,520 --> 00:17:34,710
+more going to compare the actual angles
+between two points as they relate to the
+
+912
+00:17:34,710 --> 00:17:34,720
+between two points as they relate to the
+ 
+
+913
+00:17:34,720 --> 00:17:37,669
+between two points as they relate to the
+center. So what we can do is pop in
+
+914
+00:17:37,669 --> 00:17:37,679
+center. So what we can do is pop in
+ 
+
+915
+00:17:37,679 --> 00:17:39,990
+center. So what we can do is pop in
+these vectors together and calculate the
+
+916
+00:17:39,990 --> 00:17:40,000
+these vectors together and calculate the
+ 
+
+917
+00:17:40,000 --> 00:17:42,630
+these vectors together and calculate the
+cosine similarity between them. So we'll
+
+918
+00:17:42,630 --> 00:17:42,640
+cosine similarity between them. So we'll
+ 
+
+919
+00:17:42,640 --> 00:17:45,350
+cosine similarity between them. So we'll
+see that from our example queen and king
+
+920
+00:17:45,350 --> 00:17:45,360
+see that from our example queen and king
+ 
+
+921
+00:17:45,360 --> 00:17:49,110
+see that from our example queen and king
+are about 65% similar. Man and woman are
+
+922
+00:17:49,110 --> 00:17:49,120
+are about 65% similar. Man and woman are
+ 
+
+923
+00:17:49,120 --> 00:17:53,029
+are about 65% similar. Man and woman are
+about 76% similar. King and man are
+
+924
+00:17:53,029 --> 00:17:53,039
+about 76% similar. King and man are
+ 
+
+925
+00:17:53,039 --> 00:17:55,750
+about 76% similar. King and man are
+calculated to be about 22% similar.
+
+926
+00:17:55,750 --> 00:17:55,760
+calculated to be about 22% similar.
+ 
+
+927
+00:17:55,760 --> 00:17:58,549
+calculated to be about 22% similar.
+Queen and woman at 31, but then king and
+
+928
+00:17:58,549 --> 00:17:58,559
+Queen and woman at 31, but then king and
+ 
+
+929
+00:17:58,559 --> 00:18:00,070
+Queen and woman at 31, but then king and
+woman are going to be a little less
+
+930
+00:18:00,070 --> 00:18:00,080
+woman are going to be a little less
+ 
+
+931
+00:18:00,080 --> 00:18:02,070
+woman are going to be a little less
+similar and queen and man are going to
+
+932
+00:18:02,070 --> 00:18:02,080
+similar and queen and man are going to
+ 
+
+933
+00:18:02,080 --> 00:18:03,909
+similar and queen and man are going to
+be a little less similar. So, you can
+
+934
+00:18:03,909 --> 00:18:03,919
+be a little less similar. So, you can
+ 
+
+935
+00:18:03,919 --> 00:18:05,750
+be a little less similar. So, you can
+see how it's kind of picked up on these
+
+936
+00:18:05,750 --> 00:18:05,760
+see how it's kind of picked up on these
+ 
+
+937
+00:18:05,760 --> 00:18:09,110
+see how it's kind of picked up on these
+different ideas and are able to kind of
+
+938
+00:18:09,110 --> 00:18:09,120
+different ideas and are able to kind of
+ 
+
+939
+00:18:09,120 --> 00:18:11,110
+different ideas and are able to kind of
+map them back and put the similarity
+
+940
+00:18:11,110 --> 00:18:11,120
+map them back and put the similarity
+ 
+
+941
+00:18:11,120 --> 00:18:13,350
+map them back and put the similarity
+together based on kind of how they've
+
+942
+00:18:13,350 --> 00:18:13,360
+together based on kind of how they've
+ 
+
+943
+00:18:13,360 --> 00:18:15,350
+together based on kind of how they've
+been constructed socially and culturally
+
+944
+00:18:15,350 --> 00:18:15,360
+been constructed socially and culturally
+ 
+
+945
+00:18:15,360 --> 00:18:17,830
+been constructed socially and culturally
+within human language. Now, one of the
+
+946
+00:18:17,830 --> 00:18:17,840
+within human language. Now, one of the
+ 
+
+947
+00:18:17,840 --> 00:18:19,510
+within human language. Now, one of the
+more interesting things about vector
+
+948
+00:18:19,510 --> 00:18:19,520
+more interesting things about vector
+ 
+
+949
+00:18:19,520 --> 00:18:21,750
+more interesting things about vector
+arithmetic is that because we have
+
+950
+00:18:21,750 --> 00:18:21,760
+arithmetic is that because we have
+ 
+
+951
+00:18:21,760 --> 00:18:24,230
+arithmetic is that because we have
+representations of words and numbers, we
+
+952
+00:18:24,230 --> 00:18:24,240
+representations of words and numbers, we
+ 
+
+953
+00:18:24,240 --> 00:18:25,830
+representations of words and numbers, we
+can start to do some pretty interesting
+
+954
+00:18:25,830 --> 00:18:25,840
+can start to do some pretty interesting
+ 
+
+955
+00:18:25,840 --> 00:18:27,950
+can start to do some pretty interesting
+things. So, I put together a quick
+
+956
+00:18:27,950 --> 00:18:27,960
+things. So, I put together a quick
+ 
+
+957
+00:18:27,960 --> 00:18:30,310
+things. So, I put together a quick
+visualization in three dimensions. So,
+
+958
+00:18:30,310 --> 00:18:30,320
+visualization in three dimensions. So,
+ 
+
+959
+00:18:30,320 --> 00:18:31,990
+visualization in three dimensions. So,
+we're actually going to be reducing the
+
+960
+00:18:31,990 --> 00:18:32,000
+we're actually going to be reducing the
+ 
+
+961
+00:18:32,000 --> 00:18:35,029
+we're actually going to be reducing the
+dimensionality of these words into three
+
+962
+00:18:35,029 --> 00:18:35,039
+dimensionality of these words into three
+ 
+
+963
+00:18:35,039 --> 00:18:36,950
+dimensionality of these words into three
+so that we can visualize it in the
+
+964
+00:18:36,950 --> 00:18:36,960
+so that we can visualize it in the
+ 
+
+965
+00:18:36,960 --> 00:18:38,789
+so that we can visualize it in the
+highest amount of dimensions that we
+
+966
+00:18:38,789 --> 00:18:38,799
+highest amount of dimensions that we
+ 
+
+967
+00:18:38,799 --> 00:18:40,870
+highest amount of dimensions that we
+understand. Now, we're going to show the
+
+968
+00:18:40,870 --> 00:18:40,880
+understand. Now, we're going to show the
+ 
+
+969
+00:18:40,880 --> 00:18:42,870
+understand. Now, we're going to show the
+example of taking the vector number of
+
+970
+00:18:42,870 --> 00:18:42,880
+example of taking the vector number of
+ 
+
+971
+00:18:42,880 --> 00:18:45,270
+example of taking the vector number of
+king, subtracting out the vector number
+
+972
+00:18:45,270 --> 00:18:45,280
+king, subtracting out the vector number
+ 
+
+973
+00:18:45,280 --> 00:18:48,150
+king, subtracting out the vector number
+of man, and adding in the vector number
+
+974
+00:18:48,150 --> 00:18:48,160
+of man, and adding in the vector number
+ 
+
+975
+00:18:48,160 --> 00:18:51,270
+of man, and adding in the vector number
+of woman and see where it lines up.
+
+976
+00:18:51,270 --> 00:18:51,280
+of woman and see where it lines up.
+ 
+
+977
+00:18:51,280 --> 00:18:53,510
+of woman and see where it lines up.
+Spoiler alert. So, looking at this 3D
+
+978
+00:18:53,510 --> 00:18:53,520
+Spoiler alert. So, looking at this 3D
+ 
+
+979
+00:18:53,520 --> 00:18:54,950
+Spoiler alert. So, looking at this 3D
+chart here, we can see some pretty
+
+980
+00:18:54,950 --> 00:18:54,960
+chart here, we can see some pretty
+ 
+
+981
+00:18:54,960 --> 00:18:56,710
+chart here, we can see some pretty
+interesting things. If we look just at
+
+982
+00:18:56,710 --> 00:18:56,720
+interesting things. If we look just at
+ 
+
+983
+00:18:56,720 --> 00:18:58,870
+interesting things. If we look just at
+our original point of king here, we can
+
+984
+00:18:58,870 --> 00:18:58,880
+our original point of king here, we can
+ 
+
+985
+00:18:58,880 --> 00:19:00,630
+our original point of king here, we can
+see that it's pretty close to prince.
+
+986
+00:19:00,630 --> 00:19:00,640
+see that it's pretty close to prince.
+ 
+
+987
+00:19:00,640 --> 00:19:02,470
+see that it's pretty close to prince.
+And so, those things that are close
+
+988
+00:19:02,470 --> 00:19:02,480
+And so, those things that are close
+ 
+
+989
+00:19:02,480 --> 00:19:04,390
+And so, those things that are close
+together mean that they tend to be
+
+990
+00:19:04,390 --> 00:19:04,400
+together mean that they tend to be
+ 
+
+991
+00:19:04,400 --> 00:19:06,310
+together mean that they tend to be
+semantically related or semantically
+
+992
+00:19:06,310 --> 00:19:06,320
+semantically related or semantically
+ 
+
+993
+00:19:06,320 --> 00:19:08,230
+semantically related or semantically
+similar. So we see things like father
+
+994
+00:19:08,230 --> 00:19:08,240
+similar. So we see things like father
+ 
+
+995
+00:19:08,240 --> 00:19:10,390
+similar. So we see things like father
+and son be very close together. Mother
+
+996
+00:19:10,390 --> 00:19:10,400
+and son be very close together. Mother
+ 
+
+997
+00:19:10,400 --> 00:19:13,270
+and son be very close together. Mother
+and daughter, woman and girl, boy and
+
+998
+00:19:13,270 --> 00:19:13,280
+and daughter, woman and girl, boy and
+ 
+
+999
+00:19:13,280 --> 00:19:16,150
+and daughter, woman and girl, boy and
+man. And then going back to our example,
+
+1000
+00:19:16,150 --> 00:19:16,160
+man. And then going back to our example,
+ 
+
+1001
+00:19:16,160 --> 00:19:17,990
+man. And then going back to our example,
+we have king here. And subtracting out
+
+1002
+00:19:17,990 --> 00:19:18,000
+we have king here. And subtracting out
+ 
+
+1003
+00:19:18,000 --> 00:19:20,230
+we have king here. And subtracting out
+the vector for man from king puts a
+
+1004
+00:19:20,230 --> 00:19:20,240
+the vector for man from king puts a
+ 
+
+1005
+00:19:20,240 --> 00:19:22,470
+the vector for man from king puts a
+point over here. But then interestingly
+
+1006
+00:19:22,470 --> 00:19:22,480
+point over here. But then interestingly
+ 
+
+1007
+00:19:22,480 --> 00:19:24,230
+point over here. But then interestingly
+enough, if we take that point and then
+
+1008
+00:19:24,230 --> 00:19:24,240
+enough, if we take that point and then
+ 
+
+1009
+00:19:24,240 --> 00:19:27,590
+enough, if we take that point and then
+add in the vector for woman, we get a
+
+1010
+00:19:27,590 --> 00:19:27,600
+add in the vector for woman, we get a
+ 
+
+1011
+00:19:27,600 --> 00:19:31,190
+add in the vector for woman, we get a
+point here. And what is right close by
+
+1012
+00:19:31,190 --> 00:19:31,200
+point here. And what is right close by
+ 
+
+1013
+00:19:31,200 --> 00:19:35,110
+point here. And what is right close by
+to queen? That is king minus man plus
+
+1014
+00:19:35,110 --> 00:19:35,120
+to queen? That is king minus man plus
+ 
+
+1015
+00:19:35,120 --> 00:19:36,630
+to queen? That is king minus man plus
+woman. But now that we have an
+
+1016
+00:19:36,630 --> 00:19:36,640
+woman. But now that we have an
+ 
+
+1017
+00:19:36,640 --> 00:19:38,390
+woman. But now that we have an
+understanding of static embedding models
+
+1018
+00:19:38,390 --> 00:19:38,400
+understanding of static embedding models
+ 
+
+1019
+00:19:38,400 --> 00:19:40,070
+understanding of static embedding models
+and how they work and how they're almost
+
+1020
+00:19:40,070 --> 00:19:40,080
+and how they work and how they're almost
+ 
+
+1021
+00:19:40,080 --> 00:19:42,549
+and how they work and how they're almost
+like lookup tables that then get pulled
+
+1022
+00:19:42,549 --> 00:19:42,559
+like lookup tables that then get pulled
+ 
+
+1023
+00:19:42,559 --> 00:19:44,990
+like lookup tables that then get pulled
+together to create one final encoded
+
+1024
+00:19:44,990 --> 00:19:45,000
+together to create one final encoded
+ 
+
+1025
+00:19:45,000 --> 00:19:46,789
+together to create one final encoded
+representation. One of the biggest
+
+1026
+00:19:46,789 --> 00:19:46,799
+representation. One of the biggest
+ 
+
+1027
+00:19:46,799 --> 00:19:50,070
+representation. One of the biggest
+issues that you might see is that each
+
+1028
+00:19:50,070 --> 00:19:50,080
+issues that you might see is that each
+ 
+
+1029
+00:19:50,080 --> 00:19:52,870
+issues that you might see is that each
+one of the individual learned embeddings
+
+1030
+00:19:52,870 --> 00:19:52,880
+one of the individual learned embeddings
+ 
+
+1031
+00:19:52,880 --> 00:19:55,350
+one of the individual learned embeddings
+for each of the words are of course
+
+1032
+00:19:55,350 --> 00:19:55,360
+for each of the words are of course
+ 
+
+1033
+00:19:55,360 --> 00:19:58,150
+for each of the words are of course
+static which means that they suffer from
+
+1034
+00:19:58,150 --> 00:19:58,160
+static which means that they suffer from
+ 
+
+1035
+00:19:58,160 --> 00:20:01,590
+static which means that they suffer from
+this cool word polysmy or the
+
+1036
+00:20:01,590 --> 00:20:01,600
+this cool word polysmy or the
+ 
+
+1037
+00:20:01,600 --> 00:20:04,150
+this cool word polysmy or the
+coexistence of many possible meanings
+
+1038
+00:20:04,150 --> 00:20:04,160
+coexistence of many possible meanings
+ 
+
+1039
+00:20:04,160 --> 00:20:07,270
+coexistence of many possible meanings
+for a word or phrase. What we just went
+
+1040
+00:20:07,270 --> 00:20:07,280
+for a word or phrase. What we just went
+ 
+
+1041
+00:20:07,280 --> 00:20:09,830
+for a word or phrase. What we just went
+over a little bit ago showing these
+
+1042
+00:20:09,830 --> 00:20:09,840
+over a little bit ago showing these
+ 
+
+1043
+00:20:09,840 --> 00:20:11,590
+over a little bit ago showing these
+different static versus contextual
+
+1044
+00:20:11,590 --> 00:20:11,600
+different static versus contextual
+ 
+
+1045
+00:20:11,600 --> 00:20:13,350
+different static versus contextual
+embeddings and transformer-based
+
+1046
+00:20:13,350 --> 00:20:13,360
+embeddings and transformer-based
+ 
+
+1047
+00:20:13,360 --> 00:20:15,909
+embeddings and transformer-based
+embedding model diagrams is that things
+
+1048
+00:20:15,909 --> 00:20:15,919
+embedding model diagrams is that things
+ 
+
+1049
+00:20:15,919 --> 00:20:17,750
+embedding model diagrams is that things
+like I went to the bank, the river bank
+
+1050
+00:20:17,750 --> 00:20:17,760
+like I went to the bank, the river bank
+ 
+
+1051
+00:20:17,760 --> 00:20:20,950
+like I went to the bank, the river bank
+was muddy and bank of America that word
+
+1052
+00:20:20,950 --> 00:20:20,960
+was muddy and bank of America that word
+ 
+
+1053
+00:20:20,960 --> 00:20:23,510
+was muddy and bank of America that word
+and understanding for bank is going is
+
+1054
+00:20:23,510 --> 00:20:23,520
+and understanding for bank is going is
+ 
+
+1055
+00:20:23,520 --> 00:20:26,150
+and understanding for bank is going is
+quite different across all three of
+
+1056
+00:20:26,150 --> 00:20:26,160
+quite different across all three of
+ 
+
+1057
+00:20:26,160 --> 00:20:29,190
+quite different across all three of
+these sentences. But the vector for bank
+
+1058
+00:20:29,190 --> 00:20:29,200
+these sentences. But the vector for bank
+ 
+
+1059
+00:20:29,200 --> 00:20:31,110
+these sentences. But the vector for bank
+from a static embedding model is going
+
+1060
+00:20:31,110 --> 00:20:31,120
+from a static embedding model is going
+ 
+
+1061
+00:20:31,120 --> 00:20:33,110
+from a static embedding model is going
+to be the same when ran through the
+
+1062
+00:20:33,110 --> 00:20:33,120
+to be the same when ran through the
+ 
+
+1063
+00:20:33,120 --> 00:20:35,430
+to be the same when ran through the
+model. That is where things like the
+
+1064
+00:20:35,430 --> 00:20:35,440
+model. That is where things like the
+ 
+
+1065
+00:20:35,440 --> 00:20:37,350
+model. That is where things like the
+transformer models and attention-based
+
+1066
+00:20:37,350 --> 00:20:37,360
+transformer models and attention-based
+ 
+
+1067
+00:20:37,360 --> 00:20:39,430
+transformer models and attention-based
+models actually shine because they're
+
+1068
+00:20:39,430 --> 00:20:39,440
+models actually shine because they're
+ 
+
+1069
+00:20:39,440 --> 00:20:41,590
+models actually shine because they're
+able to use their attention mechanism to
+
+1070
+00:20:41,590 --> 00:20:41,600
+able to use their attention mechanism to
+ 
+
+1071
+00:20:41,600 --> 00:20:44,230
+able to use their attention mechanism to
+actually on the fly change the meaning
+
+1072
+00:20:44,230 --> 00:20:44,240
+actually on the fly change the meaning
+ 
+
+1073
+00:20:44,240 --> 00:20:46,310
+actually on the fly change the meaning
+and representation of a word based on
+
+1074
+00:20:46,310 --> 00:20:46,320
+and representation of a word based on
+ 
+
+1075
+00:20:46,320 --> 00:20:48,230
+and representation of a word based on
+the context around it. We can visualize
+
+1076
+00:20:48,230 --> 00:20:48,240
+the context around it. We can visualize
+ 
+
+1077
+00:20:48,240 --> 00:20:50,390
+the context around it. We can visualize
+this real quick by looking at the two
+
+1078
+00:20:50,390 --> 00:20:50,400
+this real quick by looking at the two
+ 
+
+1079
+00:20:50,400 --> 00:20:52,149
+this real quick by looking at the two
+sentences. I went to the bank to
+
+1080
+00:20:52,149 --> 00:20:52,159
+sentences. I went to the bank to
+ 
+
+1081
+00:20:52,159 --> 00:20:54,789
+sentences. I went to the bank to
+withdraw some money and we all swam down
+
+1082
+00:20:54,789 --> 00:20:54,799
+withdraw some money and we all swam down
+ 
+
+1083
+00:20:54,799 --> 00:20:57,430
+withdraw some money and we all swam down
+to the muddy riverbank using one of the
+
+1084
+00:20:57,430 --> 00:20:57,440
+to the muddy riverbank using one of the
+ 
+
+1085
+00:20:57,440 --> 00:20:59,990
+to the muddy riverbank using one of the
+models Bertbased uncased which is just
+
+1086
+00:20:59,990 --> 00:21:00,000
+models Bertbased uncased which is just
+ 
+
+1087
+00:21:00,000 --> 00:21:02,310
+models Bertbased uncased which is just
+one of the base models that is uncased
+
+1088
+00:21:02,310 --> 00:21:02,320
+one of the base models that is uncased
+ 
+
+1089
+00:21:02,320 --> 00:21:03,990
+one of the base models that is uncased
+meaning that everything is going to be
+
+1090
+00:21:03,990 --> 00:21:04,000
+meaning that everything is going to be
+ 
+
+1091
+00:21:04,000 --> 00:21:06,870
+meaning that everything is going to be
+just in flat lowercase from Google. And
+
+1092
+00:21:06,870 --> 00:21:06,880
+just in flat lowercase from Google. And
+ 
+
+1093
+00:21:06,880 --> 00:21:08,230
+just in flat lowercase from Google. And
+so running this through the BERT model
+
+1094
+00:21:08,230 --> 00:21:08,240
+so running this through the BERT model
+ 
+
+1095
+00:21:08,240 --> 00:21:09,430
+so running this through the BERT model
+what we're going to do is actually
+
+1096
+00:21:09,430 --> 00:21:09,440
+what we're going to do is actually
+ 
+
+1097
+00:21:09,440 --> 00:21:12,470
+what we're going to do is actually
+visualize the attention mechanism here
+
+1098
+00:21:12,470 --> 00:21:12,480
+visualize the attention mechanism here
+ 
+
+1099
+00:21:12,480 --> 00:21:15,029
+visualize the attention mechanism here
+within our embeddings. We can see that
+
+1100
+00:21:15,029 --> 00:21:15,039
+within our embeddings. We can see that
+ 
+
+1101
+00:21:15,039 --> 00:21:17,669
+within our embeddings. We can see that
+within the attention mechanism that the
+
+1102
+00:21:17,669 --> 00:21:17,679
+within the attention mechanism that the
+ 
+
+1103
+00:21:17,679 --> 00:21:21,350
+within the attention mechanism that the
+word bank is being very much so
+
+1104
+00:21:21,350 --> 00:21:21,360
+word bank is being very much so
+ 
+
+1105
+00:21:21,360 --> 00:21:24,950
+word bank is being very much so
+correlated and influenced by this word
+
+1106
+00:21:24,950 --> 00:21:24,960
+correlated and influenced by this word
+ 
+
+1107
+00:21:24,960 --> 00:21:27,430
+correlated and influenced by this word
+here withdraw. That is of course going
+
+1108
+00:21:27,430 --> 00:21:27,440
+here withdraw. That is of course going
+ 
+
+1109
+00:21:27,440 --> 00:21:29,590
+here withdraw. That is of course going
+to be in the first sentence. And then in
+
+1110
+00:21:29,590 --> 00:21:29,600
+to be in the first sentence. And then in
+ 
+
+1111
+00:21:29,600 --> 00:21:31,909
+to be in the first sentence. And then in
+the second sentence we can see that bank
+
+1112
+00:21:31,909 --> 00:21:31,919
+the second sentence we can see that bank
+ 
+
+1113
+00:21:31,919 --> 00:21:34,310
+the second sentence we can see that bank
+here is being heavily influenced by
+
+1114
+00:21:34,310 --> 00:21:34,320
+here is being heavily influenced by
+ 
+
+1115
+00:21:34,320 --> 00:21:36,870
+here is being heavily influenced by
+swam. And so that's why the attention
+
+1116
+00:21:36,870 --> 00:21:36,880
+swam. And so that's why the attention
+ 
+
+1117
+00:21:36,880 --> 00:21:39,350
+swam. And so that's why the attention
+mechanism is able to do these very
+
+1118
+00:21:39,350 --> 00:21:39,360
+mechanism is able to do these very
+ 
+
+1119
+00:21:39,360 --> 00:21:41,830
+mechanism is able to do these very
+nuanced contextual embeddings because it
+
+1120
+00:21:41,830 --> 00:21:41,840
+nuanced contextual embeddings because it
+ 
+
+1121
+00:21:41,840 --> 00:21:44,470
+nuanced contextual embeddings because it
+looks at all of the influence of the
+
+1122
+00:21:44,470 --> 00:21:44,480
+looks at all of the influence of the
+ 
+
+1123
+00:21:44,480 --> 00:21:46,390
+looks at all of the influence of the
+other words in the sentence here to
+
+1124
+00:21:46,390 --> 00:21:46,400
+other words in the sentence here to
+ 
+
+1125
+00:21:46,400 --> 00:21:47,990
+other words in the sentence here to
+actually determine its final
+
+1126
+00:21:47,990 --> 00:21:48,000
+actually determine its final
+ 
+
+1127
+00:21:48,000 --> 00:21:50,149
+actually determine its final
+representation and understanding of a
+
+1128
+00:21:50,149 --> 00:21:50,159
+representation and understanding of a
+ 
+
+1129
+00:21:50,159 --> 00:21:51,990
+representation and understanding of a
+word. And we can see that this is backed
+
+1130
+00:21:51,990 --> 00:21:52,000
+word. And we can see that this is backed
+ 
+
+1131
+00:21:52,000 --> 00:21:54,149
+word. And we can see that this is backed
+up because the similarity between both
+
+1132
+00:21:54,149 --> 00:21:54,159
+up because the similarity between both
+ 
+
+1133
+00:21:54,159 --> 00:21:58,230
+up because the similarity between both
+banks when we do the cosign similarity
+
+1134
+00:21:58,230 --> 00:21:58,240
+banks when we do the cosign similarity
+ 
+
+1135
+00:21:58,240 --> 00:22:01,590
+banks when we do the cosign similarity
+is only going to be 29%. But if we
+
+1136
+00:22:01,590 --> 00:22:01,600
+is only going to be 29%. But if we
+ 
+
+1137
+00:22:01,600 --> 00:22:03,430
+is only going to be 29%. But if we
+actually run a different sentence in
+
+1138
+00:22:03,430 --> 00:22:03,440
+actually run a different sentence in
+ 
+
+1139
+00:22:03,440 --> 00:22:05,750
+actually run a different sentence in
+like the bank manager approved my loan
+
+1140
+00:22:05,750 --> 00:22:05,760
+like the bank manager approved my loan
+ 
+
+1141
+00:22:05,760 --> 00:22:08,070
+like the bank manager approved my loan
+for the application and take out the
+
+1142
+00:22:08,070 --> 00:22:08,080
+for the application and take out the
+ 
+
+1143
+00:22:08,080 --> 00:22:11,830
+for the application and take out the
+encoding of this bank, it is going to be
+
+1144
+00:22:11,830 --> 00:22:11,840
+encoding of this bank, it is going to be
+ 
+
+1145
+00:22:11,840 --> 00:22:15,909
+encoding of this bank, it is going to be
+81 or 81% similar to the original
+
+1146
+00:22:15,909 --> 00:22:15,919
+81 or 81% similar to the original
+ 
+
+1147
+00:22:15,919 --> 00:22:19,029
+81 or 81% similar to the original
+finance related bank word. Enough talk
+
+1148
+00:22:19,029 --> 00:22:19,039
+finance related bank word. Enough talk
+ 
+
+1149
+00:22:19,039 --> 00:22:20,870
+finance related bank word. Enough talk
+about transformer-based encodings. We're
+
+1150
+00:22:20,870 --> 00:22:20,880
+about transformer-based encodings. We're
+ 
+
+1151
+00:22:20,880 --> 00:22:23,669
+about transformer-based encodings. We're
+here to talk about static models. So, as
+
+1152
+00:22:23,669 --> 00:22:23,679
+here to talk about static models. So, as
+ 
+
+1153
+00:22:23,679 --> 00:22:25,029
+here to talk about static models. So, as
+I mentioned earlier, while
+
+1154
+00:22:25,029 --> 00:22:25,039
+I mentioned earlier, while
+ 
+
+1155
+00:22:25,039 --> 00:22:27,190
+I mentioned earlier, while
+transformer-based embedding models do
+
+1156
+00:22:27,190 --> 00:22:27,200
+transformer-based embedding models do
+ 
+
+1157
+00:22:27,200 --> 00:22:29,029
+transformer-based embedding models do
+have that impressive contextual
+
+1158
+00:22:29,029 --> 00:22:29,039
+have that impressive contextual
+ 
+
+1159
+00:22:29,039 --> 00:22:30,950
+have that impressive contextual
+performance, they come with the major
+
+1160
+00:22:30,950 --> 00:22:30,960
+performance, they come with the major
+ 
+
+1161
+00:22:30,960 --> 00:22:33,190
+performance, they come with the major
+downside of requiring magnitudes more
+
+1162
+00:22:33,190 --> 00:22:33,200
+downside of requiring magnitudes more
+ 
+
+1163
+00:22:33,200 --> 00:22:35,230
+downside of requiring magnitudes more
+compute to actually do these
+
+1164
+00:22:35,230 --> 00:22:35,240
+compute to actually do these
+ 
+
+1165
+00:22:35,240 --> 00:22:37,669
+compute to actually do these
+calculations. This is where it is
+
+1166
+00:22:37,669 --> 00:22:37,679
+calculations. This is where it is
+ 
+
+1167
+00:22:37,679 --> 00:22:39,750
+calculations. This is where it is
+interesting to actually revisit static
+
+1168
+00:22:39,750 --> 00:22:39,760
+interesting to actually revisit static
+ 
+
+1169
+00:22:39,760 --> 00:22:41,750
+interesting to actually revisit static
+embeddings. And while it's unlikely to
+
+1170
+00:22:41,750 --> 00:22:41,760
+embeddings. And while it's unlikely to
+ 
+
+1171
+00:22:41,760 --> 00:22:43,789
+embeddings. And while it's unlikely to
+be able to push the higher end of
+
+1172
+00:22:43,789 --> 00:22:43,799
+be able to push the higher end of
+ 
+
+1173
+00:22:43,799 --> 00:22:46,149
+be able to push the higher end of
+transformer-based approaches with static
+
+1174
+00:22:46,149 --> 00:22:46,159
+transformer-based approaches with static
+ 
+
+1175
+00:22:46,159 --> 00:22:48,070
+transformer-based approaches with static
+embeddings, using some modern
+
+1176
+00:22:48,070 --> 00:22:48,080
+embeddings, using some modern
+ 
+
+1177
+00:22:48,080 --> 00:22:50,390
+embeddings, using some modern
+techniques, we can train a lot better
+
+1178
+00:22:50,390 --> 00:22:50,400
+techniques, we can train a lot better
+ 
+
+1179
+00:22:50,400 --> 00:22:52,710
+techniques, we can train a lot better
+models. And this was revisited in a
+
+1180
+00:22:52,710 --> 00:22:52,720
+models. And this was revisited in a
+ 
+
+1181
+00:22:52,720 --> 00:22:56,070
+models. And this was revisited in a
+major way by Mr. Tom Arson here who
+
+1182
+00:22:56,070 --> 00:22:56,080
+major way by Mr. Tom Arson here who
+ 
+
+1183
+00:22:56,080 --> 00:22:58,149
+major way by Mr. Tom Arson here who
+applied some modern techniques and data
+
+1184
+00:22:58,149 --> 00:22:58,159
+applied some modern techniques and data
+ 
+
+1185
+00:22:58,159 --> 00:23:00,909
+applied some modern techniques and data
+to create a static embedding model that
+
+1186
+00:23:00,909 --> 00:23:00,919
+to create a static embedding model that
+ 
+
+1187
+00:23:00,919 --> 00:23:04,789
+to create a static embedding model that
+performed above the BM25 baseline and
+
+1188
+00:23:04,789 --> 00:23:04,799
+performed above the BM25 baseline and
+ 
+
+1189
+00:23:04,799 --> 00:23:07,270
+performed above the BM25 baseline and
+almost close to some of the performance
+
+1190
+00:23:07,270 --> 00:23:07,280
+almost close to some of the performance
+ 
+
+1191
+00:23:07,280 --> 00:23:10,149
+almost close to some of the performance
+of things like all mini LML6V2. And of
+
+1192
+00:23:10,149 --> 00:23:10,159
+of things like all mini LML6V2. And of
+ 
+
+1193
+00:23:10,159 --> 00:23:12,149
+of things like all mini LML6V2. And of
+course, the biggest thing here is that
+
+1194
+00:23:12,149 --> 00:23:12,159
+course, the biggest thing here is that
+ 
+
+1195
+00:23:12,159 --> 00:23:14,789
+course, the biggest thing here is that
+all of this is able to be performed with
+
+1196
+00:23:14,789 --> 00:23:14,799
+all of this is able to be performed with
+ 
+
+1197
+00:23:14,799 --> 00:23:17,190
+all of this is able to be performed with
+incredible speeds of being able to do
+
+1198
+00:23:17,190 --> 00:23:17,200
+incredible speeds of being able to do
+ 
+
+1199
+00:23:17,200 --> 00:23:20,070
+incredible speeds of being able to do
+almost a 100,000 queries per second.
+
+1200
+00:23:20,070 --> 00:23:20,080
+almost a 100,000 queries per second.
+ 
+
+1201
+00:23:20,080 --> 00:23:21,590
+almost a 100,000 queries per second.
+Now, on top of just having more modern
+
+1202
+00:23:21,590 --> 00:23:21,600
+Now, on top of just having more modern
+ 
+
+1203
+00:23:21,600 --> 00:23:23,270
+Now, on top of just having more modern
+data sets, the biggest innovation is
+
+1204
+00:23:23,270 --> 00:23:23,280
+data sets, the biggest innovation is
+ 
+
+1205
+00:23:23,280 --> 00:23:25,270
+data sets, the biggest innovation is
+actually using contrastive learning.
+
+1206
+00:23:25,270 --> 00:23:25,280
+actually using contrastive learning.
+ 
+
+1207
+00:23:25,280 --> 00:23:26,549
+actually using contrastive learning.
+This is something that we've seen
+
+1208
+00:23:26,549 --> 00:23:26,559
+This is something that we've seen
+ 
+
+1209
+00:23:26,559 --> 00:23:29,070
+This is something that we've seen
+generally used with aligning multimodal
+
+1210
+00:23:29,070 --> 00:23:29,080
+generally used with aligning multimodal
+ 
+
+1211
+00:23:29,080 --> 00:23:30,950
+generally used with aligning multimodal
+representations with things like
+
+1212
+00:23:30,950 --> 00:23:30,960
+representations with things like
+ 
+
+1213
+00:23:30,960 --> 00:23:32,950
+representations with things like
+contrastive language image pre-training
+
+1214
+00:23:32,950 --> 00:23:32,960
+contrastive language image pre-training
+ 
+
+1215
+00:23:32,960 --> 00:23:34,950
+contrastive language image pre-training
+models or clip models that are able to
+
+1216
+00:23:34,950 --> 00:23:34,960
+models or clip models that are able to
+ 
+
+1217
+00:23:34,960 --> 00:23:37,909
+models or clip models that are able to
+represent both text and images together
+
+1218
+00:23:37,909 --> 00:23:37,919
+represent both text and images together
+ 
+
+1219
+00:23:37,919 --> 00:23:41,110
+represent both text and images together
+in one space. And this is also kind of
+
+1220
+00:23:41,110 --> 00:23:41,120
+in one space. And this is also kind of
+ 
+
+1221
+00:23:41,120 --> 00:23:44,070
+in one space. And this is also kind of
+what's powered the interchangeability
+
+1222
+00:23:44,070 --> 00:23:44,080
+what's powered the interchangeability
+ 
+
+1223
+00:23:44,080 --> 00:23:46,390
+what's powered the interchangeability
+and understanding of things like audio,
+
+1224
+00:23:46,390 --> 00:23:46,400
+and understanding of things like audio,
+ 
+
+1225
+00:23:46,400 --> 00:23:48,549
+and understanding of things like audio,
+video, and image understanding in
+
+1226
+00:23:48,549 --> 00:23:48,559
+video, and image understanding in
+ 
+
+1227
+00:23:48,559 --> 00:23:50,710
+video, and image understanding in
+language models. What we mean by this is
+
+1228
+00:23:50,710 --> 00:23:50,720
+language models. What we mean by this is
+ 
+
+1229
+00:23:50,720 --> 00:23:53,029
+language models. What we mean by this is
+that essentially the learning method is
+
+1230
+00:23:53,029 --> 00:23:53,039
+that essentially the learning method is
+ 
+
+1231
+00:23:53,039 --> 00:23:54,789
+that essentially the learning method is
+that the embedding model is going to
+
+1232
+00:23:54,789 --> 00:23:54,799
+that the embedding model is going to
+ 
+
+1233
+00:23:54,799 --> 00:23:57,270
+that the embedding model is going to
+calculate the similarities between pairs
+
+1234
+00:23:57,270 --> 00:23:57,280
+calculate the similarities between pairs
+ 
+
+1235
+00:23:57,280 --> 00:24:01,190
+calculate the similarities between pairs
+or more of text sequences and the inputs
+
+1236
+00:24:01,190 --> 00:24:01,200
+or more of text sequences and the inputs
+ 
+
+1237
+00:24:01,200 --> 00:24:02,630
+or more of text sequences and the inputs
+are then going to pass through the model
+
+1238
+00:24:02,630 --> 00:24:02,640
+are then going to pass through the model
+ 
+
+1239
+00:24:02,640 --> 00:24:04,710
+are then going to pass through the model
+be encoded into embeddings. We are going
+
+1240
+00:24:04,710 --> 00:24:04,720
+be encoded into embeddings. We are going
+ 
+
+1241
+00:24:04,720 --> 00:24:07,350
+be encoded into embeddings. We are going
+to contrast these examples and their
+
+1242
+00:24:07,350 --> 00:24:07,360
+to contrast these examples and their
+ 
+
+1243
+00:24:07,360 --> 00:24:10,549
+to contrast these examples and their
+similarities together and over time
+
+1244
+00:24:10,549 --> 00:24:10,559
+similarities together and over time
+ 
+
+1245
+00:24:10,559 --> 00:24:12,950
+similarities together and over time
+we'll try to position more similar
+
+1246
+00:24:12,950 --> 00:24:12,960
+we'll try to position more similar
+ 
+
+1247
+00:24:12,960 --> 00:24:15,750
+we'll try to position more similar
+things together while pushing away
+
+1248
+00:24:15,750 --> 00:24:15,760
+things together while pushing away
+ 
+
+1249
+00:24:15,760 --> 00:24:17,990
+things together while pushing away
+unrelated inputs. This is a little bit
+
+1250
+00:24:17,990 --> 00:24:18,000
+unrelated inputs. This is a little bit
+ 
+
+1251
+00:24:18,000 --> 00:24:19,669
+unrelated inputs. This is a little bit
+easier to understand when looking at a
+
+1252
+00:24:19,669 --> 00:24:19,679
+easier to understand when looking at a
+ 
+
+1253
+00:24:19,679 --> 00:24:21,190
+easier to understand when looking at a
+data example. If you look at the
+
+1254
+00:24:21,190 --> 00:24:21,200
+data example. If you look at the
+ 
+
+1255
+00:24:21,200 --> 00:24:23,510
+data example. If you look at the
+original training code, which is in this
+
+1256
+00:24:23,510 --> 00:24:23,520
+original training code, which is in this
+ 
+
+1257
+00:24:23,520 --> 00:24:25,110
+original training code, which is in this
+blog, which I'll of course have linked
+
+1258
+00:24:25,110 --> 00:24:25,120
+blog, which I'll of course have linked
+ 
+
+1259
+00:24:25,120 --> 00:24:27,590
+blog, which I'll of course have linked
+down in the description below, Tom is
+
+1260
+00:24:27,590 --> 00:24:27,600
+down in the description below, Tom is
+ 
+
+1261
+00:24:27,600 --> 00:24:30,070
+down in the description below, Tom is
+using multiple negatives ranking loss,
+
+1262
+00:24:30,070 --> 00:24:30,080
+using multiple negatives ranking loss,
+ 
+
+1263
+00:24:30,080 --> 00:24:31,830
+using multiple negatives ranking loss,
+which essentially is going to include
+
+1264
+00:24:31,830 --> 00:24:31,840
+which essentially is going to include
+ 
+
+1265
+00:24:31,840 --> 00:24:34,230
+which essentially is going to include
+one anchor sample, one positive sample,
+
+1266
+00:24:34,230 --> 00:24:34,240
+one anchor sample, one positive sample,
+ 
+
+1267
+00:24:34,240 --> 00:24:36,870
+one anchor sample, one positive sample,
+and then multiple negative samples. So
+
+1268
+00:24:36,870 --> 00:24:36,880
+and then multiple negative samples. So
+ 
+
+1269
+00:24:36,880 --> 00:24:39,029
+and then multiple negative samples. So
+given the input of this anchor as well
+
+1270
+00:24:39,029 --> 00:24:39,039
+given the input of this anchor as well
+ 
+
+1271
+00:24:39,039 --> 00:24:41,190
+given the input of this anchor as well
+as the positive and all of the negatives
+
+1272
+00:24:41,190 --> 00:24:41,200
+as the positive and all of the negatives
+ 
+
+1273
+00:24:41,200 --> 00:24:43,430
+as the positive and all of the negatives
+input into the model, we are going to
+
+1274
+00:24:43,430 --> 00:24:43,440
+input into the model, we are going to
+ 
+
+1275
+00:24:43,440 --> 00:24:45,029
+input into the model, we are going to
+nudge the model towards better
+
+1276
+00:24:45,029 --> 00:24:45,039
+nudge the model towards better
+ 
+
+1277
+00:24:45,039 --> 00:24:46,950
+nudge the model towards better
+positioning the anchor and the positive
+
+1278
+00:24:46,950 --> 00:24:46,960
+positioning the anchor and the positive
+ 
+
+1279
+00:24:46,960 --> 00:24:49,830
+positioning the anchor and the positive
+document together while pushing away the
+
+1280
+00:24:49,830 --> 00:24:49,840
+document together while pushing away the
+ 
+
+1281
+00:24:49,840 --> 00:24:51,990
+document together while pushing away the
+representation in this highdimension
+
+1282
+00:24:51,990 --> 00:24:52,000
+representation in this highdimension
+ 
+
+1283
+00:24:52,000 --> 00:24:54,549
+representation in this highdimension
+space of these negatives here. The
+
+1284
+00:24:54,549 --> 00:24:54,559
+space of these negatives here. The
+ 
+
+1285
+00:24:54,559 --> 00:24:57,190
+space of these negatives here. The
+interesting part here is that the harder
+
+1286
+00:24:57,190 --> 00:24:57,200
+interesting part here is that the harder
+ 
+
+1287
+00:24:57,200 --> 00:24:59,190
+interesting part here is that the harder
+it is to determine between the positives
+
+1288
+00:24:59,190 --> 00:24:59,200
+it is to determine between the positives
+ 
+
+1289
+00:24:59,200 --> 00:25:02,310
+it is to determine between the positives
+or the negatives can actually increase
+
+1290
+00:25:02,310 --> 00:25:02,320
+or the negatives can actually increase
+ 
+
+1291
+00:25:02,320 --> 00:25:05,029
+or the negatives can actually increase
+the robustness of the model trained. So
+
+1292
+00:25:05,029 --> 00:25:05,039
+the robustness of the model trained. So
+ 
+
+1293
+00:25:05,039 --> 00:25:06,710
+the robustness of the model trained. So
+using techniques like hard negative
+
+1294
+00:25:06,710 --> 00:25:06,720
+using techniques like hard negative
+ 
+
+1295
+00:25:06,720 --> 00:25:09,269
+using techniques like hard negative
+mining or things like that to provide
+
+1296
+00:25:09,269 --> 00:25:09,279
+mining or things like that to provide
+ 
+
+1297
+00:25:09,279 --> 00:25:11,750
+mining or things like that to provide
+very similar yet unrelated examples of
+
+1298
+00:25:11,750 --> 00:25:11,760
+very similar yet unrelated examples of
+ 
+
+1299
+00:25:11,760 --> 00:25:15,190
+very similar yet unrelated examples of
+the negatives is a great technique to be
+
+1300
+00:25:15,190 --> 00:25:15,200
+the negatives is a great technique to be
+ 
+
+1301
+00:25:15,200 --> 00:25:17,190
+the negatives is a great technique to be
+able to do this learning more
+
+1302
+00:25:17,190 --> 00:25:17,200
+able to do this learning more
+ 
+
+1303
+00:25:17,200 --> 00:25:19,909
+able to do this learning more
+effectively. So Tom and the team applied
+
+1304
+00:25:19,909 --> 00:25:19,919
+effectively. So Tom and the team applied
+ 
+
+1305
+00:25:19,919 --> 00:25:23,110
+effectively. So Tom and the team applied
+this with some modern data sets to train
+
+1306
+00:25:23,110 --> 00:25:23,120
+this with some modern data sets to train
+ 
+
+1307
+00:25:23,120 --> 00:25:26,310
+this with some modern data sets to train
+a fully new static embedding model as
+
+1308
+00:25:26,310 --> 00:25:26,320
+a fully new static embedding model as
+ 
+
+1309
+00:25:26,320 --> 00:25:28,070
+a fully new static embedding model as
+well as using some matrioska
+
+1310
+00:25:28,070 --> 00:25:28,080
+well as using some matrioska
+ 
+
+1311
+00:25:28,080 --> 00:25:29,830
+well as using some matrioska
+representation learning which I've
+
+1312
+00:25:29,830 --> 00:25:29,840
+representation learning which I've
+ 
+
+1313
+00:25:29,840 --> 00:25:31,510
+representation learning which I've
+implemented a few times in some of my
+
+1314
+00:25:31,510 --> 00:25:31,520
+implemented a few times in some of my
+ 
+
+1315
+00:25:31,520 --> 00:25:33,190
+implemented a few times in some of my
+other videos of fine-tuning sentence
+
+1316
+00:25:33,190 --> 00:25:33,200
+other videos of fine-tuning sentence
+ 
+
+1317
+00:25:33,200 --> 00:25:35,590
+other videos of fine-tuning sentence
+embedding models. But what we can do is
+
+1318
+00:25:35,590 --> 00:25:35,600
+embedding models. But what we can do is
+ 
+
+1319
+00:25:35,600 --> 00:25:38,149
+embedding models. But what we can do is
+go ahead and load it and give it a shot.
+
+1320
+00:25:38,149 --> 00:25:38,159
+go ahead and load it and give it a shot.
+ 
+
+1321
+00:25:38,159 --> 00:25:40,230
+go ahead and load it and give it a shot.
+So we can run this right on CPU because
+
+1322
+00:25:40,230 --> 00:25:40,240
+So we can run this right on CPU because
+ 
+
+1323
+00:25:40,240 --> 00:25:43,830
+So we can run this right on CPU because
+it is low parameter account and doesn't
+
+1324
+00:25:43,830 --> 00:25:43,840
+it is low parameter account and doesn't
+ 
+
+1325
+00:25:43,840 --> 00:25:46,710
+it is low parameter account and doesn't
+take a lot of effort. And let's go ahead
+
+1326
+00:25:46,710 --> 00:25:46,720
+take a lot of effort. And let's go ahead
+ 
+
+1327
+00:25:46,720 --> 00:25:49,750
+take a lot of effort. And let's go ahead
+and compare these sentences. It is known
+
+1328
+00:25:49,750 --> 00:25:49,760
+and compare these sentences. It is known
+ 
+
+1329
+00:25:49,760 --> 00:25:51,750
+and compare these sentences. It is known
+for its dry red chili powder. It is
+
+1330
+00:25:51,750 --> 00:25:51,760
+for its dry red chili powder. It is
+ 
+
+1331
+00:25:51,760 --> 00:25:54,310
+for its dry red chili powder. It is
+popular for dried red chili powder. And
+
+1332
+00:25:54,310 --> 00:25:54,320
+popular for dried red chili powder. And
+ 
+
+1333
+00:25:54,320 --> 00:25:55,990
+popular for dried red chili powder. And
+these monsters will move in large
+
+1334
+00:25:55,990 --> 00:25:56,000
+these monsters will move in large
+ 
+
+1335
+00:25:56,000 --> 00:25:59,029
+these monsters will move in large
+groups. Our expectation is of course
+
+1336
+00:25:59,029 --> 00:25:59,039
+groups. Our expectation is of course
+ 
+
+1337
+00:25:59,039 --> 00:26:00,950
+groups. Our expectation is of course
+that these two sentences are going to be
+
+1338
+00:26:00,950 --> 00:26:00,960
+that these two sentences are going to be
+ 
+
+1339
+00:26:00,960 --> 00:26:02,870
+that these two sentences are going to be
+similar. And this third will be much
+
+1340
+00:26:02,870 --> 00:26:02,880
+similar. And this third will be much
+ 
+
+1341
+00:26:02,880 --> 00:26:06,070
+similar. And this third will be much
+more different than the other two. And
+
+1342
+00:26:06,070 --> 00:26:06,080
+more different than the other two. And
+ 
+
+1343
+00:26:06,080 --> 00:26:08,870
+more different than the other two. And
+that we can pretty much see. So looking
+
+1344
+00:26:08,870 --> 00:26:08,880
+that we can pretty much see. So looking
+ 
+
+1345
+00:26:08,880 --> 00:26:10,950
+that we can pretty much see. So looking
+at this first sentence here, we can see
+
+1346
+00:26:10,950 --> 00:26:10,960
+at this first sentence here, we can see
+ 
+
+1347
+00:26:10,960 --> 00:26:13,269
+at this first sentence here, we can see
+that it is perfectly similar to itself,
+
+1348
+00:26:13,269 --> 00:26:13,279
+that it is perfectly similar to itself,
+ 
+
+1349
+00:26:13,279 --> 00:26:15,190
+that it is perfectly similar to itself,
+very similar to the second, and then not
+
+1350
+00:26:15,190 --> 00:26:15,200
+very similar to the second, and then not
+ 
+
+1351
+00:26:15,200 --> 00:26:17,430
+very similar to the second, and then not
+quite similar at all to this last one.
+
+1352
+00:26:17,430 --> 00:26:17,440
+quite similar at all to this last one.
+ 
+
+1353
+00:26:17,440 --> 00:26:18,950
+quite similar at all to this last one.
+But the most impressive thing to
+
+1354
+00:26:18,950 --> 00:26:18,960
+But the most impressive thing to
+ 
+
+1355
+00:26:18,960 --> 00:26:20,549
+But the most impressive thing to
+actually take away from this example
+
+1356
+00:26:20,549 --> 00:26:20,559
+actually take away from this example
+ 
+
+1357
+00:26:20,559 --> 00:26:22,630
+actually take away from this example
+that Tom's given us here is that we're
+
+1358
+00:26:22,630 --> 00:26:22,640
+that Tom's given us here is that we're
+ 
+
+1359
+00:26:22,640 --> 00:26:24,310
+that Tom's given us here is that we're
+able to push the performance of
+
+1360
+00:26:24,310 --> 00:26:24,320
+able to push the performance of
+ 
+
+1361
+00:26:24,320 --> 00:26:26,789
+able to push the performance of
+embeddings for common tasks like things
+
+1362
+00:26:26,789 --> 00:26:26,799
+embeddings for common tasks like things
+ 
+
+1363
+00:26:26,799 --> 00:26:29,830
+embeddings for common tasks like things
+like similarity or retrieval above
+
+1364
+00:26:29,830 --> 00:26:29,840
+like similarity or retrieval above
+ 
+
+1365
+00:26:29,840 --> 00:26:33,190
+like similarity or retrieval above
+classic ranking algorithms like BM25 as
+
+1366
+00:26:33,190 --> 00:26:33,200
+classic ranking algorithms like BM25 as
+ 
+
+1367
+00:26:33,200 --> 00:26:35,350
+classic ranking algorithms like BM25 as
+a baseline. And we're even getting close
+
+1368
+00:26:35,350 --> 00:26:35,360
+a baseline. And we're even getting close
+ 
+
+1369
+00:26:35,360 --> 00:26:37,750
+a baseline. And we're even getting close
+to the performance of things like Almin
+
+1370
+00:26:37,750 --> 00:26:37,760
+to the performance of things like Almin
+ 
+
+1371
+00:26:37,760 --> 00:26:40,470
+to the performance of things like Almin
+Mini LM which in the given evaluations
+
+1372
+00:26:40,470 --> 00:26:40,480
+Mini LM which in the given evaluations
+ 
+
+1373
+00:26:40,480 --> 00:26:43,110
+Mini LM which in the given evaluations
+was just six percentage points behind
+
+1374
+00:26:43,110 --> 00:26:43,120
+was just six percentage points behind
+ 
+
+1375
+00:26:43,120 --> 00:26:47,310
+was just six percentage points behind
+Alin LM coming out to 05032
+
+1376
+00:26:47,310 --> 00:26:47,320
+Alin LM coming out to 05032
+ 
+
+1377
+00:26:47,320 --> 00:26:49,990
+Alin LM coming out to 05032
+versus.5623 respectively. And all on top
+
+1378
+00:26:49,990 --> 00:26:50,000
+versus.5623 respectively. And all on top
+ 
+
+1379
+00:26:50,000 --> 00:26:53,390
+versus.5623 respectively. And all on top
+of this, this allows for upwards of
+
+1380
+00:26:53,390 --> 00:26:53,400
+of this, this allows for upwards of
+ 
+
+1381
+00:26:53,400 --> 00:26:55,909
+of this, this allows for upwards of
+107,000 sentences per second to be
+
+1382
+00:26:55,909 --> 00:26:55,919
+107,000 sentences per second to be
+ 
+
+1383
+00:26:55,919 --> 00:26:58,470
+107,000 sentences per second to be
+computed on CPU from Tom's
+
+1384
+00:26:58,470 --> 00:26:58,480
+computed on CPU from Tom's
+ 
+
+1385
+00:26:58,480 --> 00:27:00,950
+computed on CPU from Tom's
+experimentation. Well, in similar
+
+1386
+00:27:00,950 --> 00:27:00,960
+experimentation. Well, in similar
+ 
+
+1387
+00:27:00,960 --> 00:27:03,269
+experimentation. Well, in similar
+environments, all mini LM can only run
+
+1388
+00:27:03,269 --> 00:27:03,279
+environments, all mini LM can only run
+ 
+
+1389
+00:27:03,279 --> 00:27:04,909
+environments, all mini LM can only run
+about
+
+1390
+00:27:04,909 --> 00:27:04,919
+about
+ 
+
+1391
+00:27:04,919 --> 00:27:08,230
+about
+1,739 per second. So, increases of up to
+
+1392
+00:27:08,230 --> 00:27:08,240
+1,739 per second. So, increases of up to
+ 
+
+1393
+00:27:08,240 --> 00:27:11,430
+1,739 per second. So, increases of up to
+62 times speed. Something like this can
+
+1394
+00:27:11,430 --> 00:27:11,440
+62 times speed. Something like this can
+ 
+
+1395
+00:27:11,440 --> 00:27:13,909
+62 times speed. Something like this can
+be incredibly beneficial for large scale
+
+1396
+00:27:13,909 --> 00:27:13,919
+be incredibly beneficial for large scale
+ 
+
+1397
+00:27:13,919 --> 00:27:15,750
+be incredibly beneficial for large scale
+production settings where a small
+
+1398
+00:27:15,750 --> 00:27:15,760
+production settings where a small
+ 
+
+1399
+00:27:15,760 --> 00:27:18,230
+production settings where a small
+accuracy trade-off may be worthwhile.
+
+1400
+00:27:18,230 --> 00:27:18,240
+accuracy trade-off may be worthwhile.
+ 
+
+1401
+00:27:18,240 --> 00:27:20,549
+accuracy trade-off may be worthwhile.
+And also, additional innovations in
+
+1402
+00:27:20,549 --> 00:27:20,559
+And also, additional innovations in
+ 
+
+1403
+00:27:20,559 --> 00:27:23,029
+And also, additional innovations in
+static embedding models have been proven
+
+1404
+00:27:23,029 --> 00:27:23,039
+static embedding models have been proven
+ 
+
+1405
+00:27:23,039 --> 00:27:26,070
+static embedding models have been proven
+to show that we can push this a little
+
+1406
+00:27:26,070 --> 00:27:26,080
+to show that we can push this a little
+ 
+
+1407
+00:27:26,080 --> 00:27:28,470
+to show that we can push this a little
+step forward. So experimenting and
+
+1408
+00:27:28,470 --> 00:27:28,480
+step forward. So experimenting and
+ 
+
+1409
+00:27:28,480 --> 00:27:30,549
+step forward. So experimenting and
+trying things out like this yourself
+
+1410
+00:27:30,549 --> 00:27:30,559
+trying things out like this yourself
+ 
+
+1411
+00:27:30,559 --> 00:27:32,070
+trying things out like this yourself
+could lead to some innovative
+
+1412
+00:27:32,070 --> 00:27:32,080
+could lead to some innovative
+ 
+
+1413
+00:27:32,080 --> 00:27:34,230
+could lead to some innovative
+breakthroughs. I gave this a shot by
+
+1414
+00:27:34,230 --> 00:27:34,240
+breakthroughs. I gave this a shot by
+ 
+
+1415
+00:27:34,240 --> 00:27:35,909
+breakthroughs. I gave this a shot by
+just pretty much recreating the training
+
+1416
+00:27:35,909 --> 00:27:35,919
+just pretty much recreating the training
+ 
+
+1417
+00:27:35,919 --> 00:27:37,750
+just pretty much recreating the training
+environment, but this time using modern
+
+1418
+00:27:37,750 --> 00:27:37,760
+environment, but this time using modern
+ 
+
+1419
+00:27:37,760 --> 00:27:40,390
+environment, but this time using modern
+burp bases tokenizer instead of burp
+
+1420
+00:27:40,390 --> 00:27:40,400
+burp bases tokenizer instead of burp
+ 
+
+1421
+00:27:40,400 --> 00:27:42,549
+burp bases tokenizer instead of burp
+base on case like the original. And I
+
+1422
+00:27:42,549 --> 00:27:42,559
+base on case like the original. And I
+ 
+
+1423
+00:27:42,559 --> 00:27:44,549
+base on case like the original. And I
+did manage to put together a quick
+
+1424
+00:27:44,549 --> 00:27:44,559
+did manage to put together a quick
+ 
+
+1425
+00:27:44,559 --> 00:27:46,950
+did manage to put together a quick
+static embedding model that is going to
+
+1426
+00:27:46,950 --> 00:27:46,960
+static embedding model that is going to
+ 
+
+1427
+00:27:46,960 --> 00:27:49,669
+static embedding model that is going to
+be linked down below here. But I was
+
+1428
+00:27:49,669 --> 00:27:49,679
+be linked down below here. But I was
+ 
+
+1429
+00:27:49,679 --> 00:27:53,630
+be linked down below here. But I was
+only able to push this up to
+
+1430
+00:27:53,630 --> 00:27:53,640
+
+ 
+
+1431
+00:27:53,640 --> 00:27:57,110
+
+about4791 on the nano bear normalized
+
+1432
+00:27:57,110 --> 00:27:57,120
+about4791 on the nano bear normalized
+ 
+
+1433
+00:27:57,120 --> 00:27:59,190
+about4791 on the nano bear normalized
+discount and cumulative gains at 10
+
+1434
+00:27:59,190 --> 00:27:59,200
+discount and cumulative gains at 10
+ 
+
+1435
+00:27:59,200 --> 00:28:01,990
+discount and cumulative gains at 10
+metric which is a common metric for
+
+1436
+00:28:01,990 --> 00:28:02,000
+metric which is a common metric for
+ 
+
+1437
+00:28:02,000 --> 00:28:03,669
+metric which is a common metric for
+information retrieval. So I'll be
+
+1438
+00:28:03,669 --> 00:28:03,679
+information retrieval. So I'll be
+ 
+
+1439
+00:28:03,679 --> 00:28:05,830
+information retrieval. So I'll be
+linking to this article. It's certainly
+
+1440
+00:28:05,830 --> 00:28:05,840
+linking to this article. It's certainly
+ 
+
+1441
+00:28:05,840 --> 00:28:07,990
+linking to this article. It's certainly
+worth the read. It goes super in-depth
+
+1442
+00:28:07,990 --> 00:28:08,000
+worth the read. It goes super in-depth
+ 
+
+1443
+00:28:08,000 --> 00:28:10,789
+worth the read. It goes super in-depth
+into exactly how this was trained with
+
+1444
+00:28:10,789 --> 00:28:10,799
+into exactly how this was trained with
+ 
+
+1445
+00:28:10,799 --> 00:28:13,430
+into exactly how this was trained with
+code examples as well. So big shout out
+
+1446
+00:28:13,430 --> 00:28:13,440
+code examples as well. So big shout out
+ 
+
+1447
+00:28:13,440 --> 00:28:15,590
+code examples as well. So big shout out
+to Tom and the team for putting together
+
+1448
+00:28:15,590 --> 00:28:15,600
+to Tom and the team for putting together
+ 
+
+1449
+00:28:15,600 --> 00:28:18,630
+to Tom and the team for putting together
+this work and open sourcing it quite
+
+1450
+00:28:18,630 --> 00:28:18,640
+this work and open sourcing it quite
+ 
+
+1451
+00:28:18,640 --> 00:28:20,470
+this work and open sourcing it quite
+nicely. Certainly worth a read. I'll
+
+1452
+00:28:20,470 --> 00:28:20,480
+nicely. Certainly worth a read. I'll
+ 
+
+1453
+00:28:20,480 --> 00:28:22,549
+nicely. Certainly worth a read. I'll
+have it linked in the description below.
+
+1454
+00:28:22,549 --> 00:28:22,559
+have it linked in the description below.
+ 
+
+1455
+00:28:22,559 --> 00:28:24,710
+have it linked in the description below.
+But the second topic of the day which
+
+1456
+00:28:24,710 --> 00:28:24,720
+But the second topic of the day which
+ 
+
+1457
+00:28:24,720 --> 00:28:27,590
+But the second topic of the day which
+we'll cover briefly at the end here is
+
+1458
+00:28:27,590 --> 00:28:27,600
+we'll cover briefly at the end here is
+ 
+
+1459
+00:28:27,600 --> 00:28:29,750
+we'll cover briefly at the end here is
+actually the embedding model
+
+1460
+00:28:29,750 --> 00:28:29,760
+actually the embedding model
+ 
+
+1461
+00:28:29,760 --> 00:28:32,230
+actually the embedding model
+distillation process where rather than
+
+1462
+00:28:32,230 --> 00:28:32,240
+distillation process where rather than
+ 
+
+1463
+00:28:32,240 --> 00:28:34,789
+distillation process where rather than
+relying on actually training a full
+
+1464
+00:28:34,789 --> 00:28:34,799
+relying on actually training a full
+ 
+
+1465
+00:28:34,799 --> 00:28:36,789
+relying on actually training a full
+model from the start, what if we
+
+1466
+00:28:36,789 --> 00:28:36,799
+model from the start, what if we
+ 
+
+1467
+00:28:36,799 --> 00:28:38,950
+model from the start, what if we
+actually took an existing transformer
+
+1468
+00:28:38,950 --> 00:28:38,960
+actually took an existing transformer
+ 
+
+1469
+00:28:38,960 --> 00:28:41,110
+actually took an existing transformer
+contextualbased model and converted it
+
+1470
+00:28:41,110 --> 00:28:41,120
+contextualbased model and converted it
+ 
+
+1471
+00:28:41,120 --> 00:28:44,389
+contextualbased model and converted it
+into a static embedding model? Well,
+
+1472
+00:28:44,389 --> 00:28:44,399
+into a static embedding model? Well,
+ 
+
+1473
+00:28:44,399 --> 00:28:47,510
+into a static embedding model? Well,
+that's exactly what the aptly named
+
+1474
+00:28:47,510 --> 00:28:47,520
+that's exactly what the aptly named
+ 
+
+1475
+00:28:47,520 --> 00:28:50,789
+that's exactly what the aptly named
+model 2 vec package does. Well, there is
+
+1476
+00:28:50,789 --> 00:28:50,799
+model 2 vec package does. Well, there is
+ 
+
+1477
+00:28:50,799 --> 00:28:52,710
+model 2 vec package does. Well, there is
+another blog post that I'll have linked
+
+1478
+00:28:52,710 --> 00:28:52,720
+another blog post that I'll have linked
+ 
+
+1479
+00:28:52,720 --> 00:28:54,070
+another blog post that I'll have linked
+in the description below for you to
+
+1480
+00:28:54,070 --> 00:28:54,080
+in the description below for you to
+ 
+
+1481
+00:28:54,080 --> 00:28:55,990
+in the description below for you to
+check out. The high-level overview of
+
+1482
+00:28:55,990 --> 00:28:56,000
+check out. The high-level overview of
+ 
+
+1483
+00:28:56,000 --> 00:28:58,710
+check out. The high-level overview of
+how this works is that essentially we're
+
+1484
+00:28:58,710 --> 00:28:58,720
+how this works is that essentially we're
+ 
+
+1485
+00:28:58,720 --> 00:29:00,070
+how this works is that essentially we're
+going to take an existing
+
+1486
+00:29:00,070 --> 00:29:00,080
+going to take an existing
+ 
+
+1487
+00:29:00,080 --> 00:29:02,149
+going to take an existing
+transformer-based embedding model, run
+
+1488
+00:29:02,149 --> 00:29:02,159
+transformer-based embedding model, run
+ 
+
+1489
+00:29:02,159 --> 00:29:04,190
+transformer-based embedding model, run
+every single token in the model's
+
+1490
+00:29:04,190 --> 00:29:04,200
+every single token in the model's
+ 
+
+1491
+00:29:04,200 --> 00:29:06,549
+every single token in the model's
+vocabulary through the model, and then
+
+1492
+00:29:06,549 --> 00:29:06,559
+vocabulary through the model, and then
+ 
+
+1493
+00:29:06,559 --> 00:29:09,789
+vocabulary through the model, and then
+store those embeddings alongside the
+
+1494
+00:29:09,789 --> 00:29:09,799
+store those embeddings alongside the
+ 
+
+1495
+00:29:09,799 --> 00:29:11,990
+store those embeddings alongside the
+vocabulary. We then go through an
+
+1496
+00:29:11,990 --> 00:29:12,000
+vocabulary. We then go through an
+ 
+
+1497
+00:29:12,000 --> 00:29:14,710
+vocabulary. We then go through an
+optional dimensionality reduction step.
+
+1498
+00:29:14,710 --> 00:29:14,720
+optional dimensionality reduction step.
+ 
+
+1499
+00:29:14,720 --> 00:29:17,590
+optional dimensionality reduction step.
+So we can change it from whatever amount
+
+1500
+00:29:17,590 --> 00:29:17,600
+So we can change it from whatever amount
+ 
+
+1501
+00:29:17,600 --> 00:29:19,430
+So we can change it from whatever amount
+of dimensions that our original output
+
+1502
+00:29:19,430 --> 00:29:19,440
+of dimensions that our original output
+ 
+
+1503
+00:29:19,440 --> 00:29:23,190
+of dimensions that our original output
+is and truncate that into a smaller one
+
+1504
+00:29:23,190 --> 00:29:23,200
+is and truncate that into a smaller one
+ 
+
+1505
+00:29:23,200 --> 00:29:25,590
+is and truncate that into a smaller one
+and then also weight each embedding
+
+1506
+00:29:25,590 --> 00:29:25,600
+and then also weight each embedding
+ 
+
+1507
+00:29:25,600 --> 00:29:28,789
+and then also weight each embedding
+based on some power rules. This is a
+
+1508
+00:29:28,789 --> 00:29:28,799
+based on some power rules. This is a
+ 
+
+1509
+00:29:28,799 --> 00:29:30,149
+based on some power rules. This is a
+super interesting way of actually
+
+1510
+00:29:30,149 --> 00:29:30,159
+super interesting way of actually
+ 
+
+1511
+00:29:30,159 --> 00:29:31,510
+super interesting way of actually
+approaching that because essentially
+
+1512
+00:29:31,510 --> 00:29:31,520
+approaching that because essentially
+ 
+
+1513
+00:29:31,520 --> 00:29:33,029
+approaching that because essentially
+it's going to bootstrap static
+
+1514
+00:29:33,029 --> 00:29:33,039
+it's going to bootstrap static
+ 
+
+1515
+00:29:33,039 --> 00:29:35,510
+it's going to bootstrap static
+embeddings from transformer models by
+
+1516
+00:29:35,510 --> 00:29:35,520
+embeddings from transformer models by
+ 
+
+1517
+00:29:35,520 --> 00:29:37,510
+embeddings from transformer models by
+creating that lookup table of vector
+
+1518
+00:29:37,510 --> 00:29:37,520
+creating that lookup table of vector
+ 
+
+1519
+00:29:37,520 --> 00:29:40,070
+creating that lookup table of vector
+representations directly. It then also
+
+1520
+00:29:40,070 --> 00:29:40,080
+representations directly. It then also
+ 
+
+1521
+00:29:40,080 --> 00:29:42,230
+representations directly. It then also
+applies the dimensionality reduction and
+
+1522
+00:29:42,230 --> 00:29:42,240
+applies the dimensionality reduction and
+ 
+
+1523
+00:29:42,240 --> 00:29:44,470
+applies the dimensionality reduction and
+waiting tokens appropriately without
+
+1524
+00:29:44,470 --> 00:29:44,480
+waiting tokens appropriately without
+ 
+
+1525
+00:29:44,480 --> 00:29:46,549
+waiting tokens appropriately without
+kind of requiring any sort of extensive
+
+1526
+00:29:46,549 --> 00:29:46,559
+kind of requiring any sort of extensive
+ 
+
+1527
+00:29:46,559 --> 00:29:48,710
+kind of requiring any sort of extensive
+training that we might have seen in some
+
+1528
+00:29:48,710 --> 00:29:48,720
+training that we might have seen in some
+ 
+
+1529
+00:29:48,720 --> 00:29:50,630
+training that we might have seen in some
+of our examples before. So just to
+
+1530
+00:29:50,630 --> 00:29:50,640
+of our examples before. So just to
+ 
+
+1531
+00:29:50,640 --> 00:29:53,029
+of our examples before. So just to
+quickly go over these three steps, run
+
+1532
+00:29:53,029 --> 00:29:53,039
+quickly go over these three steps, run
+ 
+
+1533
+00:29:53,039 --> 00:29:54,789
+quickly go over these three steps, run
+every token in the model's vocabulary
+
+1534
+00:29:54,789 --> 00:29:54,799
+every token in the model's vocabulary
+ 
+
+1535
+00:29:54,799 --> 00:29:56,070
+every token in the model's vocabulary
+through the model and store the
+
+1536
+00:29:56,070 --> 00:29:56,080
+through the model and store the
+ 
+
+1537
+00:29:56,080 --> 00:29:57,830
+through the model and store the
+embedding is pretty straightforward. So
+
+1538
+00:29:57,830 --> 00:29:57,840
+embedding is pretty straightforward. So
+ 
+
+1539
+00:29:57,840 --> 00:30:00,549
+embedding is pretty straightforward. So
+I won't go into that one. But reducing
+
+1540
+00:30:00,549 --> 00:30:00,559
+I won't go into that one. But reducing
+ 
+
+1541
+00:30:00,559 --> 00:30:02,149
+I won't go into that one. But reducing
+the dimensionality of the output
+
+1542
+00:30:02,149 --> 00:30:02,159
+the dimensionality of the output
+ 
+
+1543
+00:30:02,159 --> 00:30:03,909
+the dimensionality of the output
+embedding is going to rely on something
+
+1544
+00:30:03,909 --> 00:30:03,919
+embedding is going to rely on something
+ 
+
+1545
+00:30:03,919 --> 00:30:05,909
+embedding is going to rely on something
+called principal component analysis,
+
+1546
+00:30:05,909 --> 00:30:05,919
+called principal component analysis,
+ 
+
+1547
+00:30:05,919 --> 00:30:09,029
+called principal component analysis,
+dimensionality reduction or PCA for
+
+1548
+00:30:09,029 --> 00:30:09,039
+dimensionality reduction or PCA for
+ 
+
+1549
+00:30:09,039 --> 00:30:10,710
+dimensionality reduction or PCA for
+short. PCA is a way of taking
+
+1550
+00:30:10,710 --> 00:30:10,720
+short. PCA is a way of taking
+ 
+
+1551
+00:30:10,720 --> 00:30:13,110
+short. PCA is a way of taking
+highdimensional data and mapping it down
+
+1552
+00:30:13,110 --> 00:30:13,120
+highdimensional data and mapping it down
+ 
+
+1553
+00:30:13,120 --> 00:30:15,669
+highdimensional data and mapping it down
+to of course well lower dimensions here
+
+1554
+00:30:15,669 --> 00:30:15,679
+to of course well lower dimensions here
+ 
+
+1555
+00:30:15,679 --> 00:30:17,590
+to of course well lower dimensions here
+and is what we use to actually take our
+
+1556
+00:30:17,590 --> 00:30:17,600
+and is what we use to actually take our
+ 
+
+1557
+00:30:17,600 --> 00:30:19,909
+and is what we use to actually take our
+300 dimension representation and change
+
+1558
+00:30:19,909 --> 00:30:19,919
+300 dimension representation and change
+ 
+
+1559
+00:30:19,919 --> 00:30:21,830
+300 dimension representation and change
+it into three dimensions for our
+
+1560
+00:30:21,830 --> 00:30:21,840
+it into three dimensions for our
+ 
+
+1561
+00:30:21,840 --> 00:30:23,830
+it into three dimensions for our
+visualization that we showed earlier
+
+1562
+00:30:23,830 --> 00:30:23,840
+visualization that we showed earlier
+ 
+
+1563
+00:30:23,840 --> 00:30:26,549
+visualization that we showed earlier
+with the king, woman, queen example.
+
+1564
+00:30:26,549 --> 00:30:26,559
+with the king, woman, queen example.
+ 
+
+1565
+00:30:26,559 --> 00:30:28,230
+with the king, woman, queen example.
+Without getting too much into the math,
+
+1566
+00:30:28,230 --> 00:30:28,240
+Without getting too much into the math,
+ 
+
+1567
+00:30:28,240 --> 00:30:30,310
+Without getting too much into the math,
+the intuitive way of understanding this
+
+1568
+00:30:30,310 --> 00:30:30,320
+the intuitive way of understanding this
+ 
+
+1569
+00:30:30,320 --> 00:30:32,549
+the intuitive way of understanding this
+is that we're attempting to map the
+
+1570
+00:30:32,549 --> 00:30:32,559
+is that we're attempting to map the
+ 
+
+1571
+00:30:32,559 --> 00:30:34,149
+is that we're attempting to map the
+highdimensional data to lower
+
+1572
+00:30:34,149 --> 00:30:34,159
+highdimensional data to lower
+ 
+
+1573
+00:30:34,159 --> 00:30:36,389
+highdimensional data to lower
+dimensional space while maintaining the
+
+1574
+00:30:36,389 --> 00:30:36,399
+dimensional space while maintaining the
+ 
+
+1575
+00:30:36,399 --> 00:30:38,870
+dimensional space while maintaining the
+geometric distribution of the data as
+
+1576
+00:30:38,870 --> 00:30:38,880
+geometric distribution of the data as
+ 
+
+1577
+00:30:38,880 --> 00:30:41,590
+geometric distribution of the data as
+best as possible. So this means that we
+
+1578
+00:30:41,590 --> 00:30:41,600
+best as possible. So this means that we
+ 
+
+1579
+00:30:41,600 --> 00:30:42,950
+best as possible. So this means that we
+can take large embeddings and
+
+1580
+00:30:42,950 --> 00:30:42,960
+can take large embeddings and
+ 
+
+1581
+00:30:42,960 --> 00:30:44,549
+can take large embeddings and
+essentially convert them into smaller
+
+1582
+00:30:44,549 --> 00:30:44,559
+essentially convert them into smaller
+ 
+
+1583
+00:30:44,559 --> 00:30:46,950
+essentially convert them into smaller
+embeddings with a minimal loss in the
+
+1584
+00:30:46,950 --> 00:30:46,960
+embeddings with a minimal loss in the
+ 
+
+1585
+00:30:46,960 --> 00:30:48,630
+embeddings with a minimal loss in the
+actual semantic meanings of these
+
+1586
+00:30:48,630 --> 00:30:48,640
+actual semantic meanings of these
+ 
+
+1587
+00:30:48,640 --> 00:30:51,350
+actual semantic meanings of these
+embeddings and their relationships to
+
+1588
+00:30:51,350 --> 00:30:51,360
+embeddings and their relationships to
+ 
+
+1589
+00:30:51,360 --> 00:30:53,110
+embeddings and their relationships to
+each other. This has a few different
+
+1590
+00:30:53,110 --> 00:30:53,120
+each other. This has a few different
+ 
+
+1591
+00:30:53,120 --> 00:30:55,350
+each other. This has a few different
+benefits in the entire process here. We
+
+1592
+00:30:55,350 --> 00:30:55,360
+benefits in the entire process here. We
+ 
+
+1593
+00:30:55,360 --> 00:30:57,190
+benefits in the entire process here. We
+can not only store more efficient and
+
+1594
+00:30:57,190 --> 00:30:57,200
+can not only store more efficient and
+ 
+
+1595
+00:30:57,200 --> 00:30:59,590
+can not only store more efficient and
+smaller vector representations in total
+
+1596
+00:30:59,590 --> 00:30:59,600
+smaller vector representations in total
+ 
+
+1597
+00:30:59,600 --> 00:31:01,990
+smaller vector representations in total
+in our actual lookup table here, but
+
+1598
+00:31:01,990 --> 00:31:02,000
+in our actual lookup table here, but
+ 
+
+1599
+00:31:02,000 --> 00:31:04,230
+in our actual lookup table here, but
+doing this reduction can help normalize
+
+1600
+00:31:04,230 --> 00:31:04,240
+doing this reduction can help normalize
+ 
+
+1601
+00:31:04,240 --> 00:31:05,990
+doing this reduction can help normalize
+and actually dn noiseise the data from
+
+1602
+00:31:05,990 --> 00:31:06,000
+and actually dn noiseise the data from
+ 
+
+1603
+00:31:06,000 --> 00:31:08,710
+and actually dn noiseise the data from
+any sort of highdimension model specific
+
+1604
+00:31:08,710 --> 00:31:08,720
+any sort of highdimension model specific
+ 
+
+1605
+00:31:08,720 --> 00:31:10,310
+any sort of highdimension model specific
+information that was learned over the
+
+1606
+00:31:10,310 --> 00:31:10,320
+information that was learned over the
+ 
+
+1607
+00:31:10,320 --> 00:31:12,310
+information that was learned over the
+course of the transformer model
+
+1608
+00:31:12,310 --> 00:31:12,320
+course of the transformer model
+ 
+
+1609
+00:31:12,320 --> 00:31:14,630
+course of the transformer model
+training. So we can reduce any redundant
+
+1610
+00:31:14,630 --> 00:31:14,640
+training. So we can reduce any redundant
+ 
+
+1611
+00:31:14,640 --> 00:31:16,070
+training. So we can reduce any redundant
+learnings and also assist in
+
+1612
+00:31:16,070 --> 00:31:16,080
+learnings and also assist in
+ 
+
+1613
+00:31:16,080 --> 00:31:18,149
+learnings and also assist in
+generalizing our static embedding model
+
+1614
+00:31:18,149 --> 00:31:18,159
+generalizing our static embedding model
+ 
+
+1615
+00:31:18,159 --> 00:31:20,789
+generalizing our static embedding model
+a little bit more. So while we do lose
+
+1616
+00:31:20,789 --> 00:31:20,799
+a little bit more. So while we do lose
+ 
+
+1617
+00:31:20,799 --> 00:31:23,110
+a little bit more. So while we do lose
+the specificity of the transformer-based
+
+1618
+00:31:23,110 --> 00:31:23,120
+the specificity of the transformer-based
+ 
+
+1619
+00:31:23,120 --> 00:31:25,269
+the specificity of the transformer-based
+embedding, this will help make the token
+
+1620
+00:31:25,269 --> 00:31:25,279
+embedding, this will help make the token
+ 
+
+1621
+00:31:25,279 --> 00:31:27,430
+embedding, this will help make the token
+specific embeddings more applicable to
+
+1622
+00:31:27,430 --> 00:31:27,440
+specific embeddings more applicable to
+ 
+
+1623
+00:31:27,440 --> 00:31:30,310
+specific embeddings more applicable to
+wider scenarios in this static embedding
+
+1624
+00:31:30,310 --> 00:31:30,320
+wider scenarios in this static embedding
+ 
+
+1625
+00:31:30,320 --> 00:31:32,149
+wider scenarios in this static embedding
+model. And then handinhand with this is
+
+1626
+00:31:32,149 --> 00:31:32,159
+model. And then handinhand with this is
+ 
+
+1627
+00:31:32,159 --> 00:31:34,230
+model. And then handinhand with this is
+the third step which is weighting each
+
+1628
+00:31:34,230 --> 00:31:34,240
+the third step which is weighting each
+ 
+
+1629
+00:31:34,240 --> 00:31:36,870
+the third step which is weighting each
+of these embeddings. So what I put down
+
+1630
+00:31:36,870 --> 00:31:36,880
+of these embeddings. So what I put down
+ 
+
+1631
+00:31:36,880 --> 00:31:38,389
+of these embeddings. So what I put down
+here is that when you really consider
+
+1632
+00:31:38,389 --> 00:31:38,399
+here is that when you really consider
+ 
+
+1633
+00:31:38,399 --> 00:31:40,710
+here is that when you really consider
+that a static embedding of a sequence,
+
+1634
+00:31:40,710 --> 00:31:40,720
+that a static embedding of a sequence,
+ 
+
+1635
+00:31:40,720 --> 00:31:43,190
+that a static embedding of a sequence,
+document or sentence will simply be that
+
+1636
+00:31:43,190 --> 00:31:43,200
+document or sentence will simply be that
+ 
+
+1637
+00:31:43,200 --> 00:31:46,830
+document or sentence will simply be that
+pulled average or some sort of weighted
+
+1638
+00:31:46,830 --> 00:31:46,840
+pulled average or some sort of weighted
+ 
+
+1639
+00:31:46,840 --> 00:31:49,350
+pulled average or some sort of weighted
+frequency of the individual token level
+
+1640
+00:31:49,350 --> 00:31:49,360
+frequency of the individual token level
+ 
+
+1641
+00:31:49,360 --> 00:31:51,590
+frequency of the individual token level
+embeddings. It is important to add in
+
+1642
+00:31:51,590 --> 00:31:51,600
+embeddings. It is important to add in
+ 
+
+1643
+00:31:51,600 --> 00:31:54,389
+embeddings. It is important to add in
+some form of individual waiting. This
+
+1644
+00:31:54,389 --> 00:31:54,399
+some form of individual waiting. This
+ 
+
+1645
+00:31:54,399 --> 00:31:55,909
+some form of individual waiting. This
+waiting actually happens pretty much
+
+1646
+00:31:55,909 --> 00:31:55,919
+waiting actually happens pretty much
+ 
+
+1647
+00:31:55,919 --> 00:31:57,669
+waiting actually happens pretty much
+automatically when we use
+
+1648
+00:31:57,669 --> 00:31:57,679
+automatically when we use
+ 
+
+1649
+00:31:57,679 --> 00:32:00,710
+automatically when we use
+attention-based models because we relate
+
+1650
+00:32:00,710 --> 00:32:00,720
+attention-based models because we relate
+ 
+
+1651
+00:32:00,720 --> 00:32:02,389
+attention-based models because we relate
+words and their meanings more
+
+1652
+00:32:02,389 --> 00:32:02,399
+words and their meanings more
+ 
+
+1653
+00:32:02,399 --> 00:32:05,269
+words and their meanings more
+specifically to the semantically rich
+
+1654
+00:32:05,269 --> 00:32:05,279
+specifically to the semantically rich
+ 
+
+1655
+00:32:05,279 --> 00:32:07,750
+specifically to the semantically rich
+words that are contextually around them.
+
+1656
+00:32:07,750 --> 00:32:07,760
+words that are contextually around them.
+ 
+
+1657
+00:32:07,760 --> 00:32:10,870
+words that are contextually around them.
+So without the luxury of attention, we
+
+1658
+00:32:10,870 --> 00:32:10,880
+So without the luxury of attention, we
+ 
+
+1659
+00:32:10,880 --> 00:32:12,630
+So without the luxury of attention, we
+essentially are going to use a
+
+1660
+00:32:12,630 --> 00:32:12,640
+essentially are going to use a
+ 
+
+1661
+00:32:12,640 --> 00:32:15,110
+essentially are going to use a
+simplified version of smooth inverse
+
+1662
+00:32:15,110 --> 00:32:15,120
+simplified version of smooth inverse
+ 
+
+1663
+00:32:15,120 --> 00:32:17,110
+simplified version of smooth inverse
+frequency based on something called
+
+1664
+00:32:17,110 --> 00:32:17,120
+frequency based on something called
+ 
+
+1665
+00:32:17,120 --> 00:32:20,070
+frequency based on something called
+ZIP's law, which states that when a list
+
+1666
+00:32:20,070 --> 00:32:20,080
+ZIP's law, which states that when a list
+ 
+
+1667
+00:32:20,080 --> 00:32:21,909
+ZIP's law, which states that when a list
+of measured values is sorted in
+
+1668
+00:32:21,909 --> 00:32:21,919
+of measured values is sorted in
+ 
+
+1669
+00:32:21,919 --> 00:32:24,310
+of measured values is sorted in
+decreasing order, the value of the nth
+
+1670
+00:32:24,310 --> 00:32:24,320
+decreasing order, the value of the nth
+ 
+
+1671
+00:32:24,320 --> 00:32:27,269
+decreasing order, the value of the nth
+entry is often approximately inversely
+
+1672
+00:32:27,269 --> 00:32:27,279
+entry is often approximately inversely
+ 
+
+1673
+00:32:27,279 --> 00:32:29,830
+entry is often approximately inversely
+proportional to n. Or in other words, it
+
+1674
+00:32:29,830 --> 00:32:29,840
+proportional to n. Or in other words, it
+ 
+
+1675
+00:32:29,840 --> 00:32:31,590
+proportional to n. Or in other words, it
+is usually found that the most common
+
+1676
+00:32:31,590 --> 00:32:31,600
+is usually found that the most common
+ 
+
+1677
+00:32:31,600 --> 00:32:34,389
+is usually found that the most common
+word occurs approximately twice as often
+
+1678
+00:32:34,389 --> 00:32:34,399
+word occurs approximately twice as often
+ 
+
+1679
+00:32:34,399 --> 00:32:36,470
+word occurs approximately twice as often
+as the next common one, three times as
+
+1680
+00:32:36,470 --> 00:32:36,480
+as the next common one, three times as
+ 
+
+1681
+00:32:36,480 --> 00:32:38,909
+as the next common one, three times as
+often as the third most common and so
+
+1682
+00:32:38,909 --> 00:32:38,919
+often as the third most common and so
+ 
+
+1683
+00:32:38,919 --> 00:32:41,269
+often as the third most common and so
+on. And the thing that we can really
+
+1684
+00:32:41,269 --> 00:32:41,279
+on. And the thing that we can really
+ 
+
+1685
+00:32:41,279 --> 00:32:43,350
+on. And the thing that we can really
+take advantage of is that most
+
+1686
+00:32:43,350 --> 00:32:43,360
+take advantage of is that most
+ 
+
+1687
+00:32:43,360 --> 00:32:45,509
+take advantage of is that most
+vocabularies for these models are
+
+1688
+00:32:45,509 --> 00:32:45,519
+vocabularies for these models are
+ 
+
+1689
+00:32:45,519 --> 00:32:48,230
+vocabularies for these models are
+already frequency ordered lists. So we
+
+1690
+00:32:48,230 --> 00:32:48,240
+already frequency ordered lists. So we
+ 
+
+1691
+00:32:48,240 --> 00:32:50,389
+already frequency ordered lists. So we
+can assume that this holds true and
+
+1692
+00:32:50,389 --> 00:32:50,399
+can assume that this holds true and
+ 
+
+1693
+00:32:50,399 --> 00:32:52,389
+can assume that this holds true and
+effectively downweight frequent words
+
+1694
+00:32:52,389 --> 00:32:52,399
+effectively downweight frequent words
+ 
+
+1695
+00:32:52,399 --> 00:32:55,190
+effectively downweight frequent words
+and upweight more rare words provided
+
+1696
+00:32:55,190 --> 00:32:55,200
+and upweight more rare words provided
+ 
+
+1697
+00:32:55,200 --> 00:32:57,190
+and upweight more rare words provided
+the list here. So the model tove vec
+
+1698
+00:32:57,190 --> 00:32:57,200
+the list here. So the model tove vec
+ 
+
+1699
+00:32:57,200 --> 00:32:59,110
+the list here. So the model tove vec
+algorithm applies this three-step
+
+1700
+00:32:59,110 --> 00:32:59,120
+algorithm applies this three-step
+ 
+
+1701
+00:32:59,120 --> 00:33:01,430
+algorithm applies this three-step
+process using a given transformer
+
+1702
+00:33:01,430 --> 00:33:01,440
+process using a given transformer
+ 
+
+1703
+00:33:01,440 --> 00:33:03,070
+process using a given transformer
+embedding model and an optional
+
+1704
+00:33:03,070 --> 00:33:03,080
+embedding model and an optional
+ 
+
+1705
+00:33:03,080 --> 00:33:05,430
+embedding model and an optional
+vocabulary to pretty much quickly build
+
+1706
+00:33:05,430 --> 00:33:05,440
+vocabulary to pretty much quickly build
+ 
+
+1707
+00:33:05,440 --> 00:33:07,669
+vocabulary to pretty much quickly build
+the static embedding models based on the
+
+1708
+00:33:07,669 --> 00:33:07,679
+the static embedding models based on the
+ 
+
+1709
+00:33:07,679 --> 00:33:09,830
+the static embedding models based on the
+inputs. So let's try it out. We're going
+
+1710
+00:33:09,830 --> 00:33:09,840
+inputs. So let's try it out. We're going
+ 
+
+1711
+00:33:09,840 --> 00:33:12,470
+inputs. So let's try it out. We're going
+to be using the Beijing Academy of
+
+1712
+00:33:12,470 --> 00:33:12,480
+to be using the Beijing Academy of
+ 
+
+1713
+00:33:12,480 --> 00:33:14,590
+to be using the Beijing Academy of
+Artificial Intelligence model
+
+1714
+00:33:14,590 --> 00:33:14,600
+Artificial Intelligence model
+ 
+
+1715
+00:33:14,600 --> 00:33:17,669
+Artificial Intelligence model
+BGEM3 which is a multilingual embedding
+
+1716
+00:33:17,669 --> 00:33:17,679
+BGEM3 which is a multilingual embedding
+ 
+
+1717
+00:33:17,679 --> 00:33:22,149
+BGEM3 which is a multilingual embedding
+model basically because it is about 560
+
+1718
+00:33:22,149 --> 00:33:22,159
+model basically because it is about 560
+ 
+
+1719
+00:33:22,159 --> 00:33:24,549
+model basically because it is about 560
+million parameters. So, it's quite a
+
+1720
+00:33:24,549 --> 00:33:24,559
+million parameters. So, it's quite a
+ 
+
+1721
+00:33:24,559 --> 00:33:27,269
+million parameters. So, it's quite a
+beefy and capable one and is able of
+
+1722
+00:33:27,269 --> 00:33:27,279
+beefy and capable one and is able of
+ 
+
+1723
+00:33:27,279 --> 00:33:29,470
+beefy and capable one and is able of
+processing sequences of up to
+
+1724
+00:33:29,470 --> 00:33:29,480
+processing sequences of up to
+ 
+
+1725
+00:33:29,480 --> 00:33:33,509
+processing sequences of up to
+8,192 tokens down into 1,024 dimension
+
+1726
+00:33:33,509 --> 00:33:33,519
+8,192 tokens down into 1,024 dimension
+ 
+
+1727
+00:33:33,519 --> 00:33:36,070
+8,192 tokens down into 1,024 dimension
+vector representations. So, what we're
+
+1728
+00:33:36,070 --> 00:33:36,080
+vector representations. So, what we're
+ 
+
+1729
+00:33:36,080 --> 00:33:39,190
+vector representations. So, what we're
+going to do is take this model and
+
+1730
+00:33:39,190 --> 00:33:39,200
+going to do is take this model and
+ 
+
+1731
+00:33:39,200 --> 00:33:41,430
+going to do is take this model and
+specify it and then we're going to do
+
+1732
+00:33:41,430 --> 00:33:41,440
+specify it and then we're going to do
+ 
+
+1733
+00:33:41,440 --> 00:33:45,190
+specify it and then we're going to do
+the dimensionality reduction of 256.
+
+1734
+00:33:45,190 --> 00:33:45,200
+the dimensionality reduction of 256.
+ 
+
+1735
+00:33:45,200 --> 00:33:47,430
+the dimensionality reduction of 256.
+So just kicking this off, what you're
+
+1736
+00:33:47,430 --> 00:33:47,440
+So just kicking this off, what you're
+ 
+
+1737
+00:33:47,440 --> 00:33:49,750
+So just kicking this off, what you're
+going to see actually happen is the
+
+1738
+00:33:49,750 --> 00:33:49,760
+going to see actually happen is the
+ 
+
+1739
+00:33:49,760 --> 00:33:51,190
+going to see actually happen is the
+model will be loaded if you don't have
+
+1740
+00:33:51,190 --> 00:33:51,200
+model will be loaded if you don't have
+ 
+
+1741
+00:33:51,200 --> 00:33:53,509
+model will be loaded if you don't have
+it downloaded already and then it's
+
+1742
+00:33:53,509 --> 00:33:53,519
+it downloaded already and then it's
+ 
+
+1743
+00:33:53,519 --> 00:33:55,029
+it downloaded already and then it's
+going to start going through each
+
+1744
+00:33:55,029 --> 00:33:55,039
+going to start going through each
+ 
+
+1745
+00:33:55,039 --> 00:33:58,789
+going to start going through each
+individual word and its vocabulary and
+
+1746
+00:33:58,789 --> 00:33:58,799
+individual word and its vocabulary and
+ 
+
+1747
+00:33:58,799 --> 00:34:01,830
+individual word and its vocabulary and
+storing the embedding that comes out
+
+1748
+00:34:01,830 --> 00:34:01,840
+storing the embedding that comes out
+ 
+
+1749
+00:34:01,840 --> 00:34:04,470
+storing the embedding that comes out
+from the model. So you'll see that my
+
+1750
+00:34:04,470 --> 00:34:04,480
+from the model. So you'll see that my
+ 
+
+1751
+00:34:04,480 --> 00:34:06,630
+from the model. So you'll see that my
+video's gotten a little bit choppy as my
+
+1752
+00:34:06,630 --> 00:34:06,640
+video's gotten a little bit choppy as my
+ 
+
+1753
+00:34:06,640 --> 00:34:10,389
+video's gotten a little bit choppy as my
+CPU is under load computing these
+
+1754
+00:34:10,389 --> 00:34:10,399
+CPU is under load computing these
+ 
+
+1755
+00:34:10,399 --> 00:34:12,310
+CPU is under load computing these
+embeddings. So, I'll be back in a couple
+
+1756
+00:34:12,310 --> 00:34:12,320
+embeddings. So, I'll be back in a couple
+ 
+
+1757
+00:34:12,320 --> 00:34:15,750
+embeddings. So, I'll be back in a couple
+minutes as this finishes up. So, once
+
+1758
+00:34:15,750 --> 00:34:15,760
+minutes as this finishes up. So, once
+ 
+
+1759
+00:34:15,760 --> 00:34:18,629
+minutes as this finishes up. So, once
+that's gone ahead and finished up, I've
+
+1760
+00:34:18,629 --> 00:34:18,639
+that's gone ahead and finished up, I've
+ 
+
+1761
+00:34:18,639 --> 00:34:21,349
+that's gone ahead and finished up, I've
+saved it just in a quick folder here.
+
+1762
+00:34:21,349 --> 00:34:21,359
+saved it just in a quick folder here.
+ 
+
+1763
+00:34:21,359 --> 00:34:23,829
+saved it just in a quick folder here.
+Then I'll load the regular model as well
+
+1764
+00:34:23,829 --> 00:34:23,839
+Then I'll load the regular model as well
+ 
+
+1765
+00:34:23,839 --> 00:34:27,030
+Then I'll load the regular model as well
+as the distilled model onto CPU. And
+
+1766
+00:34:27,030 --> 00:34:27,040
+as the distilled model onto CPU. And
+ 
+
+1767
+00:34:27,040 --> 00:34:29,669
+as the distilled model onto CPU. And
+what we're going to do is use a quick
+
+1768
+00:34:29,669 --> 00:34:29,679
+what we're going to do is use a quick
+ 
+
+1769
+00:34:29,679 --> 00:34:32,550
+what we're going to do is use a quick
+anchor positive and negative example. So
+
+1770
+00:34:32,550 --> 00:34:32,560
+anchor positive and negative example. So
+ 
+
+1771
+00:34:32,560 --> 00:34:36,149
+anchor positive and negative example. So
+I have this what is Ddier Ruf best known
+
+1772
+00:34:36,149 --> 00:34:36,159
+I have this what is Ddier Ruf best known
+ 
+
+1773
+00:34:36,159 --> 00:34:38,470
+I have this what is Ddier Ruf best known
+for as a photographer as well as a
+
+1774
+00:34:38,470 --> 00:34:38,480
+for as a photographer as well as a
+ 
+
+1775
+00:34:38,480 --> 00:34:40,990
+for as a photographer as well as a
+provided positive here in the second
+
+1776
+00:34:40,990 --> 00:34:41,000
+provided positive here in the second
+ 
+
+1777
+00:34:41,000 --> 00:34:44,869
+provided positive here in the second
+position and a negative in the third
+
+1778
+00:34:44,869 --> 00:34:44,879
+position and a negative in the third
+ 
+
+1779
+00:34:44,879 --> 00:34:47,510
+position and a negative in the third
+position here. If we run through the
+
+1780
+00:34:47,510 --> 00:34:47,520
+position here. If we run through the
+ 
+
+1781
+00:34:47,520 --> 00:34:49,510
+position here. If we run through the
+embeddings and calculate the
+
+1782
+00:34:49,510 --> 00:34:49,520
+embeddings and calculate the
+ 
+
+1783
+00:34:49,520 --> 00:34:51,589
+embeddings and calculate the
+similarities for both of the models,
+
+1784
+00:34:51,589 --> 00:34:51,599
+similarities for both of the models,
+ 
+
+1785
+00:34:51,599 --> 00:34:54,310
+similarities for both of the models,
+what we can see here is something pretty
+
+1786
+00:34:54,310 --> 00:34:54,320
+what we can see here is something pretty
+ 
+
+1787
+00:34:54,320 --> 00:34:56,710
+what we can see here is something pretty
+interesting. We see from the base model
+
+1788
+00:34:56,710 --> 00:34:56,720
+interesting. We see from the base model
+ 
+
+1789
+00:34:56,720 --> 00:34:59,910
+interesting. We see from the base model
+that our anchor and positive is at a 75%
+
+1790
+00:34:59,910 --> 00:34:59,920
+that our anchor and positive is at a 75%
+ 
+
+1791
+00:34:59,920 --> 00:35:02,069
+that our anchor and positive is at a 75%
+similarity and our anchor and negative
+
+1792
+00:35:02,069 --> 00:35:02,079
+similarity and our anchor and negative
+ 
+
+1793
+00:35:02,079 --> 00:35:05,190
+similarity and our anchor and negative
+is at a 35% similarity. And then looking
+
+1794
+00:35:05,190 --> 00:35:05,200
+is at a 35% similarity. And then looking
+ 
+
+1795
+00:35:05,200 --> 00:35:08,950
+is at a 35% similarity. And then looking
+at our distilled model of the BGE M3, we
+
+1796
+00:35:08,950 --> 00:35:08,960
+at our distilled model of the BGE M3, we
+ 
+
+1797
+00:35:08,960 --> 00:35:11,069
+at our distilled model of the BGE M3, we
+see that the anchor and positive is
+
+1798
+00:35:11,069 --> 00:35:11,079
+see that the anchor and positive is
+ 
+
+1799
+00:35:11,079 --> 00:35:14,670
+see that the anchor and positive is
+at.37 and the anchor and negative is at
+
+1800
+00:35:14,670 --> 00:35:14,680
+at.37 and the anchor and negative is at
+ 
+
+1801
+00:35:14,680 --> 00:35:17,670
+at.37 and the anchor and negative is at
+10. So while our direct computations are
+
+1802
+00:35:17,670 --> 00:35:17,680
+10. So while our direct computations are
+ 
+
+1803
+00:35:17,680 --> 00:35:19,109
+10. So while our direct computations are
+a little bit different, the actual
+
+1804
+00:35:19,109 --> 00:35:19,119
+a little bit different, the actual
+ 
+
+1805
+00:35:19,119 --> 00:35:20,870
+a little bit different, the actual
+expected result of having a higher
+
+1806
+00:35:20,870 --> 00:35:20,880
+expected result of having a higher
+ 
+
+1807
+00:35:20,880 --> 00:35:22,870
+expected result of having a higher
+similarity between the positive and the
+
+1808
+00:35:22,870 --> 00:35:22,880
+similarity between the positive and the
+ 
+
+1809
+00:35:22,880 --> 00:35:24,630
+similarity between the positive and the
+anchor versus the positive and the
+
+1810
+00:35:24,630 --> 00:35:24,640
+anchor versus the positive and the
+ 
+
+1811
+00:35:24,640 --> 00:35:27,910
+anchor versus the positive and the
+negative still holds true in this case.
+
+1812
+00:35:27,910 --> 00:35:27,920
+negative still holds true in this case.
+ 
+
+1813
+00:35:27,920 --> 00:35:29,510
+negative still holds true in this case.
+And at the end of it all, we have a
+
+1814
+00:35:29,510 --> 00:35:29,520
+And at the end of it all, we have a
+ 
+
+1815
+00:35:29,520 --> 00:35:32,470
+And at the end of it all, we have a
+nicely distilled down sentence embedding
+
+1816
+00:35:32,470 --> 00:35:32,480
+nicely distilled down sentence embedding
+ 
+
+1817
+00:35:32,480 --> 00:35:34,710
+nicely distilled down sentence embedding
+model as a static embedding model that
+
+1818
+00:35:34,710 --> 00:35:34,720
+model as a static embedding model that
+ 
+
+1819
+00:35:34,720 --> 00:35:36,950
+model as a static embedding model that
+we can use for any sort of downstream
+
+1820
+00:35:36,950 --> 00:35:36,960
+we can use for any sort of downstream
+ 
+
+1821
+00:35:36,960 --> 00:35:38,870
+we can use for any sort of downstream
+task. So to close off our discussion
+
+1822
+00:35:38,870 --> 00:35:38,880
+task. So to close off our discussion
+ 
+
+1823
+00:35:38,880 --> 00:35:41,190
+task. So to close off our discussion
+here today, my main kind of point is
+
+1824
+00:35:41,190 --> 00:35:41,200
+here today, my main kind of point is
+ 
+
+1825
+00:35:41,200 --> 00:35:43,349
+here today, my main kind of point is
+that while modern-day embedding models
+
+1826
+00:35:43,349 --> 00:35:43,359
+that while modern-day embedding models
+ 
+
+1827
+00:35:43,359 --> 00:35:45,910
+that while modern-day embedding models
+based on transformers can create robust
+
+1828
+00:35:45,910 --> 00:35:45,920
+based on transformers can create robust
+ 
+
+1829
+00:35:45,920 --> 00:35:48,069
+based on transformers can create robust
+dynamic embeddings, applying new data
+
+1830
+00:35:48,069 --> 00:35:48,079
+dynamic embeddings, applying new data
+ 
+
+1831
+00:35:48,079 --> 00:35:50,230
+dynamic embeddings, applying new data
+and approaches to old techniques have
+
+1832
+00:35:50,230 --> 00:35:50,240
+and approaches to old techniques have
+ 
+
+1833
+00:35:50,240 --> 00:35:51,990
+and approaches to old techniques have
+found static embedding models working
+
+1834
+00:35:51,990 --> 00:35:52,000
+found static embedding models working
+ 
+
+1835
+00:35:52,000 --> 00:35:54,470
+found static embedding models working
+their way back into the stack. In this,
+
+1836
+00:35:54,470 --> 00:35:54,480
+their way back into the stack. In this,
+ 
+
+1837
+00:35:54,480 --> 00:35:56,470
+their way back into the stack. In this,
+the latest in research in this area
+
+1838
+00:35:56,470 --> 00:35:56,480
+the latest in research in this area
+ 
+
+1839
+00:35:56,480 --> 00:35:59,270
+the latest in research in this area
+begins to provide a competitive output
+
+1840
+00:35:59,270 --> 00:35:59,280
+begins to provide a competitive output
+ 
+
+1841
+00:35:59,280 --> 00:36:01,109
+begins to provide a competitive output
+to some of the most used transformer
+
+1842
+00:36:01,109 --> 00:36:01,119
+to some of the most used transformer
+ 
+
+1843
+00:36:01,119 --> 00:36:03,030
+to some of the most used transformer
+models, but at a fraction of the
+
+1844
+00:36:03,030 --> 00:36:03,040
+models, but at a fraction of the
+ 
+
+1845
+00:36:03,040 --> 00:36:05,349
+models, but at a fraction of the
+parameters and resources required to run
+
+1846
+00:36:05,349 --> 00:36:05,359
+parameters and resources required to run
+ 
+
+1847
+00:36:05,359 --> 00:36:07,990
+parameters and resources required to run
+and up to 400 times faster in
+
+1848
+00:36:07,990 --> 00:36:08,000
+and up to 400 times faster in
+ 
+
+1849
+00:36:08,000 --> 00:36:09,990
+and up to 400 times faster in
+comparison. So, it's a very compelling
+
+1850
+00:36:09,990 --> 00:36:10,000
+comparison. So, it's a very compelling
+ 
+
+1851
+00:36:10,000 --> 00:36:11,670
+comparison. So, it's a very compelling
+and interesting thing to keep your eye
+
+1852
+00:36:11,670 --> 00:36:11,680
+and interesting thing to keep your eye
+ 
+
+1853
+00:36:11,680 --> 00:36:13,589
+and interesting thing to keep your eye
+out on or even do some experiments
+
+1854
+00:36:13,589 --> 00:36:13,599
+out on or even do some experiments
+ 
+
+1855
+00:36:13,599 --> 00:36:15,750
+out on or even do some experiments
+yourself with if interested. With all
+
+1856
+00:36:15,750 --> 00:36:15,760
+yourself with if interested. With all
+ 
+
+1857
+00:36:15,760 --> 00:36:17,109
+yourself with if interested. With all
+that being said, hope you learned
+
+1858
+00:36:17,109 --> 00:36:17,119
+that being said, hope you learned
+ 
+
+1859
+00:36:17,119 --> 00:36:18,870
+that being said, hope you learned
+something interesting today. If you like
+
+1860
+00:36:18,870 --> 00:36:18,880
+something interesting today. If you like
+ 
+
+1861
+00:36:18,880 --> 00:36:20,790
+something interesting today. If you like
+the video, like the video. If you have
+
+1862
+00:36:20,790 --> 00:36:20,800
+the video, like the video. If you have
+ 
+
+1863
+00:36:20,800 --> 00:36:22,230
+the video, like the video. If you have
+any questions, leave them in the
+
+1864
+00:36:22,230 --> 00:36:22,240
+any questions, leave them in the
+ 
+
+1865
+00:36:22,240 --> 00:36:23,990
+any questions, leave them in the
+comments below. And if you want to see
+
+1866
+00:36:23,990 --> 00:36:24,000
+comments below. And if you want to see
+ 
+
+1867
+00:36:24,000 --> 00:36:26,230
+comments below. And if you want to see
+more like this, consider subscribing. If
+
+1868
+00:36:26,230 --> 00:36:26,240
+more like this, consider subscribing. If
+ 
+
+1869
+00:36:26,240 --> 00:36:27,910
+more like this, consider subscribing. If
+you want to support the channel further,
+
+1870
+00:36:27,910 --> 00:36:27,920
+you want to support the channel further,
+ 
+
+1871
+00:36:27,920 --> 00:36:29,430
+you want to support the channel further,
+consider leaving a super thanks or
+
+1872
+00:36:29,430 --> 00:36:29,440
+consider leaving a super thanks or
+ 
+
+1873
+00:36:29,440 --> 00:36:32,880
+consider leaving a super thanks or
+joining a channel membership.
+

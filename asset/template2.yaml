@@ -1,11 +1,12 @@
 config:
   youtube_clip_count: 1
-  clear_generated: false
+  clear_generated: true
   # browser_profile: Profile 2
   # webai_title: google gemini
   # webai: https://gemini.google.com/app
   markdown_editor: mdviewer.app
   use_api: false
+
 
 TEMPLATES:
   youtube summary: |-
@@ -31,9 +32,8 @@ TEMPLATES:
         • Summarize what viewers will achieve by following the guide, and mention any final recommendations.
 
     ## NOTE:
-    • VIDEO_ID is '{video_id}'
     • Format all timestamps (e.g., [19:56]) as clickable Markdown links like:
-      [19:56](https://www.youtube.com/watch?v=VIDEO_ID&t=1196s)
+      [19:56](https://www.youtube.com/watch?v={video_id}&t=1196s)
       1196s is from 19*60+56.
 
     ## Transcript:
@@ -148,10 +148,10 @@ TEMPLATES:
 
     <user_context>
 
-    {context}
+    {content_text}
     </user_context>
 
-    {user_query}
+    user_query_here
 #
 #   meta prompt: |-
 #     Convert source prompt to more instructive and clear instruction for llm understanding.
@@ -214,14 +214,17 @@ TEMPLATES:
 
   translate to korean: |-
     {{
-      "task": "translate content_text into Korean",
+      "task": "Translate the given content_text into Korean.",
       "instructions": [
-        "Keep the original document format (headings, lists, numbering, etc.).",
-        "Keep all images in content_text as makrdown format.",
-        "Do not translate code or quotations inside code blocks (```...```); keep them as is.",
-        "Translate all body text into Korean without leaving anything out."
+        "1️⃣ You must **preserve the exact original document structure** — including all headings, subheadings, numbered and bulleted lists, tables, and text formatting (bold, italics, blockquotes, etc.). Do not add, remove, or rearrange any structural elements.",
+        "2️⃣ You must **keep all images** in the content_text exactly as they appear, using valid Markdown image syntax (e.g., ![alt text](image_url)). Do not modify image URLs or translate alt text unless it is part of the document’s readable text.",
+        "3️⃣ You must **not translate or modify any code blocks** enclosed in triple backticks (```...```). Keep all code syntax, language identifiers, variable names, and indentation exactly as in the source.",
+        "4️⃣ You must **translate all remaining text content** — including paragraphs, inline text, captions, and descriptions — into fluent and natural Korean. Translate completely; do not summarize, omit, or rephrase meaning.",
+        "5️⃣ You must **preserve all technical terms, product names, and proper nouns** in their original English form unless a well-known Korean equivalent exists.",
+        "6️⃣ The translated result must be provided as **a single complete markdown document** without any truncation, division, or omission.",
+        "7️⃣ Do not ask for clarification or confirmation. **Perform the translation directly** according to these instructions."
       ],
-      "final_check": "Carefully review the entire content to ensure that everything has been translated into Korean without omissions."
+      "final_check": "Before finalizing, review the translation to confirm: (1) all non-code text is accurately and fully translated into Korean, (2) all structure, formatting, and image syntax are preserved exactly, and (3) all code blocks remain unchanged."
     }}
 
     <content_text>
@@ -229,6 +232,26 @@ TEMPLATES:
     {content_text}
     </content_text>
 
+  translate to korean(md): |-
+    {{
+      "task": "Translate the given content_text into Korean and output it as a downloadable markdown file.",
+      "instructions": [
+        "1️⃣ Maintain the **exact original document structure** — including all headings, subheadings, lists, bullet points, numbering, tables, and text formatting (bold, italics, blockquotes, etc.). Do not add, remove, or rearrange any elements.",
+        "2️⃣ Keep all **images** in the content_text unchanged, and represent them using Markdown image syntax exactly as they appear (e.g., ![alt text](image_url)). Do not translate image alt text unless it is part of the main document content.",
+        "3️⃣ **Preserve all code blocks** enclosed in triple backticks (```...```) completely unchanged — including language identifiers, comments, syntax, variable names, and indentation. Do not translate or alter any part of code content.",
+        "4️⃣ Translate **all other text content** — including paragraphs, inline text, captions, headings, and descriptions — into smooth, natural, and contextually accurate Korean. Translate in full; do not summarize, omit, or add interpretations.",
+        "5️⃣ Ensure that **technical terms, product names, or brand-specific words** are left untranslated if there are no well-known Korean equivalents (e.g., 'GitHub', 'API', 'Docker').",
+        "6️⃣ Provide the **entire translated output in one continuous markdown document** — do not split or truncate the translation across multiple outputs.",
+        "7️⃣ After completing the translation, **save the translated content** to a file named `file_name` in Markdown format (.md), ensuring it is downloadable by the user.",
+        "8️⃣ **Do not ask for confirmation, clarification, or additional instructions.** Execute the translation and file creation immediately and directly as described."
+      ],
+      "final_check": "Before saving, review the entire translated document to confirm that: (1) all non-code text has been accurately translated into Korean, (2) the document’s structure, formatting, and image references are exactly preserved, and (3) all code blocks remain unaltered. Once verified, save the final markdown file as file_name."
+    }}
+
+    <content_text>
+
+    {content_text}
+    </content_text>
 
   transcript to korean: |-
     {{
@@ -242,5 +265,5 @@ TEMPLATES:
 
     <transcript>
 
-    {content_text}
+    {transcript}
     </transcript>

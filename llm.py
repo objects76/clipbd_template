@@ -5,6 +5,10 @@ from openai import OpenAI
 import base64
 from dotenv import load_dotenv
 
+def dbg(*args, **kwargs):
+    # print(*args, **kwargs)
+    pass
+
 def wait_page_loaded(needle, timeout=3):
     cmds = "xdotool search --name --class microsoft-edge"
 
@@ -13,17 +17,17 @@ def wait_page_loaded(needle, timeout=3):
         window_ids = [w for w in result.stdout.strip().split('\n') if w]
 
         for window_id in window_ids:
-            print('activate: ', window_id)
+            dbg('activate: ', window_id)
             result = subprocess.run(['xdotool', 'windowactivate', window_id], capture_output=True, text=True, check=True, timeout=timeout)
             if result.returncode == 0 and not result.stderr.strip():
-                print('windowactivate: ', result)
+                dbg('windowactivate: ', result)
 
                 result = subprocess.run(['xdotool', 'getwindowname', window_id], capture_output=True, text=True, check=True, timeout=timeout)
                 if result.returncode == 0:
                     title = result.stdout.strip()
-                    print('getwindowname: ', title)
+                    dbg('getwindowname: ', title)
                     if needle.lower() in title.lower():
-                        print('page loaded: ', title)
+                        dbg('page loaded: ', title)
                         return True
         time.sleep(1)
     return False
@@ -38,7 +42,7 @@ def run_web_llm(profile: str, url: str, wait_title:str="chatgpt") -> None:
     """
     BROWSER = "microsoft-edge-stable"
 
-    print(profile, url, wait_title)
+    dbg(profile, url, wait_title)
 
     args = [
         BROWSER,
@@ -46,7 +50,7 @@ def run_web_llm(profile: str, url: str, wait_title:str="chatgpt") -> None:
         "--new-tab",
         url
     ]
-    print(args)
+    dbg(args)
 
     subprocess.Popen(args,
                     stdout=subprocess.DEVNULL,
@@ -149,13 +153,13 @@ def main():
     prompt = prompt_file.read_text()
     prompts = split_prompt(prompt, sep='## Content:')
 
-    print("Processing prompt with streaming...\n")
-    print("=" * 60)
+    dbg("Processing prompt with streaming...\n")
+    dbg("=" * 60)
 
     # Use streaming to show real-time generation
     def print_stream(text_chunk):
-        # Simple print function for streaming text
-        print(text_chunk, end='', flush=True)
+        # Simple dbg function for streaming text
+        dbg(text_chunk, end='', flush=True)
 
     result = openai_inference(
         prompts[1],  # Main input/prompt
@@ -164,20 +168,29 @@ def main():
         print_stream=print_stream  # Show output as it generates
     )
 
-    print("\n" + "=" * 60)
-    print(f'\nResult length: {len(result)} characters')
+    dbg("\n" + "=" * 60)
+    dbg(f'\nResult length: {len(result)} characters')
 
     # Save the complete result
     Path("asset/result.md").write_text(result)
-    print("Result saved to asset/result.md")
+    dbg("Result saved to asset/result.md")
 
 
 def webllm_test():
-    from config import Config
-    Config("asset/template2.yaml")
-    print(Config.browser_profile, Config.webai, Config.webai_title, 'end', sep='!\n')
+    from ck_clipboard import get_clipboard_data
+    cb_data = get_clipboard_data()
+    print(cb_data.type, len(cb_data.data))
+    def print_stream(text_chunk):
+        # Simple dbg function for streaming text
+        print(text_chunk, end='', flush=True)
+    result = openai_inference(cb_data.data, model = "gpt-5")
+    with open("asset/result.md", "w") as f:
+        f.write(result)
+    # print(result)
+
 
 
 if __name__ == "__main__":
     # main()
     webllm_test()
+

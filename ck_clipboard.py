@@ -2,11 +2,30 @@ import subprocess
 import copykitten
 import time
 from dataclasses import dataclass
+from typing import Literal
+import subprocess
+import pathlib
 
+def set_clipboard_file_uris(path_list):
+    uris = []
+    for p in path_list:
+        p = pathlib.Path(p).absolute()
+        uris.append("file://" + str(p))
+    data = "\r\n".join(uris) + "\r\n"
+    # Use xclip
+    subprocess.run(
+        ["xclip", "-selection", "clipboard", "-t", "text/uri-list"],
+        input=data.encode("utf-8"),
+        check=True
+    )
+
+ClipboardType = Literal["text", "image", "file"] = Literal["text", "image"]
+
+# xclip -selection clipboard -t x-special/gnome-copied-files
 @dataclass
 class ClipboardData:
-    type: str
-    data: str | tuple[bytes, int, int]
+    type: ClipboardType
+    data: str | tuple[bytes, int, int] | list[str]
     timestamp: str = ""
 
 def set_clipboard_data(data: ClipboardData) -> None:
@@ -14,22 +33,24 @@ def set_clipboard_data(data: ClipboardData) -> None:
         copykitten.copy(str(data.data))
     elif data.type == "image":
         copykitten.copy_image(*data.data) # type: ignore
+    elif data.type == "file":
+        set_clipboard_file_uris([data.data]) # type: ignore
     else:
-        raise ValueError(f"Unsupported data type: {type(data)}")
+        raise ValueError(f"Unsupported data type: {data.type}")
 
-def _get_clipboard_data() -> ClipboardData | None:
+def _get_clipboard_data(nth=0) -> ClipboardData | None:
     try:
         text = copykitten.paste()
         if len(text) > 0:
             return ClipboardData(type="text", data=text.strip())
     except copykitten.CopykittenError as e:
-        print('text:', e)
+        print(f'text.{nth}:', e)
 
     try:
         pixels, width, height = copykitten.paste_image()
         return ClipboardData(type="image", data=(pixels, width, height))
     except copykitten.CopykittenError as e:
-        print('image:', e)
+        print(f'image.{nth}:', e)
     return None
 
 
@@ -37,7 +58,7 @@ def get_clipboard_data() -> ClipboardData | None:
     data = _get_clipboard_data()
     if data is None:
         time.sleep(1.5)
-        data = _get_clipboard_data()
+        data = _get_clipboard_data(nth=1)
 
     return data
 
@@ -48,6 +69,7 @@ def paste(return_key: bool = False) -> None:
     time.sleep(0.3)
     args = ['xdotool', 'key', '--clearmodifiers', 'ctrl+v']
     if return_key:
+        time.sleep(0.3)
         args.append('Return')
 
     subprocess.run(args, check=False)

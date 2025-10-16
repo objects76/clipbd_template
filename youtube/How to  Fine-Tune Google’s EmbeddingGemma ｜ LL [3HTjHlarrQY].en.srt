@@ -1,0 +1,1522 @@
+1
+00:00:00,080 --> 00:00:02,070
+embedding. They are the secret source
+
+2
+00:00:02,070 --> 00:00:02,080
+embedding. They are the secret source
+
+3
+00:00:02,080 --> 00:00:04,630
+embedding. They are the secret source
+behind every smart AI apps you have ever
+
+4
+00:00:04,630 --> 00:00:04,640
+behind every smart AI apps you have ever
+
+5
+00:00:04,640 --> 00:00:08,470
+behind every smart AI apps you have ever
+used. From Google search to chat GPD
+
+6
+00:00:08,470 --> 00:00:08,480
+used. From Google search to chat GPD
+
+7
+00:00:08,480 --> 00:00:11,350
+used. From Google search to chat GPD
+memory to the recommendation for you
+
+8
+00:00:11,350 --> 00:00:11,360
+memory to the recommendation for you
+
+
+9
+00:00:11,360 --> 00:00:14,310
+memory to the recommendation for you
+feeds that somehow knows exactly what
+
+10
+00:00:14,310 --> 00:00:14,320
+feeds that somehow knows exactly what
+
+11
+00:00:14,320 --> 00:00:16,630
+feeds that somehow knows exactly what
+you want. But here's the catch. Most
+
+12
+00:00:16,630 --> 00:00:16,640
+you want. But here's the catch. Most
+
+13
+00:00:16,640 --> 00:00:18,790
+you want. But here's the catch. Most
+embedding model are either too big to
+
+14
+00:00:18,790 --> 00:00:18,800
+embedding model are either too big to
+
+15
+00:00:18,800 --> 00:00:21,349
+embedding model are either too big to
+run locally or too generic to work for
+
+16
+00:00:21,349 --> 00:00:21,359
+run locally or too generic to work for
+
+17
+00:00:21,359 --> 00:00:24,390
+run locally or too generic to work for
+your data. That's where Google's brand
+
+18
+00:00:24,390 --> 00:00:24,400
+your data. That's where Google's brand
+
+
+19
+00:00:24,400 --> 00:00:27,269
+your data. That's where Google's brand
+new embedding Gemma changes the game. At
+
+20
+00:00:27,269 --> 00:00:27,279
+new embedding Gemma changes the game. At
+
+
+21
+00:00:27,279 --> 00:00:30,390
+new embedding Gemma changes the game. At
+just 308 million parameter, this tiny
+
+22
+00:00:30,390 --> 00:00:30,400
+just 308 million parameter, this tiny
+
+23
+00:00:30,400 --> 00:00:33,270
+just 308 million parameter, this tiny
+beast can run offline on your laptop or
+
+24
+00:00:33,270 --> 00:00:33,280
+beast can run offline on your laptop or
+
+
+25
+00:00:33,280 --> 00:00:36,389
+beast can run offline on your laptop or
+even on your phone while still beating
+
+26
+00:00:36,389 --> 00:00:36,399
+even on your phone while still beating
+
+27
+00:00:36,399 --> 00:00:38,869
+even on your phone while still beating
+model twice its size on the industry
+
+28
+00:00:38,869 --> 00:00:38,879
+model twice its size on the industry
+
+29
+00:00:38,879 --> 00:00:41,590
+model twice its size on the industry
+gold standard benchmark benchmarks. And
+
+30
+00:00:41,590 --> 00:00:41,600
+gold standard benchmark benchmarks. And
+
+
+31
+00:00:41,600 --> 00:00:43,990
+gold standard benchmark benchmarks. And
+in this video, I am going to show you
+
+32
+00:00:43,990 --> 00:00:44,000
+in this video, I am going to show you
+
+33
+00:00:44,000 --> 00:00:46,069
+in this video, I am going to show you
+something Google does not teach you in
+
+34
+00:00:46,069 --> 00:00:46,079
+something Google does not teach you in
+
+
+35
+00:00:46,079 --> 00:00:49,750
+something Google does not teach you in
+the docs. How to fine-tune embedding
+
+36
+00:00:49,750 --> 00:00:49,760
+the docs. How to fine-tune embedding
+
+37
+00:00:49,760 --> 00:00:52,950
+the docs. How to fine-tune embedding
+Gemma on your own data set. So imagine
+
+38
+00:00:52,950 --> 00:00:52,960
+Gemma on your own data set. So imagine
+
+
+39
+00:00:52,960 --> 00:00:55,430
+Gemma on your own data set. So imagine
+this, you have got thousands of customer
+
+40
+00:00:55,430 --> 00:00:55,440
+this, you have got thousands of customer
+
+
+41
+00:00:55,440 --> 00:00:58,069
+this, you have got thousands of customer
+support chats, research paper or even
+
+42
+00:00:58,069 --> 00:00:58,079
+support chats, research paper or even
+
+
+43
+00:00:58,079 --> 00:01:00,549
+support chats, research paper or even
+your personal notes. Instead of relying
+
+44
+00:01:00,549 --> 00:01:00,559
+your personal notes. Instead of relying
+
+
+45
+00:01:00,559 --> 00:01:03,029
+your personal notes. Instead of relying
+on generic embedding will train Gemma to
+
+46
+00:01:03,029 --> 00:01:03,039
+on generic embedding will train Gemma to
+
+
+47
+00:01:03,039 --> 00:01:06,230
+on generic embedding will train Gemma to
+understand specific domain language. So
+
+48
+00:01:06,230 --> 00:01:06,240
+understand specific domain language. So
+
+
+49
+00:01:06,240 --> 00:01:10,070
+understand specific domain language. So
+your AI AI app can answer question more
+
+50
+00:01:10,070 --> 00:01:10,080
+your AI AI app can answer question more
+
+
+51
+00:01:10,080 --> 00:01:13,590
+your AI AI app can answer question more
+accurately, recommend better context or
+
+52
+00:01:13,590 --> 00:01:13,600
+accurately, recommend better context or
+
+
+53
+00:01:13,600 --> 00:01:15,510
+accurately, recommend better context or
+even become
+
+54
+00:01:15,510 --> 00:01:15,520
+even become
+
+
+55
+00:01:15,520 --> 00:01:17,429
+even become
+private offline search engine for your
+
+56
+00:01:17,429 --> 00:01:17,439
+private offline search engine for your
+
+
+57
+00:01:17,439 --> 00:01:19,990
+private offline search engine for your
+file. So stick around because end of the
+
+58
+00:01:19,990 --> 00:01:20,000
+file. So stick around because end of the
+
+
+59
+00:01:20,000 --> 00:01:22,230
+file. So stick around because end of the
+tutorial you'll not only know how to
+
+60
+00:01:22,230 --> 00:01:22,240
+tutorial you'll not only know how to
+
+
+61
+00:01:22,240 --> 00:01:24,950
+tutorial you'll not only know how to
+fine-tune Gemma but also how to evaluate
+
+62
+00:01:24,950 --> 00:01:24,960
+fine-tune Gemma but also how to evaluate
+
+
+63
+00:01:24,960 --> 00:01:29,030
+fine-tune Gemma but also how to evaluate
+your embedding so you don't just guess
+
+64
+00:01:29,030 --> 00:01:29,040
+your embedding so you don't just guess
+
+
+65
+00:01:29,040 --> 00:01:31,990
+your embedding so you don't just guess
+that it's working you actually prove it.
+
+66
+00:01:31,990 --> 00:01:32,000
+that it's working you actually prove it.
+
+
+67
+00:01:32,000 --> 00:01:34,630
+that it's working you actually prove it.
+All right let's dive in. Now let's start
+
+68
+00:01:34,630 --> 00:01:34,640
+All right let's dive in. Now let's start
+
+
+69
+00:01:34,640 --> 00:01:39,190
+All right let's dive in. Now let's start
+the training of this model. So we are
+
+70
+00:01:39,190 --> 00:01:39,200
+the training of this model. So we are
+
+
+71
+00:01:39,200 --> 00:01:41,910
+the training of this model. So we are
+going to train this on our custom data
+
+72
+00:01:41,910 --> 00:01:41,920
+going to train this on our custom data
+
+
+73
+00:01:41,920 --> 00:01:44,870
+going to train this on our custom data
+set. For that we'll need to ensure that
+
+74
+00:01:44,870 --> 00:01:44,880
+set. For that we'll need to ensure that
+
+
+75
+00:01:44,880 --> 00:01:48,069
+set. For that we'll need to ensure that
+we are on running on the GPU server. So
+
+76
+00:01:48,069 --> 00:01:48,079
+we are on running on the GPU server. So
+
+
+77
+00:01:48,079 --> 00:01:50,710
+we are on running on the GPU server. So
+make sure T4 is selected and then
+
+78
+00:01:50,710 --> 00:01:50,720
+make sure T4 is selected and then
+
+
+79
+00:01:50,720 --> 00:01:54,469
+make sure T4 is selected and then
+install the dependency that it requires.
+
+80
+00:01:54,469 --> 00:01:54,479
+install the dependency that it requires.
+
+
+81
+00:01:54,479 --> 00:01:56,870
+install the dependency that it requires.
+So this dependency will take about 1 or
+
+82
+00:01:56,870 --> 00:01:56,880
+So this dependency will take about 1 or
+
+
+83
+00:01:56,880 --> 00:01:59,830
+So this dependency will take about 1 or
+2 minutes. Once this is done, you'll
+
+84
+00:01:59,830 --> 00:01:59,840
+2 minutes. Once this is done, you'll
+
+
+85
+00:01:59,840 --> 00:02:03,590
+2 minutes. Once this is done, you'll
+need to make sure that
+
+86
+00:02:03,590 --> 00:02:03,600
+need to make sure that
+
+
+87
+00:02:03,600 --> 00:02:07,910
+need to make sure that
+the version is correct as I have written
+
+88
+00:02:07,910 --> 00:02:07,920
+the version is correct as I have written
+
+
+89
+00:02:07,920 --> 00:02:11,029
+the version is correct as I have written
+in the URL. So let's clear this out and
+
+90
+00:02:11,029 --> 00:02:11,039
+in the URL. So let's clear this out and
+
+
+91
+00:02:11,039 --> 00:02:13,110
+in the URL. So let's clear this out and
+let's log into hugging faces. You'll
+
+92
+00:02:13,110 --> 00:02:13,120
+let's log into hugging faces. You'll
+
+
+93
+00:02:13,120 --> 00:02:15,830
+let's log into hugging faces. You'll
+need to provide the token
+
+94
+00:02:15,830 --> 00:02:15,840
+need to provide the token
+
+
+95
+00:02:15,840 --> 00:02:18,550
+need to provide the token
+and once this is done we can download
+
+96
+00:02:18,550 --> 00:02:18,560
+and once this is done we can download
+
+
+97
+00:02:18,560 --> 00:02:21,910
+and once this is done we can download
+the model from Google embedding 300
+
+98
+00:02:21,910 --> 00:02:21,920
+the model from Google embedding 300
+
+
+99
+00:02:21,920 --> 00:02:25,030
+the model from Google embedding 300
+million parameter model. So this will
+
+100
+00:02:25,030 --> 00:02:25,040
+million parameter model. So this will
+
+
+101
+00:02:25,040 --> 00:02:28,630
+million parameter model. So this will
+ensure uh that the model is downloaded
+
+102
+00:02:28,630 --> 00:02:28,640
+ensure uh that the model is downloaded
+
+
+103
+00:02:28,640 --> 00:02:33,110
+ensure uh that the model is downloaded
+but you need to do a sign up or uh
+
+104
+00:02:33,110 --> 00:02:33,120
+but you need to do a sign up or uh
+
+
+105
+00:02:33,120 --> 00:02:35,910
+but you need to do a sign up or uh
+agreement acceptance that you need to do
+
+106
+00:02:35,910 --> 00:02:35,920
+agreement acceptance that you need to do
+
+
+107
+00:02:35,920 --> 00:02:38,550
+agreement acceptance that you need to do
+from your site. So that will be done in
+
+108
+00:02:38,550 --> 00:02:38,560
+from your site. So that will be done in
+
+
+109
+00:02:38,560 --> 00:02:40,949
+from your site. So that will be done in
+hugging face. Once this is done, we'll
+
+110
+00:02:40,949 --> 00:02:40,959
+hugging face. Once this is done, we'll
+
+
+111
+00:02:40,959 --> 00:02:43,030
+hugging face. Once this is done, we'll
+need to prepare our data set as a
+
+112
+00:02:43,030 --> 00:02:43,040
+need to prepare our data set as a
+
+
+113
+00:02:43,040 --> 00:02:46,710
+need to prepare our data set as a
+triplet. So from data set, let's import
+
+114
+00:02:46,710 --> 00:02:46,720
+triplet. So from data set, let's import
+
+
+115
+00:02:46,720 --> 00:02:50,070
+triplet. So from data set, let's import
+load data set and we'll create a custom
+
+116
+00:02:50,070 --> 00:02:50,080
+load data set and we'll create a custom
+
+
+117
+00:02:50,080 --> 00:02:52,869
+load data set and we'll create a custom
+function which is triplet. It is going
+
+118
+00:02:52,869 --> 00:02:52,879
+function which is triplet. It is going
+
+
+119
+00:02:52,879 --> 00:02:55,430
+function which is triplet. It is going
+to take two sentences and one negative
+
+120
+00:02:55,430 --> 00:02:55,440
+to take two sentences and one negative
+
+
+121
+00:02:55,440 --> 00:02:58,070
+to take two sentences and one negative
+sentence. From this data set, we'll get
+
+122
+00:02:58,070 --> 00:02:58,080
+sentence. From this data set, we'll get
+
+
+123
+00:02:58,080 --> 00:03:00,070
+sentence. From this data set, we'll get
+two sentences and their similarity
+
+124
+00:03:00,070 --> 00:03:00,080
+two sentences and their similarity
+
+
+125
+00:03:00,080 --> 00:03:01,990
+two sentences and their similarity
+distance.
+
+126
+00:03:01,990 --> 00:03:02,000
+distance.
+
+
+127
+00:03:02,000 --> 00:03:05,190
+distance.
+So since we know that uh similar
+
+128
+00:03:05,190 --> 00:03:05,200
+So since we know that uh similar
+
+
+129
+00:03:05,200 --> 00:03:07,350
+So since we know that uh similar
+sentence will have less distance. So
+
+130
+00:03:07,350 --> 00:03:07,360
+sentence will have less distance. So
+
+
+131
+00:03:07,360 --> 00:03:10,309
+sentence will have less distance. So
+let's prepare our third sentence from
+
+132
+00:03:10,309 --> 00:03:10,319
+let's prepare our third sentence from
+
+
+133
+00:03:10,319 --> 00:03:13,430
+let's prepare our third sentence from
+there randomly where the similarity is
+
+134
+00:03:13,430 --> 00:03:13,440
+there randomly where the similarity is
+
+
+135
+00:03:13,440 --> 00:03:16,470
+there randomly where the similarity is
+high. So now we'll create a condition
+
+136
+00:03:16,470 --> 00:03:16,480
+high. So now we'll create a condition
+
+
+137
+00:03:16,480 --> 00:03:21,350
+high. So now we'll create a condition
+and take our uh negative sentence. From
+
+138
+00:03:21,350 --> 00:03:21,360
+and take our uh negative sentence. From
+
+
+139
+00:03:21,360 --> 00:03:24,949
+and take our uh negative sentence. From
+there we can create a triplet anchor and
+
+140
+00:03:24,949 --> 00:03:24,959
+there we can create a triplet anchor and
+
+
+141
+00:03:24,959 --> 00:03:26,869
+there we can create a triplet anchor and
+positive is going to be the same but
+
+142
+00:03:26,869 --> 00:03:26,879
+positive is going to be the same but
+
+
+143
+00:03:26,879 --> 00:03:29,270
+positive is going to be the same but
+we'll have a far distance embedding as
+
+144
+00:03:29,270 --> 00:03:29,280
+we'll have a far distance embedding as
+
+
+145
+00:03:29,280 --> 00:03:32,070
+we'll have a far distance embedding as
+the negative sentence. So once this is
+
+146
+00:03:32,070 --> 00:03:32,080
+the negative sentence. So once this is
+
+
+147
+00:03:32,080 --> 00:03:36,390
+the negative sentence. So once this is
+done uh from data set we are going to uh
+
+148
+00:03:36,390 --> 00:03:36,400
+done uh from data set we are going to uh
+
+
+149
+00:03:36,400 --> 00:03:39,670
+done uh from data set we are going to uh
+uh load this and prepare the dev test
+
+150
+00:03:39,670 --> 00:03:39,680
+uh load this and prepare the dev test
+
+
+151
+00:03:39,680 --> 00:03:41,990
+uh load this and prepare the dev test
+and train triplet. So let's print this
+
+152
+00:03:41,990 --> 00:03:42,000
+and train triplet. So let's print this
+
+
+153
+00:03:42,000 --> 00:03:45,110
+and train triplet. So let's print this
+out and see how uh the data set
+
+154
+00:03:45,110 --> 00:03:45,120
+out and see how uh the data set
+
+
+155
+00:03:45,120 --> 00:03:48,470
+out and see how uh the data set
+preparation is being done.
+
+156
+00:03:48,470 --> 00:03:48,480
+preparation is being done.
+
+
+157
+00:03:48,480 --> 00:03:50,949
+preparation is being done.
+As here you can see the data set for
+
+158
+00:03:50,949 --> 00:03:50,959
+As here you can see the data set for
+
+
+159
+00:03:50,959 --> 00:03:54,390
+As here you can see the data set for
+training has about 1,000 examples
+
+160
+00:03:54,390 --> 00:03:54,400
+training has about 1,000 examples
+
+
+161
+00:03:54,400 --> 00:03:57,190
+training has about 1,000 examples
+and for dev and test it has 100 200 and
+
+162
+00:03:57,190 --> 00:03:57,200
+and for dev and test it has 100 200 and
+
+
+163
+00:03:57,200 --> 00:03:59,990
+and for dev and test it has 100 200 and
+200. It is having anchor positive and
+
+164
+00:03:59,990 --> 00:04:00,000
+200. It is having anchor positive and
+
+
+165
+00:04:00,000 --> 00:04:03,750
+200. It is having anchor positive and
+negative. And see one of the examples of
+
+166
+00:04:03,750 --> 00:04:03,760
+negative. And see one of the examples of
+
+
+167
+00:04:03,760 --> 00:04:06,710
+negative. And see one of the examples of
+the training set like a plane is taking
+
+168
+00:04:06,710 --> 00:04:06,720
+the training set like a plane is taking
+
+
+169
+00:04:06,720 --> 00:04:09,509
+the training set like a plane is taking
+off. The positive one is a airplane is
+
+170
+00:04:09,509 --> 00:04:09,519
+off. The positive one is a airplane is
+
+
+171
+00:04:09,519 --> 00:04:11,670
+off. The positive one is a airplane is
+taking off and the negative is a young
+
+172
+00:04:11,670 --> 00:04:11,680
+taking off and the negative is a young
+
+
+173
+00:04:11,680 --> 00:04:17,110
+taking off and the negative is a young
+wearing a hat. So that makes sense. Now
+
+174
+00:04:17,110 --> 00:04:17,120
+wearing a hat. So that makes sense. Now
+
+
+175
+00:04:17,120 --> 00:04:19,270
+wearing a hat. So that makes sense. Now
+we need to define the task name which is
+
+176
+00:04:19,270 --> 00:04:19,280
+we need to define the task name which is
+
+
+177
+00:04:19,280 --> 00:04:22,790
+we need to define the task name which is
+SDS. So this task name will be passed to
+
+178
+00:04:22,790 --> 00:04:22,800
+SDS. So this task name will be passed to
+
+
+179
+00:04:22,800 --> 00:04:26,710
+SDS. So this task name will be passed to
+the model which encodes this query into
+
+180
+00:04:26,710 --> 00:04:26,720
+the model which encodes this query into
+
+
+181
+00:04:26,720 --> 00:04:30,710
+the model which encodes this query into
+embedding and also for uh the documents
+
+182
+00:04:30,710 --> 00:04:30,720
+embedding and also for uh the documents
+
+
+183
+00:04:30,720 --> 00:04:33,430
+embedding and also for uh the documents
+uh that we are preparing. So once doing
+
+184
+00:04:33,430 --> 00:04:33,440
+uh that we are preparing. So once doing
+
+
+185
+00:04:33,440 --> 00:04:35,350
+uh that we are preparing. So once doing
+that you'll need to do the similarity
+
+186
+00:04:35,350 --> 00:04:35,360
+that you'll need to do the similarity
+
+
+187
+00:04:35,360 --> 00:04:38,230
+that you'll need to do the similarity
+between the query and your documents.
+
+188
+00:04:38,230 --> 00:04:38,240
+between the query and your documents.
+
+
+189
+00:04:38,240 --> 00:04:42,070
+between the query and your documents.
+This similarity will tell how two are
+
+190
+00:04:42,070 --> 00:04:42,080
+This similarity will tell how two are
+
+
+191
+00:04:42,080 --> 00:04:44,550
+This similarity will tell how two are
+related. So here you see I have written
+
+192
+00:04:44,550 --> 00:04:44,560
+related. So here you see I have written
+
+
+193
+00:04:44,560 --> 00:04:47,749
+related. So here you see I have written
+one food example where breakfast will
+
+194
+00:04:47,749 --> 00:04:47,759
+one food example where breakfast will
+
+
+195
+00:04:47,759 --> 00:04:50,230
+one food example where breakfast will
+should have a higher embedding lower
+
+196
+00:04:50,230 --> 00:04:50,240
+should have a higher embedding lower
+
+
+197
+00:04:50,240 --> 00:04:52,790
+should have a higher embedding lower
+embedding distance compared to rest of
+
+198
+00:04:52,790 --> 00:04:52,800
+embedding distance compared to rest of
+
+
+199
+00:04:52,800 --> 00:04:56,870
+embedding distance compared to rest of
+these two. So let's run it.
+
+200
+00:04:56,870 --> 00:04:56,880
+these two. So let's run it.
+
+
+201
+00:04:56,880 --> 00:05:00,150
+these two. So let's run it.
+As you can see this is doing pretty well
+
+202
+00:05:00,150 --> 00:05:00,160
+As you can see this is doing pretty well
+
+
+203
+00:05:00,160 --> 00:05:03,510
+As you can see this is doing pretty well
+from the base model itself. So let's say
+
+204
+00:05:03,510 --> 00:05:03,520
+from the base model itself. So let's say
+
+
+205
+00:05:03,520 --> 00:05:06,790
+from the base model itself. So let's say
+for example if you want to uh uh now
+
+206
+00:05:06,790 --> 00:05:06,800
+for example if you want to uh uh now
+
+
+207
+00:05:06,800 --> 00:05:09,270
+for example if you want to uh uh now
+finetune it on your own data set then
+
+208
+00:05:09,270 --> 00:05:09,280
+finetune it on your own data set then
+
+
+209
+00:05:09,280 --> 00:05:10,950
+finetune it on your own data set then
+you'll have to use the sentence
+
+210
+00:05:10,950 --> 00:05:10,960
+you'll have to use the sentence
+
+
+211
+00:05:10,960 --> 00:05:13,909
+you'll have to use the sentence
+transform as trainer
+
+212
+00:05:13,909 --> 00:05:13,919
+transform as trainer
+
+
+213
+00:05:13,919 --> 00:05:16,870
+transform as trainer
+and from there uh you'll need to pass
+
+214
+00:05:16,870 --> 00:05:16,880
+and from there uh you'll need to pass
+
+
+215
+00:05:16,880 --> 00:05:19,590
+and from there uh you'll need to pass
+it's a configurable argument and the
+
+216
+00:05:19,590 --> 00:05:19,600
+it's a configurable argument and the
+
+
+217
+00:05:19,600 --> 00:05:21,510
+it's a configurable argument and the
+loss function is multiple negative
+
+218
+00:05:21,510 --> 00:05:21,520
+loss function is multiple negative
+
+
+219
+00:05:21,520 --> 00:05:23,909
+loss function is multiple negative
+ranking loss that you'll need to pass
+
+220
+00:05:23,909 --> 00:05:23,919
+ranking loss that you'll need to pass
+
+
+221
+00:05:23,919 --> 00:05:27,830
+ranking loss that you'll need to pass
+your model that prepares your loss and
+
+222
+00:05:27,830 --> 00:05:27,840
+your model that prepares your loss and
+
+
+223
+00:05:27,840 --> 00:05:30,469
+your model that prepares your loss and
+this is these are the arguments uh we
+
+224
+00:05:30,469 --> 00:05:30,479
+this is these are the arguments uh we
+
+
+225
+00:05:30,479 --> 00:05:32,870
+this is these are the arguments uh we
+have to take the prompt with the STS
+
+226
+00:05:32,870 --> 00:05:32,880
+have to take the prompt with the STS
+
+
+227
+00:05:32,880 --> 00:05:35,110
+have to take the prompt with the STS
+task for this I'm going to run it for
+
+228
+00:05:35,110 --> 00:05:35,120
+task for this I'm going to run it for
+
+
+229
+00:05:35,120 --> 00:05:37,350
+task for this I'm going to run it for
+one epoch and learning rate is very
+
+230
+00:05:37,350 --> 00:05:37,360
+one epoch and learning rate is very
+
+
+231
+00:05:37,360 --> 00:05:41,270
+one epoch and learning rate is very
+small and we not going to uh report this
+
+232
+00:05:41,270 --> 00:05:41,280
+small and we not going to uh report this
+
+
+233
+00:05:41,280 --> 00:05:43,350
+small and we not going to uh report this
+to weights and bias otherwise you can
+
+234
+00:05:43,350 --> 00:05:43,360
+to weights and bias otherwise you can
+
+
+235
+00:05:43,360 --> 00:05:45,029
+to weights and bias otherwise you can
+put there then you'll have to log in
+
+236
+00:05:45,029 --> 00:05:45,039
+put there then you'll have to log in
+
+
+237
+00:05:45,039 --> 00:05:48,550
+put there then you'll have to log in
+your weights and bias now this is a
+
+238
+00:05:48,550 --> 00:05:48,560
+your weights and bias now this is a
+
+
+239
+00:05:48,560 --> 00:05:51,029
+your weights and bias now this is a
+custom call back where which at the end
+
+240
+00:05:51,029 --> 00:05:51,039
+custom call back where which at the end
+
+
+241
+00:05:51,039 --> 00:05:54,310
+custom call back where which at the end
+of the training it is going to do the
+
+242
+00:05:54,310 --> 00:05:54,320
+of the training it is going to do the
+
+
+243
+00:05:54,320 --> 00:05:56,950
+of the training it is going to do the
+evaluation call the evaluation function
+
+244
+00:05:56,950 --> 00:05:56,960
+evaluation call the evaluation function
+
+
+245
+00:05:56,960 --> 00:05:59,830
+evaluation call the evaluation function
+and will evaluation function is just the
+
+246
+00:05:59,830 --> 00:05:59,840
+and will evaluation function is just the
+
+
+247
+00:05:59,840 --> 00:06:01,510
+and will evaluation function is just the
+same
+
+248
+00:06:01,510 --> 00:06:01,520
+same
+
+
+249
+00:06:01,520 --> 00:06:04,070
+same
+query the document that we have run
+
+250
+00:06:04,070 --> 00:06:04,080
+query the document that we have run
+
+
+251
+00:06:04,080 --> 00:06:05,990
+query the document that we have run
+above here you can see this is going to
+
+252
+00:06:05,990 --> 00:06:06,000
+above here you can see this is going to
+
+
+253
+00:06:06,000 --> 00:06:09,029
+above here you can see this is going to
+run it while doing the during the
+
+254
+00:06:09,029 --> 00:06:09,039
+run it while doing the during the
+
+
+255
+00:06:09,039 --> 00:06:10,790
+run it while doing the during the
+evaluation.
+
+256
+00:06:10,790 --> 00:06:10,800
+evaluation.
+
+
+257
+00:06:10,800 --> 00:06:14,230
+evaluation.
+So once uh this is done we can start the
+
+258
+00:06:14,230 --> 00:06:14,240
+So once uh this is done we can start the
+
+
+259
+00:06:14,240 --> 00:06:17,670
+So once uh this is done we can start the
+training and pass the model arguments
+
+260
+00:06:17,670 --> 00:06:17,680
+training and pass the model arguments
+
+
+261
+00:06:17,680 --> 00:06:20,469
+training and pass the model arguments
+data set loss function and what is going
+
+262
+00:06:20,469 --> 00:06:20,479
+data set loss function and what is going
+
+
+263
+00:06:20,479 --> 00:06:24,230
+data set loss function and what is going
+to be the call back. So let's run it and
+
+264
+00:06:24,230 --> 00:06:24,240
+to be the call back. So let's run it and
+
+
+265
+00:06:24,240 --> 00:06:26,070
+to be the call back. So let's run it and
+see
+
+266
+00:06:26,070 --> 00:06:26,080
+see
+
+
+267
+00:06:26,080 --> 00:06:28,309
+see
+uh how how it is working. I have already
+
+268
+00:06:28,309 --> 00:06:28,319
+uh how how it is working. I have already
+
+
+269
+00:06:28,319 --> 00:06:31,270
+uh how how it is working. I have already
+ran it for now. I'm going to run it. And
+
+270
+00:06:31,270 --> 00:06:31,280
+ran it for now. I'm going to run it. And
+
+
+271
+00:06:31,280 --> 00:06:33,430
+ran it for now. I'm going to run it. And
+you can see your GPU consumption will
+
+272
+00:06:33,430 --> 00:06:33,440
+you can see your GPU consumption will
+
+
+273
+00:06:33,440 --> 00:06:36,710
+you can see your GPU consumption will
+start to increase from there.
+
+274
+00:06:36,710 --> 00:06:36,720
+start to increase from there.
+
+
+275
+00:06:36,720 --> 00:06:39,990
+start to increase from there.
+So let's give it a minute.
+
+276
+00:06:39,990 --> 00:06:40,000
+So let's give it a minute.
+
+
+277
+00:06:40,000 --> 00:06:42,150
+So let's give it a minute.
+Uh it's going to take one about 1
+
+278
+00:06:42,150 --> 00:06:42,160
+Uh it's going to take one about 1
+
+
+279
+00:06:42,160 --> 00:06:46,309
+Uh it's going to take one about 1
+minutes from here. So
+
+280
+00:06:46,309 --> 00:06:46,319
+minutes from here. So
+
+
+281
+00:06:46,319 --> 00:06:48,150
+minutes from here. So
+uh after the training it is going to
+
+282
+00:06:48,150 --> 00:06:48,160
+uh after the training it is going to
+
+
+283
+00:06:48,160 --> 00:06:50,309
+uh after the training it is going to
+save the model and then you can use it
+
+284
+00:06:50,309 --> 00:06:50,319
+save the model and then you can use it
+
+
+285
+00:06:50,319 --> 00:06:52,790
+save the model and then you can use it
+for uh doing the inference on your
+
+286
+00:06:52,790 --> 00:06:52,800
+for uh doing the inference on your
+
+
+287
+00:06:52,800 --> 00:06:55,029
+for uh doing the inference on your
+server or you wanted to host this
+
+288
+00:06:55,029 --> 00:06:55,039
+server or you wanted to host this
+
+
+289
+00:06:55,039 --> 00:06:58,790
+server or you wanted to host this
+locally for your use case. This model is
+
+290
+00:06:58,790 --> 00:06:58,800
+locally for your use case. This model is
+
+
+291
+00:06:58,800 --> 00:07:03,430
+locally for your use case. This model is
+very useful for uh mobile devices and
+
+292
+00:07:03,430 --> 00:07:03,440
+very useful for uh mobile devices and
+
+
+293
+00:07:03,440 --> 00:07:07,510
+very useful for uh mobile devices and
+where applications where the latency is
+
+294
+00:07:07,510 --> 00:07:07,520
+where applications where the latency is
+
+
+295
+00:07:07,520 --> 00:07:10,469
+where applications where the latency is
+matter latency matters and resource
+
+296
+00:07:10,469 --> 00:07:10,479
+matter latency matters and resource
+
+
+297
+00:07:10,479 --> 00:07:12,790
+matter latency matters and resource
+constraint devices is going to be very
+
+298
+00:07:12,790 --> 00:07:12,800
+constraint devices is going to be very
+
+
+299
+00:07:12,800 --> 00:07:14,629
+constraint devices is going to be very
+useful.
+
+300
+00:07:14,629 --> 00:07:14,639
+useful.
+
+
+301
+00:07:14,639 --> 00:07:17,749
+useful.
+So once this training is done you can
+
+302
+00:07:17,749 --> 00:07:17,759
+So once this training is done you can
+
+
+303
+00:07:17,759 --> 00:07:20,070
+So once this training is done you can
+use this model and thank you for
+
+304
+00:07:20,070 --> 00:07:20,080
+use this model and thank you for
+
+
+305
+00:07:20,080 --> 00:07:22,790
+use this model and thank you for
+following this session. Thank you very
+
+306
+00:07:22,790 --> 00:07:22,800
+following this session. Thank you very
+
+
+307
+00:07:22,800 --> 00:07:25,800
+following this session. Thank you very
+much.
+
