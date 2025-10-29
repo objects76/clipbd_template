@@ -19,7 +19,7 @@ def set_clipboard_file_uris(path_list):
         check=True
     )
 
-ClipboardType = Literal["text", "image", "file"] = Literal["text", "image"]
+ClipboardType = Literal["text", "image", "file"]
 
 # xclip -selection clipboard -t x-special/gnome-copied-files
 @dataclass

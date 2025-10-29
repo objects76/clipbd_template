@@ -10,13 +10,18 @@ from command import Command
 import subprocess
 from text_info2 import html_to_md
 
-def post_process(dtype: Datatype, data:str|Any) -> str|dict|tuple[bytes, int, int] | None:
+def post_process(dtype: Datatype, data:str|Any) -> dict | None:
 
     subprocess.run(["notify-send", "-u", "normal", str(dtype), 'processing...'], check=False)
 
     match dtype:
         case Datatype.YOUTUBE:
-            return youtube.get_youtube_content(str(data), "")
+            result = youtube.get_youtube_content(url=str(data))
+            return {
+                "content_format" : "youtube",
+                "content_text" : result.get('transcript', ""),
+                "video_id": result.get('video_id', "")
+            }
 
         case Datatype.WEBURL:
             text = webpage.get_html_from_url(str(data))
@@ -78,13 +83,14 @@ def get_template(template_path: str, command: Command, dtype: Datatype) -> str:
     raise TemplateNotFoundError(f"Template not found for command: {command}, dtype: {dtype}")
 
 
-def get_prompt(template_path: str, command: Command, dtype: Datatype, data:str|Any) -> str:
+def get_prompt(template_path: str, command: Command, dtype: Datatype, data:str|Any) -> dict:
     template = get_template(template_path, command, dtype)
 
-    content = post_process(dtype, data)
-
-    print(f"content: {content.keys()}")
-    return template.format( **content )
+    content:dict = post_process(dtype, data)
+    if content is not None:
+        content['template'] = template.format( **content )
+    return content
+    # return template.format( **content )
 
 
 if __name__ == "__main__":

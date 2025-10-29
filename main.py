@@ -56,9 +56,16 @@ def main(args) -> int:
             if dtype == Datatype.IMAGE:
                 paste() # paste image to chatgpt
                 time.sleep(1.5)
+            else:
+                with open('/tmp/source.md', 'w', encoding='utf-8') as f:
+                    f.write(prompt['content_text'])
+                set_clipboard_data( ClipboardData(type="file", data='/tmp/source.md') )
+                paste() # paste text file to chatgpt
+                time.sleep(1.5)
 
-            print("prompt: ", len(prompt), prompt[:100])
-            set_clipboard_data( ClipboardData(type="text", data=prompt) ) # set prompt text to clipboard
+            template = prompt.get('template', "")
+            print("prompt: ", template[:100])
+            set_clipboard_data( ClipboardData(type="text", data=template) ) # set prompt text to clipboard
             paste(return_key=args.auto and command != Command.QA) # paste prompt text to chatgpt
 
             if Config.clear_generated:
@@ -108,3 +115,4 @@ if __name__ == '__main__':
         # test()
 
     sys.exit(main(args))
+
