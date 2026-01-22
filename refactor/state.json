@@ -1,39 +1,60 @@
 {
-  "session_id": "refactor_get_prompt_2026_01_22",
-  "created_at": "2026-01-22T00:00:00Z",
-  "last_updated": "2026-01-22T00:00:00Z",
-  "current_phase": "completed",
+  "session_id": "refactor_move_to_src_others_2026_01_22",
+  "created_at": "2026-01-22T17:42:00Z",
+  "last_updated": "2026-01-22T17:42:00Z",
+  "current_phase": "planning_complete",
   "completed_tasks": [
-    "task_1.1_extract_transform_data",
-    "task_2.1_create_format_with_template",
-    "task_3.1_refactor_get_prompt",
-    "task_4.1_update_callers",
-    "task_5.1_update_docstrings",
-    "task_5.3_add_type_hints"
+    "analyze_main_py_dependencies",
+    "identify_unused_files",
+    "create_refactoring_plan"
   ],
-  "pending_tasks": [],
-  "files_modified": [
-    "prompt.py"
+  "pending_tasks": [
+    "task_1.1_create_directory_structure",
+    "task_2.1_move_unused_root_files",
+    "task_3.1_move_ng_directory",
+    "task_4.1_move_asset_utilities",
+    "task_4.2_move_youtube_utilities",
+    "task_5.1_test_main_application",
+    "task_5.2_verify_file_locations",
+    "task_6.1_update_documentation"
   ],
-  "git_checkpoint": "16f88f7",
-  "validation_status": {
-    "syntax_check": "passed",
-    "ruff_check": "passed",
-    "imports_valid": "backward_compatible",
-    "type_check_clean": "yes"
+  "files_to_move": {
+    "root_level": [
+      "meta_prompt.py",
+      "q_and_a.py",
+      "window_utils.py"
+    ],
+    "directories": [
+      "ng/",
+      "asset/*.py",
+      "youtube/*.py"
+    ]
   },
+  "files_to_keep_in_root": [
+    "main.py",
+    "cache.py",
+    "ck_clipboard.py",
+    "command.py",
+    "config.py",
+    "datatype.py",
+    "dunstify.py",
+    "exceptions.py",
+    "llm.py",
+    "prompt.py",
+    "text_info2.py",
+    "ui.py",
+    "webpage.py",
+    "youtube.py"
+  ],
+  "git_checkpoint": "3f9379e",
   "refactoring_summary": {
-    "functions_created": [
-      "transform_data(dtype, data) -> dict | None",
-      "format_with_template(template_path, command, dtype, content) -> dict"
-    ],
-    "functions_modified": [
-      "get_prompt(template_path, command, dtype, data) -> dict"
-    ],
-    "functions_removed": [
-      "post_process (renamed to transform_data)"
-    ],
-    "backward_compatible": true,
+    "total_files_to_move": 16,
+    "root_files_to_move": 3,
+    "ng_files_to_move": 9,
+    "asset_files_to_move": 3,
+    "youtube_files_to_move": 1,
+    "target_location": "src/others/",
+    "risk_level": "low",
     "breaking_changes": false
   }
 }

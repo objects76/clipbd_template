@@ -10,8 +10,9 @@ uv run pyinstaller --onefile \
     --name "template_paste" \
     --distpath "$HOME/.local/bin" \
     --specpath "/tmp" \
+    --paths "$(pwd)/src" \
     --clean --noconfirm \
-    "main.py"
+    "src/main.py"
 
 cp -f ".env" "$HOME/.config/rofi/.env"
 

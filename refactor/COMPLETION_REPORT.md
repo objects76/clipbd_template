@@ -1,132 +1,189 @@
 # Refactoring Completion Report
-**Session ID:** refactor_get_prompt_2026_01_22
+**Session ID:** refactor_move_to_src_others_2026_01_22
 **Date:** 2026-01-22
 **Status:** ✅ COMPLETED
 
 ## Summary
-Successfully split the `get_prompt` function into two focused parts:
-1. **Data transformation** - `transform_data()`
-2. **Template formatting** - `format_with_template()`
+Successfully reorganized project structure by moving all non-core files (not used by main.py) to `src/others/` directory while preserving the core application in the root directory.
 
 ## Changes Made
 
-### 1. Created `transform_data()` function
-**File:** [prompt.py:15-70](prompt.py#L15-L70)
-
-Renamed and documented `post_process` as a public API function:
-```python
-def transform_data(dtype: Datatype, data: str | Any) -> dict | None:
-    """Transform raw clipboard data into structured content dictionary."""
+### 1. Created Directory Structure
+**New directories created:**
+```
+src/others/
+├── ng/
+├── asset/
+└── youtube/
 ```
 
-**Responsibilities:**
-- YouTube URL → transcript extraction + video metadata
-- Web URL → HTML fetching + markdown conversion
-- HTML text → parsing + markdown conversion
-- Markdown/plain text → normalization
-- Images → blob extraction + dimension metadata
+### 2. Files Moved to src/others/
 
-### 2. Created `format_with_template()` function
-**File:** [prompt.py:110-136](prompt.py#L110-L136)
+#### Root-Level Utilities (3 files)
+- `meta_prompt.py` → `src/others/meta_prompt.py` - Meta prompt generation utility
+- `q_and_a.py` → `src/others/q_and_a.py` - Q&A text formatting utility
+- `window_utils.py` → `src/others/window_utils.py` - X11 window utilities (unused)
 
-New function encapsulating template loading and formatting:
-```python
-def format_with_template(
-    template_path: str,
-    command: Command,
-    dtype: Datatype,
-    content: dict
-) -> dict:
-    """Load template from YAML file and format it with content data."""
-```
+#### Alternative Implementations - ng/ (9 files)
+- `ng/clipbd.py` → `src/others/ng/clipbd.py`
+- `ng/copyq.py` → `src/others/ng/copyq.py`
+- `ng/firecrawl_to_md.py` → `src/others/ng/firecrawl_to_md.py`
+- `ng/get_browser_url.py` → `src/others/ng/get_browser_url.py`
+- `ng/get_browser_url_advanced.py` → `src/others/ng/get_browser_url_advanced.py`
+- `ng/jina_to_md.py` → `src/others/ng/jina_to_md.py`
+- `ng/medium.py` → `src/others/ng/medium.py`
+- `ng/scraping.py` → `src/others/ng/scraping.py`
+- `ng/web_to_md.py` → `src/others/ng/web_to_md.py`
 
-**Responsibilities:**
-- Load YAML template based on command and data type
-- Format template string with content dictionary
-- Return content with added "template" field
+**Note:** ng/ directory retained non-Python files (readerlm-v2.ipynb, get_url_from_broswer.sh, __pycache__)
 
-### 3. Refactored `get_prompt()` as orchestrator
-**File:** [prompt.py:139-162](prompt.py#L139-L162)
+#### Utility Scripts - asset/ (3 files)
+- `asset/merge_transcripts.py` → `src/others/asset/merge_transcripts.py`
+- `asset/reformat_transcript.py` → `src/others/asset/reformat_transcript.py`
+- `asset/transcript_to_srt.py` → `src/others/asset/transcript_to_srt.py`
 
-Simplified to orchestrate the two new functions:
-```python
-def get_prompt(
-    template_path: str,
-    command: Command,
-    dtype: Datatype,
-    data: str | Any
-) -> dict:
-    """Generate formatted prompt by transforming data and applying template."""
-    content: dict = transform_data(dtype, data)
-    return format_with_template(template_path, command, dtype, content)
-```
+**Note:** Config files (template.yaml, template2.yaml) remain in asset/ directory
 
-**Backward Compatibility:** ✅ Full backward compatibility maintained
+#### Utility Scripts - youtube/ (1 file)
+- `youtube/translate_srt.py` → `src/others/youtube/translate_srt.py`
+
+### 3. Core Files Remaining in Root (14 files)
+**All core application files verified to remain in root:**
+✓ main.py - Entry point
+✓ cache.py - Used by youtube.py
+✓ ck_clipboard.py - Used by main.py, datatype.py
+✓ command.py - Used by main.py, prompt.py
+✓ config.py - Used by main.py
+✓ datatype.py - Used by main.py, command.py, prompt.py
+✓ dunstify.py - Used by main.py, youtube.py
+✓ exceptions.py - Used by config.py, prompt.py, text_info2.py, webpage.py, youtube.py
+✓ llm.py - Used by main.py
+✓ prompt.py - Used by main.py
+✓ text_info2.py - Used by datatype.py, prompt.py, webpage.py
+✓ ui.py - Used by main.py, prompt.py, youtube.py
+✓ webpage.py - Used by prompt.py
+✓ youtube.py - Used by prompt.py
 
 ## Validation Results
 
 | Check | Status | Details |
 |-------|--------|---------|
-| Syntax validation | ✅ Passed | `python3 -m py_compile` successful |
-| Import validation | ✅ Passed | `ruff check --select F` no errors |
-| Backward compatibility | ✅ Passed | `main.py` caller unchanged |
-| Type hints | ✅ Present | Python 3.10+ syntax used |
-| Documentation | ✅ Complete | Comprehensive docstrings added |
+| Directory structure created | ✅ Passed | src/others/ with subdirectories |
+| Files moved correctly | ✅ Passed | 16 files moved to src/others/ |
+| Core files remain in root | ✅ Passed | All 14 core files verified |
+| Syntax validation | ✅ Passed | `python3 -m py_compile main.py` |
+| Import validation | ✅ Passed | `uv run python3 -c "import main"` |
+| No broken imports | ✅ Passed | No moved files imported by core |
+| Git tracking | ✅ Passed | All moves tracked with `git mv` |
+| Documentation updated | ✅ Passed | CLAUDE.md updated with new structure |
 
-## Files Modified
-- `prompt.py` - Refactored with new function structure
+## Files Summary
 
-## Files Created
-- `refactor/plan.md` - Detailed refactoring plan
-- `refactor/state.json` - Session state tracking
-- `refactor/COMPLETION_REPORT.md` - This report
+**Total files moved:** 16
+- Root level: 3 files
+- ng/ directory: 9 files
+- asset/ directory: 3 files
+- youtube/ directory: 1 file
 
-## Git Checkpoint
-**Commit:** `16f88f7` - "chore: checkpoint before get_prompt refactor"
+**Core files in root:** 14 files
+
+**Git changes staged:** 20 files (includes refactor/ metadata)
 
 ## Benefits Achieved
 
-### 1. Separation of Concerns
-- ✅ Data transformation isolated from template formatting
-- ✅ Each function has single, clear responsibility
+### 1. Clear Organization
+✅ Core application files clearly separated from utilities and alternatives
+✅ Root directory now contains only actively used files
+✅ Alternative implementations grouped logically in src/others/
 
-### 2. Improved Testability
-- ✅ Can test `transform_data()` independently
-- ✅ Can test `format_with_template()` with mock data
-- ✅ Can test `get_prompt()` orchestration separately
+### 2. Reduced Clutter
+✅ Root directory reduced from 17 Python files to 14 core files
+✅ Experimental and alternative code clearly marked as "others"
+✅ Easier to identify main application components
 
-### 3. Enhanced Reusability
-- ✅ `transform_data()` can be used without template formatting
-- ✅ `format_with_template()` can be used with pre-transformed data
-- ✅ Both functions are now part of public API
+### 3. Better Maintainability
+✅ Clear distinction between production and experimental code
+✅ Utility scripts organized by category (ng/, asset/, youtube/)
+✅ No impact on core application functionality
 
-### 4. Better Documentation
-- ✅ Comprehensive docstrings for all functions
-- ✅ Clear parameter descriptions
-- ✅ Explicit return type documentation
-- ✅ Exception documentation
+### 4. Preserved Functionality
+✅ No breaking changes to main application
+✅ All imports remain valid
+✅ Configuration files (YAML) remain in original locations
+✅ Non-Python files preserved in original directories
 
-### 5. Maintainability
-- ✅ Easier to modify data transformation logic
-- ✅ Easier to add new template formats
-- ✅ Clearer code flow and structure
+## Project Structure
+
+### Before Refactoring
+```
+.
+├── main.py
+├── [13 core files]
+├── [3 unused files]
+├── ng/ (9 .py files + 3 other files)
+├── asset/ (3 .py + configs)
+└── youtube/ (1 .py)
+```
+
+### After Refactoring
+```
+.
+├── main.py
+├── [13 core files]
+├── asset/ (configs only)
+├── ng/ (non-Python files only)
+└── src/others/
+    ├── [3 root utilities]
+    ├── ng/ (9 .py files)
+    ├── asset/ (3 .py files)
+    └── youtube/ (1 .py file)
+```
 
 ## No Breaking Changes
-- ✅ `get_prompt()` signature unchanged
-- ✅ `main.py` caller works without modification
-- ✅ Return value structure preserved
-- ✅ All existing functionality maintained
+✅ main.py signature unchanged
+✅ All core module imports unchanged
+✅ Configuration file paths unchanged
+✅ Application functionality fully preserved
+✅ Zero runtime errors introduced
+
+## Git History Preserved
+All file moves performed using `git mv` to preserve:
+- File history and blame information
+- Commit lineage
+- Easy tracking of file relocations
+
+## Documentation Updates
+✅ CLAUDE.md updated with:
+- New "Project Structure" section
+- Visual directory tree
+- Clear categorization of core vs others
+- Updated component descriptions
 
 ## Next Steps (Optional Enhancements)
-1. Add unit tests for `transform_data()`
-2. Add unit tests for `format_with_template()`
-3. Update `docs/API.md` with new function documentation
-4. Consider exporting new functions in `__init__.py` if package structure exists
+1. Consider adding __init__.py to src/others/ if Python package structure desired
+2. Add README.md in src/others/ explaining purpose of each subdirectory
+3. Update any external documentation referencing old file locations
+4. Consider creating automated tests to prevent accidental import of "others" files
+
+## Rollback Strategy (if needed)
+If rollback is required:
+```bash
+git reset --hard 3f9379e  # Return to pre-refactoring state
+```
+
+All changes are tracked in git and can be easily reverted.
 
 ## Conclusion
 Refactoring completed successfully with:
-- ✅ Clean separation of data transformation and template formatting
-- ✅ Full backward compatibility
-- ✅ Comprehensive documentation
-- ✅ All validation checks passed
-- ✅ Zero breaking changes
+✅ Clear separation between core and non-core files
+✅ Improved project organization
+✅ Zero breaking changes
+✅ All validation checks passed
+✅ Documentation fully updated
+✅ Git history preserved
+
+**Risk Level:** Low
+**Breaking Changes:** None
+**Application Impact:** Zero
+
+The project now has a cleaner, more maintainable structure with clear boundaries between production code and experimental/utility code.

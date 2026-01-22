@@ -1,120 +1,225 @@
-# Refactoring Plan: Split get_prompt Function
+# Refactoring Plan: Reorganize Project Structure
 **Created:** 2026-01-22
-**Session ID:** refactor_get_prompt_2026_01_22
+**Session ID:** refactor_move_to_src_others_2026_01_22
 
 ## Initial State Analysis
 
 ### Current Architecture
-The `get_prompt` function in [prompt.py:92-101](prompt.py#L92-L101) currently performs two distinct responsibilities:
+The project has a flat structure with all Python files in the root directory. There are several categories of files:
 
-1. **Data Transformation** (`post_process` function): Converts raw clipboard data into structured content dictionaries based on data type (YouTube, web URLs, HTML, markdown, etc.)
-2. **Template Formatting** (`get_template` + string formatting): Loads YAML templates and formats them with the transformed data
+1. **Core Application Files (Used by main.py)**:
+   - `main.py` - Entry point
+   - `ck_clipboard.py` - Clipboard operations
+   - `command.py` - Command enumeration and logic
+   - `config.py` - Configuration management
+   - `datatype.py` - Data type detection
+   - `dunstify.py` - Desktop notifications
+   - `exceptions.py` - Custom exceptions
+   - `llm.py` - LLM inference (OpenAI API)
+   - `prompt.py` - Prompt generation and template formatting
+   - `text_info2.py` - Text type detection and HTML conversion
+   - `ui.py` - UI utilities (error, toast)
+   - `webpage.py` - Web content extraction
+   - `youtube.py` - YouTube transcript extraction
+   - `cache.py` - Clipboard caching (used by youtube.py)
 
-**Current Flow:**
+2. **Unused Root-Level Files (NOT in main.py dependency chain)**:
+   - `meta_prompt.py` - Meta prompt generation (standalone utility)
+   - `q_and_a.py` - Q&A text formatting (standalone utility)
+   - `window_utils.py` - X11 window utilities (unused)
+
+3. **Alternative Implementations (`ng/` directory)**:
+   - `ng/clipbd.py` - Alternative clipboard implementation
+   - `ng/copyq.py` - CopyQ clipboard manager integration
+   - `ng/firecrawl_to_md.py` - Firecrawl API web extraction
+   - `ng/get_browser_url.py` - Browser URL extraction
+   - `ng/get_browser_url_advanced.py` - Advanced browser URL extraction
+   - `ng/jina_to_md.py` - Jina Reader API web extraction
+   - `ng/medium.py` - Medium article extraction
+   - `ng/scraping.py` - Web scraping utilities
+   - `ng/web_to_md.py` - Web to markdown conversion
+
+4. **Utility Scripts in Subdirectories**:
+   - `asset/merge_transcripts.py` - Transcript merging utility
+   - `asset/reformat_transcript.py` - Transcript reformatting
+   - `asset/transcript_to_srt.py` - SRT format conversion
+   - `youtube/translate_srt.py` - SRT translation utility
+
+### Current Directory Structure
 ```
-get_prompt(template_path, command, dtype, data)
-  ├─> get_template(template_path, command, dtype) → template string
-  ├─> post_process(dtype, data) → content dict
-  └─> template.format(**content) → final formatted prompt
+.
+├── main.py (entry point)
+├── [13 core application files used by main.py]
+├── [3 unused root-level files]
+├── ng/
+│   └── [9 alternative implementation files]
+├── asset/
+│   └── [3 utility scripts]
+└── youtube/
+    └── [1 utility script]
+```
+
+### Target Directory Structure
+```
+.
+├── main.py (entry point)
+├── [13 core application files - KEEP IN ROOT]
+└── src/
+    └── others/
+        ├── [3 unused root-level files]
+        ├── ng/
+        │   └── [9 alternative implementation files]
+        ├── asset/
+        │   └── [3 utility scripts]
+        └── youtube/
+            └── [1 utility script]
 ```
 
 ### Problem Areas
-1. **Mixed Responsibilities**: Single function handles both data transformation and template formatting
-2. **Tight Coupling**: Template selection logic embedded within prompt generation
-3. **Reusability**: Cannot reuse data transformation without template formatting
-4. **Testing Complexity**: Hard to test data transformation separately from template formatting
+1. **Cluttered Root**: Mixing actively used and unused/experimental files
+2. **Unclear Organization**: Hard to distinguish core vs alternative implementations
+3. **Maintenance Burden**: All files appear equally important despite usage differences
 
 ### Dependencies
-**Internal:**
-- `youtube.get_youtube_content()` - YouTube transcript extraction
-- `webpage.get_html_from_url()` - Web content fetching
-- `webpage.from_html_text()` - HTML text processing
-- `text_info2.html_to_md()` - HTML to markdown conversion
+**Files to Move (no dependencies on main.py chain)**:
+- Root level: `meta_prompt.py`, `q_and_a.py`, `window_utils.py`
+- Entire `ng/` directory (alternative implementations)
+- Entire `asset/` directory (utility scripts)
+- Entire `youtube/` directory (utility scripts)
 
-**External Callers:**
-- [main.py:45](main.py#L45): `prompt = get_prompt(args.template, command, dtype, data)`
+**Files to Keep (core application dependencies)**:
+- All 13 files in main.py dependency chain (see analysis above)
 
-**Template File:**
-- `asset/template2.yaml` - Contains 8 templates (youtube summary, webtext summary, q&a, image analysis, translation variants)
-
-### Test Coverage
-- Manual testing in `__main__` block with YouTube URL test
-- No formal unit tests detected
+### Risk Assessment
+**Low Risk** - Files to move are NOT imported by main.py or its dependencies:
+- No import statements found in core application files
+- Can be safely relocated without breaking main application
+- Independent utility scripts with no reverse dependencies
 
 ## Refactoring Goal
-Split `get_prompt` into two focused functions:
-1. **`transform_data(dtype: Datatype, data: str | Any) -> dict`** - Pure data transformation
-2. **`format_with_template(template_path: str, command: Command, dtype: Datatype, content: dict) -> dict`** - Template loading and formatting
+Move all non-core files (not used by main.py) to `src/others/` while preserving directory structure for alternative implementations and utility scripts.
 
 ## Refactoring Tasks
 
-### Phase 1: Extract Data Transformation (Low Risk)
-- [x] **Task 1.1**: Extract `post_process` as standalone `transform_data` function
-  - **Risk**: Low - function already exists, just needs promotion
-  - **Changes**: Move from internal helper to top-level function
-  - **Validation**: Verify return types match existing usage
+### Phase 1: Preparation (Low Risk)
+- [x] Analyze main.py dependency chain ✅
+- [x] Identify unused files ✅
+- [ ] **Task 1.1**: Create directory structure
+  - **Risk**: None
+  - **Actions**:
+    - `mkdir -p src/others/ng`
+    - `mkdir -p src/others/asset`
+    - `mkdir -p src/others/youtube`
+  - **Validation**: Verify directories exist
 
-### Phase 2: Create Template Formatting Function (Medium Risk)
-- [ ] **Task 2.1**: Create `format_with_template` function
-  - **Risk**: Medium - new function combining existing logic
-  - **Changes**: Wrap `get_template` + string formatting logic
-  - **Validation**: Ensure template selection logic preserved
+### Phase 2: Move Unused Root Files (Low Risk)
+- [ ] **Task 2.1**: Move standalone utility files
+  - **Risk**: Low - no dependencies
+  - **Files**:
+    - `meta_prompt.py` → `src/others/meta_prompt.py`
+    - `q_and_a.py` → `src/others/q_and_a.py`
+    - `window_utils.py` → `src/others/window_utils.py`
+  - **Validation**: Verify files moved, check no imports broken
 
-### Phase 3: Update get_prompt to Orchestrate (High Risk - Breaking Change)
-- [ ] **Task 3.1**: Refactor `get_prompt` to call new functions
-  - **Risk**: High - changes external API behavior
-  - **Changes**: Update function body to orchestrate `transform_data` + `format_with_template`
-  - **Validation**: Run manual test in `__main__` block
+### Phase 3: Move Alternative Implementation Directory (Low Risk)
+- [ ] **Task 3.1**: Move entire ng/ directory
+  - **Risk**: Low - alternative implementations not used by main.py
+  - **Action**: Move `ng/` → `src/others/ng/`
+  - **Validation**: Verify all 9 files moved correctly
 
-### Phase 4: Update Callers (Critical)
-- [ ] **Task 4.1**: Update [main.py:45](main.py#L45) caller
-  - **Risk**: Critical - application entry point
-  - **Changes**: May need to handle new return structure
-  - **Validation**: Full application smoke test
+### Phase 4: Move Utility Script Directories (Low Risk)
+- [ ] **Task 4.1**: Move asset/ utilities
+  - **Risk**: Low - standalone scripts
+  - **Action**: Move `asset/*.py` → `src/others/asset/`
+  - **Note**: Keep `asset/template2.yaml` and other config files in original location
+  - **Validation**: Verify only .py files moved, config files remain
 
-### Phase 5: Documentation & Cleanup
-- [ ] **Task 5.1**: Update function docstrings
-- [ ] **Task 5.2**: Update API documentation in `docs/API.md`
-- [ ] **Task 5.3**: Add type hints for all new/modified functions
+- [ ] **Task 4.2**: Move youtube/ utilities
+  - **Risk**: Low - standalone scripts
+  - **Action**: Move `youtube/*.py` → `src/others/youtube/`
+  - **Validation**: Verify files moved correctly
+
+### Phase 5: Validation (Critical)
+- [ ] **Task 5.1**: Test main application
+  - **Risk**: Critical - verify no breakage
+  - **Actions**:
+    - Run syntax check: `python3 -m py_compile main.py`
+    - Run import validation: `python3 -c "import main"`
+    - Test with `--test` flag: `uv run main.py --test`
+  - **Validation**: All checks pass, no import errors
+
+- [ ] **Task 5.2**: Verify file locations
+  - **Risk**: Low
+  - **Actions**:
+    - Confirm 13 core files remain in root
+    - Confirm all moved files in `src/others/`
+    - Check git status for moved files
+  - **Validation**: Complete file accounting
+
+### Phase 6: Documentation
+- [ ] **Task 6.1**: Update CLAUDE.md
+  - **Risk**: Low
+  - **Actions**: Document new directory structure
+  - **Validation**: Accurate documentation
 
 ## Validation Checklist
-- [ ] All old patterns removed (no duplicate logic)
+- [ ] src/others/ directory structure created
+- [ ] 3 unused root files moved to src/others/
+- [ ] ng/ directory moved to src/others/ng/
+- [ ] asset/*.py moved to src/others/asset/ (config files remain)
+- [ ] youtube/*.py moved to src/others/youtube/
+- [ ] 13 core application files remain in root
+- [ ] main.py runs without errors
 - [ ] No broken imports
-- [ ] Manual test in `__main__` passes
-- [ ] Application runs end-to-end without errors
-- [ ] Type checking clean (Python 3.10+ syntax)
-- [ ] No orphaned code
+- [ ] Git status shows clean moves
 - [ ] Documentation updated
 
-## De-Para Mapping (Function Signatures)
+## File Movement Mapping
 
-| Before | After | Status |
+| Before | After | Reason |
 |--------|-------|--------|
-| `get_prompt(template_path, command, dtype, data) -> dict` | `get_prompt(template_path, command, dtype, data) -> dict` | Pending - internal refactor |
-| `post_process(dtype, data) -> dict \| None` | `transform_data(dtype, data) -> dict \| None` | Pending |
-| N/A | `format_with_template(template_path, command, dtype, content) -> dict` | Pending - new |
+| `meta_prompt.py` | `src/others/meta_prompt.py` | Unused utility |
+| `q_and_a.py` | `src/others/q_and_a.py` | Unused utility |
+| `window_utils.py` | `src/others/window_utils.py` | Unused X11 utility |
+| `ng/` (9 files) | `src/others/ng/` | Alternative implementations |
+| `asset/*.py` (3 files) | `src/others/asset/` | Utility scripts |
+| `youtube/*.py` (1 file) | `src/others/youtube/` | Utility script |
+
+## Files Remaining in Root (Core Application - 14 files)
+
+| File | Reason |
+|------|--------|
+| `main.py` | Entry point |
+| `cache.py` | Used by youtube.py |
+| `ck_clipboard.py` | Used by main.py, datatype.py |
+| `command.py` | Used by main.py, prompt.py |
+| `config.py` | Used by main.py |
+| `datatype.py` | Used by main.py, command.py, prompt.py |
+| `dunstify.py` | Used by main.py, youtube.py |
+| `exceptions.py` | Used by config.py, prompt.py, text_info2.py, webpage.py, youtube.py |
+| `llm.py` | Used by main.py |
+| `prompt.py` | Used by main.py |
+| `text_info2.py` | Used by datatype.py, prompt.py, webpage.py |
+| `ui.py` | Used by main.py, prompt.py, youtube.py |
+| `webpage.py` | Used by prompt.py |
+| `youtube.py` | Used by prompt.py |
 
 ## Implementation Strategy
 
-### Approach 1: Conservative (Recommended)
-1. Keep `get_prompt` signature unchanged for backward compatibility
-2. Extract internal functions as described
-3. `get_prompt` becomes orchestrator calling new functions
-4. Low risk to existing callers
-
-### Approach 2: Breaking Change
-1. Remove `get_prompt` entirely
-2. Force callers to use `transform_data` + `format_with_template` directly
-3. Higher risk, better separation of concerns
-
-**Recommendation**: Use Approach 1 to minimize risk and maintain backward compatibility.
+### Conservative Approach (Recommended)
+1. Create directory structure first
+2. Move files in phases (root files → ng → asset → youtube)
+3. Validate after each phase
+4. Use `git mv` to preserve history
+5. Test main application after all moves complete
 
 ## Rollback Strategy
-- Git checkpoint before changes: `git commit -m "chore: checkpoint before get_prompt refactor"`
-- If validation fails, revert to checkpoint
-- Keep original function logic commented out during initial testing
+- Git checkpoint before changes: Current commit `3f9379e`
+- If validation fails: `git reset --hard 3f9379e`
+- All moves tracked by git for easy revert
 
 ## Notes
-- The `post_process` function already exists and performs clean data transformation
-- Template formatting is simple string `.format()` call - minimal complexity
-- Main risk is ensuring all data flow paths are preserved
+- The `ng/` directory contains "next generation" or experimental implementations
+- All files being moved are standalone utilities or alternative implementations
+- Core application (main.py dependency chain) remains untouched in root
+- This refactoring is purely organizational - no code changes required

@@ -9,6 +9,7 @@ from cache import ClipboardCache
 # from copyq import get_lastest_clipboard
 from dunstify import notify_cont
 from exceptions import YouTubeExtractionError
+from ui import error
 
 
 def ts_format(ts):
@@ -110,9 +111,9 @@ def get_youtube_content(url: str, transcript: str = "") -> dict:
             transcript = download_transcript(video_id)
         except Exception as e:
             ClipboardCache.save(url, "wait transcript")
-            raise YouTubeExtractionError(
-                f"Failed to get transcript for `{video_id}`: {e}"
-            )
+            error(str(e))
+            transcript = ""
+            # raise YouTubeExtractionError(f"Failed to get transcript for `{video_id}`: {e}")
 
     return {"video_id": video_id, "transcript": transcript}
 

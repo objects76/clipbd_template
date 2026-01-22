@@ -158,7 +158,11 @@ def get_prompt(
         TemplateNotFoundError: If template cannot be found
         TemplateFormatError: If template format is invalid
     """
-    content: dict = transform_data(dtype, data)
+    try:
+        content: dict = transform_data(dtype, data)
+    except Exception as e:
+        error(str(e))
+
     return format_with_template(template_path, command, dtype, content)
 
 

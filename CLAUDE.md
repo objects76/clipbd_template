@@ -12,13 +12,19 @@ This is a clipboard-based content extraction and template system that processes 
 - **Content extractors**: Specialized modules for different content types:
   - `youtube.py`: YouTube transcript extraction using youtube-transcript-api
   - `webpage.py`: Web content extraction with HTML-to-markdown conversion
-  - Modules in `ng/` directory: Alternative implementations for web scraping (jina, firecrawl)
-- **Clipboard management**: 
+- **Clipboard management**:
   - `ck_clipboard.py`: Primary clipboard interface using copykitten
   - `cache.py`: Clipboard caching system for failed operations
 - **Template processing**: `config.py` loads YAML templates and configuration
 - **Content type detection**: `text_info2.py` classifies content (HTML, markdown, plain text)
-- **Specialized processors**: `meta_prompt.py`, `q_and_a.py` for specific content transformations
+
+### Alternative Implementations & Utilities
+
+Alternative implementations and utility scripts are organized in `src/others/`:
+- **src/others/ng/**: Alternative web scraping implementations (jina, firecrawl, medium extraction)
+- **src/others/asset/**: Transcript processing utilities (merge, reformat, convert to SRT)
+- **src/others/youtube/**: SRT translation utilities
+- **src/others/**: Standalone utilities (meta_prompt.py, q_and_a.py, window_utils.py)
 
 ### Data Flow Architecture
 
@@ -32,10 +38,59 @@ This is a clipboard-based content extraction and template system that processes 
 
 Templates are defined in `asset/template.yaml` with support for:
 - YouTube video summaries with timestamped navigation
-- Web page summaries with structured analysis  
+- Web page summaries with structured analysis
 - Meta prompt conversion
 - Q&A on context
 - Image analysis workflows
+
+## Project Structure
+
+```
+.
+├── main.py                    # Application entry point
+├── cache.py                   # Clipboard caching
+├── ck_clipboard.py            # Clipboard interface
+├── command.py                 # Command definitions
+├── config.py                  # Configuration management
+├── datatype.py                # Data type detection
+├── dunstify.py                # Desktop notifications
+├── exceptions.py              # Custom exceptions
+├── llm.py                     # LLM inference
+├── prompt.py                  # Prompt generation
+├── text_info2.py              # Text classification
+├── ui.py                      # UI utilities
+├── webpage.py                 # Web content extraction
+├── youtube.py                 # YouTube transcript extraction
+├── asset/                     # Templates and configs
+│   ├── template.yaml          # Template definitions
+│   └── template2.yaml         # Alternative templates
+├── ng/                        # Non-Python experimental files
+│   ├── readerlm-v2.ipynb      # Notebook experiments
+│   └── get_url_from_broswer.sh
+└── src/others/                # Alternative implementations & utilities
+    ├── meta_prompt.py         # Meta prompt utility
+    ├── q_and_a.py             # Q&A formatting utility
+    ├── window_utils.py        # X11 window utilities
+    ├── ng/                    # Alternative web extractors
+    │   ├── clipbd.py
+    │   ├── copyq.py
+    │   ├── firecrawl_to_md.py
+    │   ├── get_browser_url.py
+    │   ├── get_browser_url_advanced.py
+    │   ├── jina_to_md.py
+    │   ├── medium.py
+    │   ├── scraping.py
+    │   └── web_to_md.py
+    ├── asset/                 # Transcript utilities
+    │   ├── merge_transcripts.py
+    │   ├── reformat_transcript.py
+    │   └── transcript_to_srt.py
+    └── youtube/               # Translation utilities
+        └── translate_srt.py
+```
+
+**Core files** (root level): Actively used by main.py application
+**src/others/**: Alternative implementations, experimental code, and standalone utilities not used by main application
 
 ## Development Commands
 
