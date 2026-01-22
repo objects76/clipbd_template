@@ -26,3 +26,11 @@ dependencies = [
     "youtube-transcript-api>=1.2.2",
     "yt-dlp>=2025.9.5",
 ]
+
+
+[tool.ruff]
+extend = "~/.config/ruff/ruff.toml"
+extend-exclude = [
+   "**/*.ipynb",
+]
+lint.extend-ignore = ["PLR2004"]

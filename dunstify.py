@@ -1,19 +1,23 @@
 import shutil
 import subprocess
+from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
-from typing import Iterable, Mapping, Sequence, Optional, Union
+
 
 @dataclass
 class NotifyResult:
     """Result of a dunstify call."""
+
     returncode: int
     stdout: str
     stderr: str
-    notify_id: Optional[int] = None       # from --printid (or replace-id echo-back)
-    chosen_action: Optional[str] = None   # from --action when user clicks
+    notify_id: int | None = None  # from --printid (or replace-id echo-back)
+    chosen_action: str | None = None  # from --action when user clicks
+
 
 class DunstifyError(RuntimeError):
     pass
+
 
 class Dunstify:
     """
@@ -41,7 +45,7 @@ class Dunstify:
         self.notify_id = None
 
     @staticmethod
-    def _hint_tuple_to_str(k: str, v: Union[bool, int, float, str, bytes]) -> str:
+    def _hint_tuple_to_str(k: str, v: bool | float | str | bytes) -> str:
         # Map Python types to dunstify hint TYPE:NAME:VALUE
         if isinstance(v, bool):
             t = "boolean"
@@ -60,11 +64,11 @@ class Dunstify:
             val = str(v)
         return f"{t}:{k}:{val}"
 
-    def cont(self, summary: str, body: Optional[str] = None, **kwargs) -> NotifyResult:
-        kwargs['replace_id'] = self.notify_id
+    def cont(self, summary: str, body: str | None = None, **kwargs) -> NotifyResult:
+        kwargs["replace_id"] = self.notify_id
         return self.send(summary, body, **kwargs)
 
-    def close(self, notify_id: int|None=None):
+    def close(self, notify_id: int | None = None):
         notify_id = notify_id or self.notify_id
         args: list[str] = [self.binary, "--close", str(notify_id)]
         subprocess.run(args, capture_output=False, text=True)
@@ -72,20 +76,20 @@ class Dunstify:
     def send(
         self,
         summary: str,
-        body: Optional[str] = None,
+        body: str | None = None,
         *,
-        urgency: Optional[str] = None,      # "low"|"normal"|"critical"
-        timeout_ms: Optional[int] = None,   # may be overridden by daemon config
-        icon: Optional[str] = None,
-        app_name: Optional[str] = None,
-        category: Optional[str] = None,
-        hints: Optional[Mapping[str, Union[bool, int, float, str, bytes]]] = None,
-        actions: Optional[Mapping[str, str]] = None,   # {"action_key": "Button Label", ...}
-        replace_id: Optional[int] = None,
-        wait: bool = False,                 # block until closed/expired
-        print_id: bool = True,              # capture notify id
-        extra_args: Optional[Sequence[str]] = None,
-        check: bool = False,                # raise on non-zero exit
+        urgency: str | None = None,  # "low"|"normal"|"critical"
+        timeout_ms: int | None = None,  # may be overridden by daemon config
+        icon: str | None = None,
+        app_name: str | None = None,
+        category: str | None = None,
+        hints: Mapping[str, bool | int | float | str | bytes] | None = None,
+        actions: Mapping[str, str] | None = None,  # {"action_key": "Button Label", ...}
+        replace_id: int | None = None,
+        wait: bool = False,  # block until closed/expired
+        print_id: bool = True,  # capture notify id
+        extra_args: Sequence[str] | None = None,
+        check: bool = False,  # raise on non-zero exit
     ) -> NotifyResult:
         args: list[str] = [self.binary]
 
@@ -122,7 +126,7 @@ class Dunstify:
         if body:
             args.append(body)
 
-        print('subprocess.run', args)
+        print("subprocess.run", args)
 
         proc = subprocess.run(args, capture_output=True, text=True)
         stdout = (proc.stdout or "").strip()
@@ -130,7 +134,7 @@ class Dunstify:
 
         # Heuristics:
         chosen_action = None
-        notify_id: Optional[int] = None
+        notify_id: int | None = None
 
         # When actions are used, dunst prints the chosen action key to stdout.
         # When --printid is used, dunstify prints the id to stdout.
@@ -146,7 +150,6 @@ class Dunstify:
             # last non-digit -> action
             if lines and not lines[-1].isdigit():
                 chosen_action = lines[-1]
-
 
         result = NotifyResult(
             returncode=proc.returncode,
@@ -168,7 +171,7 @@ class Dunstify:
         self,
         summary: str,
         value: int,
-        body: Optional[str] = None,
+        body: str | None = None,
         **kwargs,
     ) -> NotifyResult:
         """Show a progress-style notification using the `int:value` hint."""
@@ -176,13 +179,13 @@ class Dunstify:
         hints.setdefault("value", int(value))  # dunst expects 'int:value:N'
         return self.send(summary, body, hints=hints, **kwargs)
 
-    def critical(self, summary: str, body: Optional[str] = None, **kwargs) -> NotifyResult:
+    def critical(self, summary: str, body: str | None = None, **kwargs) -> NotifyResult:
         return self.send(summary, body, urgency="critical", **kwargs)
 
     def ask(
         self,
         summary: str,
-        body: Optional[str] = None,
+        body: str | None = None,
         *,
         options: Mapping[str, str],  # {"yes": "확인", "no": "취소"}
         **kwargs,
@@ -191,26 +194,30 @@ class Dunstify:
         # dunstify --action="yes,OK" --action="no,CANCEL" "질문" "원하는 옵션을 선택하세요"
         return self.send(summary, body, actions=options, **kwargs)
 
+
 _notify = None
-def notify_send(title: str, body: Optional[str] = None, **kwargs):
+
+
+def notify_send(title: str, body: str | None = None, **kwargs):
     global _notify
     _notify = Dunstify()
     _notify.send(title, body, **kwargs)
 
-def notify_cont(title: str, body: Optional[str] = None, **kwargs):
+
+def notify_cont(title: str, body: str | None = None, **kwargs):
     if _notify:
         _notify.cont(title, body, **kwargs)
 
-def notify_close(notify_id: int|None=None):
+
+def notify_close(notify_id: int | None = None):
     if _notify:
         _notify.close(notify_id)
-
 
 
 import os
 import sys
 import time
-from typing import Dict
+
 
 def require_gui():
     # dunst는 GUI 세션과 DBus가 필요합니다.
@@ -219,15 +226,18 @@ def require_gui():
         print("No DISPLAY or WAYLAND_DISPLAY. Run this inside a desktop session.")
         sys.exit(1)
 
+
 def test_basic(client: Dunstify):
     print("[basic] 기본 알림 테스트")
     res = client.send("테스트: 기본 알림", "본문입니다.", icon="dialog-information")
     print("  -> returncode:", res.returncode, "id:", res.notify_id)
 
+
 def test_urgency(client: Dunstify):
     print("[urgency] 긴급도 테스트 (critical)")
     res = client.critical("테스트: 긴급", "사용자가 닫을 때까지 유지될 수 있습니다.")
     print("  -> returncode:", res.returncode, "id:", res.notify_id)
+
 
 def test_replace(client: Dunstify):
     print("[replace] 같은 알림을 업데이트하여 교체")
@@ -241,28 +251,34 @@ def test_replace(client: Dunstify):
     time.sleep(1.0)
     client.close()
 
+
 def test_progress(client: Dunstify):
     print("[progress] 힌트(int:value)로 진행률 표시")
     for v in (10, 30, 60, 90, 100):
         client.progress("다운로드 중…", value=v, body=f"{v}% 완료", timeout_ms=1500)
         time.sleep(0.9)
 
+
 def test_actions(client: Dunstify):
     print("[actions] 액션 버튼 테스트: 확인/취소")
-    options: Dict[str, str] = {"ok": "확인", "cancel": "취소"}
+    options: dict[str, str] = {"ok": "확인", "cancel": "취소"}
     res = client.ask(
         "선택해주세요",
         "버튼을 클릭하면 stdout으로 액션 키가 반환됩니다.",
         options=options,
-        wait=True,       # 사용자가 닫거나 만료될 때까지 블록
-        timeout_ms=15000 # 15초 내 선택하지 않으면 만료
+        wait=True,  # 사용자가 닫거나 만료될 때까지 블록
+        timeout_ms=15000,  # 15초 내 선택하지 않으면 만료
     )
     print("  -> chosen_action:", res.chosen_action, "id:", res.notify_id)
 
+
 def test_wait_and_printid(client: Dunstify):
     print("[wait/printid] 알림이 닫힐 때까지 대기 & ID 출력")
-    res = client.send("대기 테스트", "3초 타임아웃 후 종료", wait=True, timeout_ms=3000, print_id=True)
+    res = client.send(
+        "대기 테스트", "3초 타임아웃 후 종료", wait=True, timeout_ms=3000, print_id=True
+    )
     print("  -> waited. id:", res.notify_id)
+
 
 def main():
     require_gui()
@@ -278,8 +294,10 @@ def main():
     # test_actions(client)
     # test_wait_and_printid(client)
 
-    print("\n모든 테스트가 실행되었습니다. 화면의 알림과 터미널 출력을 함께 확인하세요.")
+    print(
+        "\n모든 테스트가 실행되었습니다. 화면의 알림과 터미널 출력을 함께 확인하세요."
+    )
+
 
 if __name__ == "__main__":
     main()
-

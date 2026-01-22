@@ -1,16 +1,21 @@
-
 from exceptions import ContentNotFoundError
 
-def add_linenumber(text):
-    lines = text.split('\n')
-    numbered_lines = [f"Line={i}. {line}" for i, line in enumerate(lines.split('\n'),start=1)]
-    return '\n'.join(numbered_lines)
 
-def get_QandA(cb_text:str):
+def add_linenumber(text):
+    lines = text.split("\n")
+    numbered_lines = [
+        f"Line={i}. {line}" for i, line in enumerate(lines.split("\n"), start=1)
+    ]
+    return "\n".join(numbered_lines)
+
+
+def get_QandA(cb_text: str):
     if len(cb_text) > 10:
         # text = '"'+text.replace("\n", "\\n")+'"'
-        lines = [f"L{i}. {txt}".strip() for i, txt in enumerate(cb_text.split('\n'),start=1)]
-        lines = '\n'.join(lines)
+        lines = [
+            f"L{i}. {txt}".strip() for i, txt in enumerate(cb_text.split("\n"), start=1)
+        ]
+        lines = "\n".join(lines)
         return lines
 
     raise ContentNotFoundError("No valid clipboard data for Q&A processing")

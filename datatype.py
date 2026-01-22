@@ -4,7 +4,8 @@
 import re
 from enum import Enum
 from typing import Any
-from ck_clipboard import get_clipboard_data, ClipboardData
+
+from ck_clipboard import get_clipboard_data
 from text_info2 import get_text_type
 
 
@@ -19,16 +20,16 @@ class Datatype(Enum):
 
 def is_url(string: str) -> bool:
     """Check if string is a valid HTTP/HTTPS URL."""
-    pattern = r'https?://(?:[-\w.]|(?:%[\da-fA-F]{2}))+'
+    pattern = r"https?://(?:[-\w.]|(?:%[\da-fA-F]{2}))+"
     return re.match(pattern, string) is not None
 
 
 def is_youtube_url(url: str) -> bool:
     """Check if URL is a YouTube video."""
-    return ('youtube.com/watch' in url) or ('youtu.be/' in url)
+    return ("youtube.com/watch" in url) or ("youtu.be/" in url)
 
 
-def get_clipboard() -> tuple[Datatype, str|Any] | None:
+def get_clipboard() -> tuple[Datatype, str | Any] | None:
     """
     Get clipboard data and return the detected Datatype.
 
@@ -40,10 +41,10 @@ def get_clipboard() -> tuple[Datatype, str|Any] | None:
     if not data:
         return None
 
-    if data.type == 'image':
+    if data.type == "image":
         return Datatype.IMAGE, data.data
 
-    if data.type == 'text':
+    if data.type == "text":
         dtype = None
         text_data = str(data.data)
 
@@ -79,5 +80,3 @@ if __name__ == "__main__":
         print(f"Clipboard content type: {dtype}, {len(text_data)}")
     else:
         print("No clipboard data or unrecognized type")
-
-

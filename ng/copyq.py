@@ -1,12 +1,13 @@
 from __future__ import annotations
 
-import subprocess
 import json
+import subprocess
 from datetime import datetime
-from typing import Literal
+
 import pyperclip
 
 OLD_CLIPBOARD_THRESHOLD = 0  # Threshold disabled (was 20 seconds)
+
 
 class CopyQError(Exception):
     pass
@@ -24,7 +25,6 @@ def clear_clipboard(indices: list[int] | int):
     indices_list = indices if isinstance(indices, list) else [indices]
     text_cmd = ["copyq", "remove", *map(str, indices_list)]
     return subprocess.run(text_cmd, capture_output=True, check=True, timeout=10)
-
 
 
 def copyq_read(row: int = 0) -> dict[str, str]:
@@ -66,15 +66,14 @@ def copyq_read(row: int = 0) -> dict[str, str]:
             capture_output=True,
             text=True,
             check=True,
-            timeout=10
+            timeout=10,
         ).stdout
         result = json.loads(out.strip())
         return result
-    except Exception as e:
+    except Exception:
         if row == 0:
             return {"type": "text", "data": pyperclip.paste(), "timestamp": ""}
         raise
-
 
 
 def get_lastest_clipboard(n: int) -> list[dict[str, str]]:
@@ -95,26 +94,30 @@ def get_lastest_clipboard(n: int) -> list[dict[str, str]]:
         try:
             clip_data = copyq_read(i)
 
-            if clip_data and clip_data.get('data'):
-                if OLD_CLIPBOARD_THRESHOLD > 0 and clip_data.get('timestamp'):
-                    ts = datetime.strptime(clip_data['timestamp'], '%Y-%m-%d %H:%M:%S')
+            if clip_data and clip_data.get("data"):
+                if OLD_CLIPBOARD_THRESHOLD > 0 and clip_data.get("timestamp"):
+                    ts = datetime.strptime(clip_data["timestamp"], "%Y-%m-%d %H:%M:%S")
                     elapsed = int((datetime.now() - ts).total_seconds())
                     if elapsed > OLD_CLIPBOARD_THRESHOLD:
                         print(f"Skipping item {i}: too old ({elapsed}s)")
                         continue
-                items.append({
-                    'type': clip_data['type'],
-                    'data': clip_data['data'],
-                })
+                items.append(
+                    {
+                        "type": clip_data["type"],
+                        "data": clip_data["data"],
+                    }
+                )
         except (CopyQError, subprocess.CalledProcessError, UnicodeDecodeError) as e:
             last_exception = e
 
-    if len(items):
+    if items:
         return items
 
     raise last_exception or CopyQError("No items")
 
+
 if __name__ == "__main__":
     from rich import print
+
     clipbds = copyq_read(0)
     print(clipbds)

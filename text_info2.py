@@ -1,12 +1,13 @@
 import re
 from html.parser import HTMLParser
-from typing import Literal, TypedDict
+from typing import Literal
 
 import html_to_markdown
 
 from exceptions import WebExtractionError
 
 Label = Literal["html", "markdown", "plain"]
+
 
 class HtmlCounter(HTMLParser):
     def __init__(self):
@@ -35,8 +36,8 @@ class HtmlCounter(HTMLParser):
 
 MD_PATTERNS = {
     # counts of very typical Markdown constructs
-    "atx_h": re.compile(r"^(#{1,6})\s+\S", re.M),
-    "fence": re.compile(r"^```.+?^```", re.M | re.S),
+    "atx_h": re.compile(r"^(#{1,6})\s+\S", re.MULTILINE),
+    "fence": re.compile(r"^```.+?^```", re.MULTILINE | re.DOTALL),
     "inline_code": re.compile(r"(?<!`)`[^`\n]+`(?!`)"),
     "links": re.compile(r"\[[^\]]+\]\([^)]+\)"),
     "images": re.compile(r"!\[[^\]]*\]\([^)]+\)"),
@@ -46,12 +47,28 @@ MD_PATTERNS = {
 }
 
 HTML_STRONG_HINTS = [
-    re.compile(r"<!DOCTYPE\s+html", re.I),
-    re.compile(r"<html\b", re.I),
-    re.compile(r"<(head|body|div|span|p|a|ul|ol|li|h[1-6]|table|img|br|hr)\b", re.I),
+    re.compile(r"<!DOCTYPE\s+html", re.IGNORECASE),
+    re.compile(r"<html\b", re.IGNORECASE),
+    re.compile(
+        r"<(head|body|div|span|p|a|ul|ol|li|h[1-6]|table|img|br|hr)\b", re.IGNORECASE
+    ),
 ]
 
-VOID_TAGS = {"br", "hr", "img", "input", "meta", "link", "source", "track", "area", "col", "embed", "wbr"}
+VOID_TAGS = {
+    "br",
+    "hr",
+    "img",
+    "input",
+    "meta",
+    "link",
+    "source",
+    "track",
+    "area",
+    "col",
+    "embed",
+    "wbr",
+}
+
 
 def html_score(text: str) -> float:
     # quick strong hints first
@@ -82,7 +99,9 @@ def html_score(text: str) -> float:
             structural += 0.25
 
     # small bonus if many void tags appear (common in HTML, rare in MD)
-    void_hits = sum(len(re.findall(fr"<{t}\b", text, flags=re.I)) for t in VOID_TAGS)
+    void_hits = sum(
+        len(re.findall(rf"<{t}\b", text, flags=re.IGNORECASE)) for t in VOID_TAGS
+    )
     structural += min(void_hits * 0.1, 0.5)
 
     # penalize if there are lots of angle-bracket-ish things but parser found few real tags
@@ -91,6 +110,7 @@ def html_score(text: str) -> float:
 
     return base + structural
 
+
 def markdown_score(text: str) -> float:
     score = 0.0
     for name, rx in MD_PATTERNS.items():
@@ -98,9 +118,14 @@ def markdown_score(text: str) -> float:
         if hits:
             # give heavier weight to fenced blocks / headings / links
             weight = {
-                "fence": 0.8, "atx_h": 0.6, "links": 0.5,
-                "images": 0.5, "olist": 0.4, "ulist": 0.4,
-                "blockquote": 0.3, "inline_code": 0.2
+                "fence": 0.8,
+                "atx_h": 0.6,
+                "links": 0.5,
+                "images": 0.5,
+                "olist": 0.4,
+                "ulist": 0.4,
+                "blockquote": 0.3,
+                "inline_code": 0.2,
             }[name]
             score += min(hits, 6) * weight  # cap influence
     return score
@@ -128,7 +153,7 @@ def get_text_type(text: str):
         "html_score": round(hs, 2),
         "markdown_score": round(ms, 2),
         "reason": why,
-        }
+    }
 
 
 def compress_html(html: str) -> str:
@@ -142,17 +167,16 @@ def compress_html(html: str) -> str:
     """
 
     # Remove entire SVG elements including content
-    svg_pattern = r'<svg[^>]*>.*?</svg>'
-    compressed = re.sub(svg_pattern, '', html, flags=re.DOTALL | re.IGNORECASE)
+    svg_pattern = r"<svg[^>]*>.*?</svg>"
+    compressed = re.sub(svg_pattern, "", html, flags=re.DOTALL | re.IGNORECASE)
 
     # remove fixed text
     for useless_text in [
         "Press enter or click to view image in full size",
     ]:
-        compressed = compressed.replace(useless_text, '')
+        compressed = compressed.replace(useless_text, "")
 
     return compressed
-
 
 
 def compress_md(md: str) -> str:
@@ -166,7 +190,7 @@ def compress_md(md: str) -> str:
     """
 
     # Pattern to match SVG images with base64 data
-    svg_pattern = r'!\[([^\]]*)\]\(data:image/svg\+xml;base64,[A-Za-z0-9+/=]+\)'
+    svg_pattern = r"!\[([^\]]*)\]\(data:image/svg\+xml;base64,[A-Za-z0-9+/=]+\)"
 
     def replace_svg(match):
         alt_text = match.group(1) or "SVG Image"
@@ -177,36 +201,36 @@ def compress_md(md: str) -> str:
 
     return compressed
 
+
 def html_to_md(html_text: str) -> str:
     try:
         html_text = compress_html(html_text)
         markdown = html_to_markdown.convert_to_markdown(
             html_text,
-            escape_misc = False,
-            escape_underscores = False,
-            extract_metadata = False,
-            )
+            escape_misc=False,
+            escape_underscores=False,
+            extract_metadata=False,
+        )
         # Compress SVG images to reduce size
         compressed_markdown = compress_md(markdown)
-        print(f"# html to markdown: {len(html_text)} -> {len(markdown)} -> {len(compressed_markdown)} (compressed)")
+        print(
+            f"# html to markdown: {len(html_text)} -> {len(markdown)} -> {len(compressed_markdown)} (compressed)"
+        )
         return compressed_markdown
     except Exception as e:
-        raise WebExtractionError(f"HTML to markdown conversion failed: {str(e)}") from e
-
+        raise WebExtractionError(f"HTML to markdown conversion failed: {e!s}") from e
 
 
 def str_to_markdown(text: str) -> str:
     textinfo = get_text_type(text)
     if textinfo[0] == "html":
         return html_to_md(text)
-    else:
-        return text
+    return text
+
 
 if __name__ == "__main__":
-    import pyperclip
     from pathlib import Path
 
-    text = Path('asset/docs.html').read_text(encoding='utf-8')
+    text = Path("asset/docs.html").read_text(encoding="utf-8")
     print(str_to_markdown(text))
-    print('length:', len(text))
-
+    print("length:", len(text))

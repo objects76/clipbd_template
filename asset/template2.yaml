@@ -63,6 +63,7 @@ TEMPLATES:
 
       <note>
         <item>All timestamps (e.g., [19:56]) must be formatted as clickable Markdown links.</item>
+        <VIDEO_ID>{video_id}</VIDEO_ID>
         <example>
           [19:56](https://www.youtube.com/watch?v={video_id}&t=1196s)
         </example>

@@ -1,11 +1,10 @@
-
-import subprocess
-import requests
 import os
 
+import requests
 from dotenv import load_dotenv
 
 from dunstify import notify_cont
+
 load_dotenv(os.path.expanduser("~/.config/rofi/.env"))
 jjkim_key = os.getenv("JINA_API_JJKIM")
 obj76_key = os.getenv("JINA_API_OBJECTS76")
@@ -14,7 +13,10 @@ obj76_key = os.getenv("JINA_API_OBJECTS76")
 # Documentation: https://jina.ai/reader/
 API_CALL_TIMEOUT = 120
 
-instruction = "Extract the main content from the given HTML and convert it to Markdown format."
+instruction = (
+    "Extract the main content from the given HTML and convert it to Markdown format."
+)
+
 
 def jina_to_md(target_url: str) -> str:
     """Extract content from URL using Jina Reader API.
@@ -45,7 +47,7 @@ def jina_to_md(target_url: str) -> str:
                     "Authorization": f"Bearer {key}",
                     "X-Respond-With": "readerlm-v2",
                 },
-                timeout= API_CALL_TIMEOUT  # Add timeout to prevent hanging
+                timeout=API_CALL_TIMEOUT,  # Add timeout to prevent hanging
             )
             response.raise_for_status()  # Raise exception for HTTP errors
             return response.text
@@ -53,7 +55,8 @@ def jina_to_md(target_url: str) -> str:
             last_exception = e
             continue
 
-    raise Exception(f"All Jina API keys failed for {target_url}: {str(last_exception)}")
+    raise Exception(f"All Jina API keys failed for {target_url}: {last_exception!s}")
+
 
 def test():
     """Test Jina API with a sample URL."""
@@ -63,5 +66,6 @@ def test():
     except Exception as e:
         print(f"Test failed: {e}")
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     test()

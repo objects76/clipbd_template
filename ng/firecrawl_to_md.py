@@ -1,7 +1,6 @@
-
-import requests
-import time
 import os
+import time
+
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -66,7 +65,7 @@ load_dotenv()
 #
 
 
-'''
+"""
 curl -X POST https://api.firecrawl.dev/v1/scrape \
     -H 'Content-Type: application/json' \
     -H 'Authorization: Bearer fc-54f5d81344d34207ae1ba87ac565458d' \
@@ -77,15 +76,17 @@ curl -X POST https://api.firecrawl.dev/v1/scrape \
 		"parsePDF": true,
 		"maxAge": 14400000
 	}'
-'''
+"""
 
 # Install with pip install firecrawl-py
 import asyncio
+
 from firecrawl import AsyncFirecrawlApp, FirecrawlApp
-import subprocess
-from dunstify import notify_send, notify_cont, notify_close
+
+from dunstify import notify_cont
 
 FIRECRAWL_API_KEY = os.getenv("FIRECRAWL_API_KEY")
+
 
 def firecrawl_to_md(url) -> str:
     """Extract content from URL using Firecrawl API and convert to markdown.
@@ -100,21 +101,21 @@ def firecrawl_to_md(url) -> str:
         Exception: If API key is missing or extraction fails
     """
     if not FIRECRAWL_API_KEY:
-        raise Exception(f"FIRECRAWL_API_KEY environment variable not set")
+        raise Exception("FIRECRAWL_API_KEY environment variable not set")
     notify_cont("firecrawl", f"firecrawl({url}) to markdown")
 
     try:
         app = FirecrawlApp(api_key=FIRECRAWL_API_KEY)
         response = app.scrape_url(
             url=url,
-            formats=['markdown'],
+            formats=["markdown"],
             only_main_content=True,
             parse_pdf=True,
-            max_age=14400000
+            max_age=14400000,
         )
         return response.markdown or "No content"
     except Exception as e:
-        raise Exception(f"Firecrawl extraction failed for {url}: {str(e)}")
+        raise Exception(f"Firecrawl extraction failed for {url}: {e!s}")
 
 
 async def async_firecrawl_to_md(url: str) -> str:
@@ -131,28 +132,28 @@ async def async_firecrawl_to_md(url: str) -> str:
     """
 
     if not FIRECRAWL_API_KEY:
-        raise Exception(f"FIRECRAWL_API_KEY environment variable not set")
+        raise Exception("FIRECRAWL_API_KEY environment variable not set")
     notify_cont("async_firecrawl", f"async_firecrawl({url}) to markdown")
 
     try:
         app = AsyncFirecrawlApp(api_key=FIRECRAWL_API_KEY)
         response = await app.scrape_url(
             url=url,
-            formats=['markdown'],
+            formats=["markdown"],
             only_main_content=True,
             parse_pdf=True,
-            max_age=14400000
+            max_age=14400000,
         )
         return response.markdown or "No content"
     except Exception as e:
-        raise Exception(f"Async Firecrawl extraction failed for {url}: {str(e)}")
+        raise Exception(f"Async Firecrawl extraction failed for {url}: {e!s}")
 
 
 async def async_test():
     """Test async Firecrawl functionality."""
     test_urls = [
         "https://news.hada.io/topic?id=22490",
-        "https://old.reddit.com/r/LocalLLaMA/comments/1mke7ef/120b_runs_awesome_on_just_8gb_vram"
+        "https://old.reddit.com/r/LocalLLaMA/comments/1mke7ef/120b_runs_awesome_on_just_8gb_vram",
     ]
 
     for url in test_urls:
@@ -172,7 +173,7 @@ def sync_test():
     """Test sync Firecrawl functionality."""
     test_urls = [
         "https://news.hada.io/topic?id=22490",
-        "https://old.reddit.com/r/LocalLLaMA/comments/1mke7ef/120b_runs_awesome_on_just_8gb_vram"
+        "https://old.reddit.com/r/LocalLLaMA/comments/1mke7ef/120b_runs_awesome_on_just_8gb_vram",
     ]
 
     for url in test_urls:
@@ -204,6 +205,5 @@ def main():
     print("\n✅ Firecrawl tests completed!")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
-

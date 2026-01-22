@@ -4,22 +4,31 @@ Script to find matching </article> tag for <article class="meteredContent">
 and export the complete article section to content.html
 """
 
-import requests
 from bs4 import BeautifulSoup, Comment
-from pathlib import Path
-import sys
+
 from webpage import html_to_md
 
 
 class MediumError(Exception):
     pass
 
+
 ALLOWED_TAGS = {
-    "article", "section",
-    "h1", "h2", "h3", "h4",
-    "p", "pre", "code", "ul", "ol", "li",
+    "article",
+    "section",
+    "h1",
+    "h2",
+    "h3",
+    "h4",
+    "p",
+    "pre",
+    "code",
+    "ul",
+    "ol",
+    "li",
     "blockquote",
-    "figure", "figcaption",
+    "figure",
+    "figcaption",
     "a",
 }
 
@@ -54,14 +63,14 @@ def _drop_empty_tags(root):
         if t.name in ("pre", "code", "blockquote"):
             return False
         # no text and no children
-        text = (t.get_text(strip=True) or "")
+        text = t.get_text(strip=True) or ""
         return len(text) == 0 and len(list(t.children)) == 0
 
     for tag in list(root.find_all(True)):
         if is_empty(tag):
             tag.decompose()
 
-import re
+
 def compress_medium(node):
     """Return (cleaned_html, plain_text)."""
     # html = re.sub(r'/resize:[^/]+/', '/', html) # remove '/resize:fill:76:76/'
@@ -73,14 +82,15 @@ def compress_medium(node):
     cleaned_html = str(node)
     return cleaned_html
 
+
 def extract_medium(html_content: str):
-    cnt = html_content.count('.medium.com')
+    cnt = html_content.count(".medium.com")
     if cnt < 10:
         raise MediumError("Not a medium article")
 
     soup = BeautifulSoup(html_content, "html.parser")
-    node = soup.find('article', attrs={'class': 'meteredContent'})
-    node = node or soup.find('section')
+    node = soup.find("article", attrs={"class": "meteredContent"})
+    node = node or soup.find("section")
     node = node or soup
 
     return "markdown", html_to_md(str(node))
@@ -88,12 +98,11 @@ def extract_medium(html_content: str):
     raise MediumError("No article in medium")
 
 
-if __name__ == '__main__':
-    with open('temp/medium-free.html', 'rt') as fp:
+if __name__ == "__main__":
+    with open("temp/medium-free.html") as fp:
         html_content = fp.read()
 
-    content_type,extracted = extract_medium(html_content)
+    content_type, extracted = extract_medium(html_content)
     print(extracted)
-    with open('temp/output.html', 'wt') as fp:
+    with open("temp/output.html", "w") as fp:
         fp.write(extracted)
-
