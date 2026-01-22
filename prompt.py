@@ -12,7 +12,25 @@ from text_info2 import html_to_md
 from ui import error, toast
 
 
-def post_process(dtype: Datatype, data: str | Any) -> dict | None:
+def transform_data(dtype: Datatype, data: str | Any) -> dict | None:
+    """
+    Transform raw clipboard data into structured content dictionary.
+
+    This function handles data reformatting for different content types:
+    - YouTube URLs: Extract transcript and video metadata
+    - Web URLs: Fetch HTML and convert to markdown
+    - HTML text: Parse and convert to markdown
+    - Markdown/plain text: Normalize formatting
+    - Images: Extract blob data and dimensions
+
+    Args:
+        dtype: The type of data being processed
+        data: Raw clipboard data (URL string, text, or image tuple)
+
+    Returns:
+        Structured content dictionary with format-specific fields,
+        or None if data type is not supported
+    """
     toast(f"{dtype}: processing...")
 
     match dtype:
@@ -89,16 +107,59 @@ def get_template(template_path: str, command: Command, dtype: Datatype) -> str:
     )
 
 
-def get_prompt(
-    template_path: str, command: Command, dtype: Datatype, data: str | Any
+def format_with_template(
+    template_path: str, command: Command, dtype: Datatype, content: dict
 ) -> dict:
+    """
+    Load template from YAML file and format it with content data.
+
+    This function retrieves the appropriate template based on command and data type,
+    then formats it using the provided content dictionary.
+
+    Args:
+        template_path: Path to YAML template file (e.g., "asset/template2.yaml")
+        command: The command type (SUMMARY, QA, TRANSLATE_TO_KOREAN, etc.)
+        dtype: The data type (YOUTUBE, WEBURL, HTML_TEXT, etc.)
+        content: Structured content dictionary from transform_data()
+
+    Returns:
+        Content dictionary with added "template" field containing formatted prompt text
+
+    Raises:
+        TemplateNotFoundError: If template file or specific template not found
+        TemplateFormatError: If template file format is invalid
+    """
     template = get_template(template_path, command, dtype)
 
-    content: dict = post_process(dtype, data)
     if content is not None:
         content["template"] = template.format(**content)
     return content
-    # return template.format( **content )
+
+
+def get_prompt(
+    template_path: str, command: Command, dtype: Datatype, data: str | Any
+) -> dict:
+    """
+    Generate formatted prompt by transforming data and applying template.
+
+    This is the main orchestrator function that combines data transformation
+    and template formatting into a single operation.
+
+    Args:
+        template_path: Path to YAML template file
+        command: The command type determining template selection
+        dtype: The data type determining transformation logic
+        data: Raw clipboard data to transform
+
+    Returns:
+        Dictionary containing transformed content and formatted template
+
+    Raises:
+        TemplateNotFoundError: If template cannot be found
+        TemplateFormatError: If template format is invalid
+    """
+    content: dict = transform_data(dtype, data)
+    return format_with_template(template_path, command, dtype, content)
 
 
 if __name__ == "__main__":
