@@ -11,6 +11,8 @@ tmp/
 .venv/
 temp/
 .env
+.omc/
+dist/
 
 # export
 *.spec
