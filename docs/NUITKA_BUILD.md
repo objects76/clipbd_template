@@ -126,7 +126,6 @@ The application requires these system tools at runtime:
 - `copyq` or `copykitten` - Clipboard management
 - `rofi` - Template selection GUI
 - `xdotool` - Keyboard automation
-- `notify-send` (dunst) - Desktop notifications
 
 ```bash
 # Ubuntu/Debian

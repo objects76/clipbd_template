@@ -83,8 +83,6 @@ import asyncio
 
 from firecrawl import AsyncFirecrawlApp, FirecrawlApp
 
-from dunstify import notify_cont
-
 FIRECRAWL_API_KEY = os.getenv("FIRECRAWL_API_KEY")
 
 
@@ -102,7 +100,7 @@ def firecrawl_to_md(url) -> str:
     """
     if not FIRECRAWL_API_KEY:
         raise Exception("FIRECRAWL_API_KEY environment variable not set")
-    notify_cont("firecrawl", f"firecrawl({url}) to markdown")
+    dunst("firecrawl", f"firecrawl({url}) to markdown")
 
     try:
         app = FirecrawlApp(api_key=FIRECRAWL_API_KEY)
@@ -133,7 +131,7 @@ async def async_firecrawl_to_md(url: str) -> str:
 
     if not FIRECRAWL_API_KEY:
         raise Exception("FIRECRAWL_API_KEY environment variable not set")
-    notify_cont("async_firecrawl", f"async_firecrawl({url}) to markdown")
+    dunst("async_firecrawl", f"async_firecrawl({url}) to markdown")
 
     try:
         app = AsyncFirecrawlApp(api_key=FIRECRAWL_API_KEY)

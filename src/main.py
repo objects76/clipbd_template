@@ -11,10 +11,9 @@ from ck_clipboard import ClipboardData, clear_clipboard, paste, set_clipboard_da
 from command import Command, get_command
 from config import Config
 from datatype import Datatype, get_clipboard
-from dunstify import notify_close, notify_cont, notify_send
 from llm import openai_inference, run_web_llm
 from prompt import get_prompt
-from ui import error, toast
+from ui import dunst, dunst_close
 
 VERSION = "1.0.0"
 DEBUG = True
@@ -33,7 +32,7 @@ def resource_path(name: str) -> Path:
 def main(args) -> int:
     cb_data = get_clipboard()
     if cb_data is None:
-        toast("No clipboard data")
+        dunst("Information", "information", "No clipboard data")
         return 0
 
     dtype, data = cb_data
@@ -44,15 +43,15 @@ def main(args) -> int:
     try:
         prompt = get_prompt(args.template, command, dtype, data)
         if not prompt:
-            notify_send("Error", "No prompt", timeout_ms=1000)
+            dunst("Error", "error", "No prompt", timeout=5)
             return 0
     except Exception as e:
-        error(str(e))
+        dunst("Error", "error", str(e))
 
     Config(args.template)
     try:
         if Config.use_api:
-            notify_cont(command.name, "ai processing...")
+            dunst(command.name, "information", "ai processing...", msgid=1)
             result = openai_inference(prompt)
             Path("asset/result.md").write_text(result)
             subprocess.run(["mdviewer.app", "asset/result.md"], check=False)
@@ -87,21 +86,21 @@ def main(args) -> int:
             return 0
 
     except Warning as e:
-        notify_send("Warning", str(e), timeout_ms=1000)
+        dunst("Warning", "warning", str(e), timeout_sec=5)
         return 1
     except (RuntimeError, ValueError, TypeError) as e:
         if DEBUG:
             print(f"error: {e}")
-
             traceback.print_exc()
 
         error_msg = f"{command}: {e!s}"
         if len(error_msg) > 250:
             error_msg = error_msg[:100] + "\n...\n" + error_msg[-100:]
-        error(error_msg)
+        dunst("Error", "error", error_msg, timeout_sec=5)
         return 1
     finally:
-        notify_close()
+        dunst_close()
+        pass
 
 
 def test():

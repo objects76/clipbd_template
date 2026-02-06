@@ -14,9 +14,9 @@ The clipboard template system uses YAML configuration files to define content pr
 TEMPLATES:
   template_name: |-
     Template content with variables and formatting instructions.
-    
+
     Variables: {variable_name}
-    
+
     Additional template content...
 ```
 
@@ -118,14 +118,14 @@ Templates support variable substitution using Python string formatting:
 TEMPLATES:
   custom_template: |-
     # Custom Template
-    
+
     ## Input Analysis
     Content Type: {content_type}
     Source: {source}
-    
+
     ## Processing Instructions
     {processing_instructions}
-    
+
     ## Output Format
     {formatted_content}
 ```
@@ -136,17 +136,17 @@ TEMPLATES:
 TEMPLATES:
   advanced_template: |-
     # Advanced Analysis Template
-    
+
     **Source:** {url}
     **Title:** {title}
     **Word Count:** {word_count}
-    
+
     ## Summary
     {summary}
-    
+
     ## Key Points
     {key_points}
-    
+
     ## Technical Details
     {technical_details}
 ```
@@ -157,15 +157,15 @@ TEMPLATES:
 TEMPLATES:
   configurable_template: |-
     # Configurable Output Template
-    
+
     **Language:** {output_language}
     **Style:** {output_style}
     **Detail Level:** {detail_level}
-    
+
     ## Content Analysis
     {analysis}
-    
-    ## Recommendations  
+
+    ## Recommendations
     {recommendations}
 ```
 
@@ -186,22 +186,22 @@ TEMPLATES:
 TEMPLATES:
   debug_output: |-
     # DEBUG: Content Analysis
-    
+
     Raw Input: {raw_input}
-    Content Type: {content_type}  
+    Content Type: {content_type}
     Processing Time: {processing_time}
-    
+
     ## Processed Output
     {processed_content}
 
-# Production templates  
+# Production templates
 TEMPLATES:
   production_summary: |-
     # Content Summary
-    
+
     ## Overview
     {overview}
-    
+
     ## Key Information
     {key_info}
 ```
@@ -257,15 +257,15 @@ TEMPLATES:
 TEMPLATES:
   conditional_template: |-
     # Content Analysis
-    
+
     {% if video_id %}
     **Video:** https://youtube.com/watch?v={video_id}
     {% endif %}
-    
+
     {% if url %}
     **Source:** {url}
     {% endif %}
-    
+
     ## Content
     {content}
 ```
@@ -276,13 +276,13 @@ TEMPLATES:
 TEMPLATES:
   multilingual_template: |-
     # Content Summary / 내용 요약
-    
+
     ## English Summary
     {english_summary}
-    
-    ## Korean Summary / 한국어 요약  
+
+    ## Korean Summary / 한국어 요약
     {korean_summary}
-    
+
     ## Technical Terms / 기술 용어
     {technical_terms}
 ```
@@ -308,7 +308,7 @@ TEMPLATES:
 
   markdown_table: |-
     # Analysis Results
-    
+
     | Field | Value |
     |-------|-------|
     | Title | {title} |
@@ -331,7 +331,7 @@ Clipboard Content → Content Type Detection → Variable Extraction
 Content Type → Auto-Selection OR Manual Selection (rofi) → Template Loading
 ```
 
-### 3. Variable Substitution  
+### 3. Variable Substitution
 ```
 Template + Variables → String Formatting → Processed Template
 ```
@@ -367,19 +367,19 @@ import yaml
 def validate_template(template_path):
     with open(template_path, 'r', encoding='utf-8') as f:
         config = yaml.safe_load(f)
-    
+
     if 'TEMPLATES' not in config:
         raise ValueError("Missing TEMPLATES section")
-    
+
     templates = config['TEMPLATES']
     for name, content in templates.items():
         if not isinstance(content, str):
             raise ValueError(f"Template '{name}' must be string")
-        
+
         # Check for required variables
         if '{content}' not in content and '{transcript}' not in content:
             print(f"Warning: Template '{name}' has no content variables")
-    
+
     return config
 ```
 
@@ -423,7 +423,7 @@ rofi -dmenu -no-custom \
     -p 'Choose Template:'
 ```
 
-### CopyQ Integration  
+### CopyQ Integration
 
 ```python
 # Get clipboard content for template processing
@@ -431,17 +431,6 @@ from copyq import get_lastest_clipboard
 
 items = get_lastest_clipboard(n=2)
 content = items[0]['data'] if items else ""
-```
-
-### Desktop Notification
-
-```python
-# Notify template processing status
-subprocess.run([
-    'notify-send', 
-    'Template System',
-    f'Processing with template: {template_name}'
-])
 ```
 
 ---

@@ -7,9 +7,8 @@ from youtube_transcript_api import IpBlocked, RequestBlocked, YouTubeTranscriptA
 from cache import ClipboardCache
 
 # from copyq import get_lastest_clipboard
-from dunstify import notify_cont
 from exceptions import YouTubeExtractionError
-from ui import error
+from ui import dunst
 
 
 def ts_format(ts):
@@ -50,7 +49,7 @@ def download_transcript(
     language_codes: list[str] | None = None,
 ):
     language_codes = language_codes or ["en", "ko"]
-    notify_cont("youtube summary", f"get youtube transcript: {video_id}")
+    dunst("youtube summary", "information", f"get youtube transcript: {video_id}", msgid=1)
     # raise RequestBlocked("Test Blocked by youtube")
 
     # video_id = get_youtube_videoid(video_url)
@@ -111,7 +110,7 @@ def get_youtube_content(url: str, transcript: str = "") -> dict:
             transcript = download_transcript(video_id)
         except Exception as e:
             ClipboardCache.save(url, "wait transcript")
-            error(str(e))
+            dunst("Error", "error", str(e), 5)
             transcript = ""
             # raise YouTubeExtractionError(f"Failed to get transcript for `{video_id}`: {e}")
 

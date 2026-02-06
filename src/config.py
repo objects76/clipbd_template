@@ -11,13 +11,13 @@ class Config:
     clipbd_transcript: bool = False
     clear_generated: bool = False
 
-    # webai: str = "https://www.chatgpt.com"
-    # browser_profile: str = "Default"
-    # webai_title: str = "chatgpt"
+    webai: str = "https://www.chatgpt.com"
+    browser_profile: str = "Default"
+    webai_title: str = "chatgpt"
 
-    webai: str = "https://gemini.google.com/app"
-    browser_profile: str = "Profile 2"
-    webai_title: str = "gemini"
+    # webai: str = "https://gemini.google.com/app"
+    # browser_profile: str = "Profile 2"
+    # webai_title: str = "gemini"
 
     markdown_editor: str = "mdviewer.app"
     use_api: bool = False

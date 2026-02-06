@@ -3,7 +3,7 @@ import os
 import requests
 from dotenv import load_dotenv
 
-from dunstify import notify_cont
+from ui import dunst
 
 load_dotenv(os.path.expanduser("~/.config/rofi/.env"))
 jjkim_key = os.getenv("JINA_API_JJKIM")

@@ -9,7 +9,7 @@ from command import Command
 from datatype import Datatype
 from exceptions import TemplateFormatError, TemplateNotFoundError
 from text_info2 import html_to_md
-from ui import error, toast
+from ui import dunst
 
 
 def transform_data(dtype: Datatype, data: str | Any) -> dict | None:
@@ -31,7 +31,7 @@ def transform_data(dtype: Datatype, data: str | Any) -> dict | None:
         Structured content dictionary with format-specific fields,
         or None if data type is not supported
     """
-    toast(f"{dtype}: processing...")
+    dunst("Information", "information", f"{dtype}: processing...")
 
     match dtype:
         case Datatype.YOUTUBE:
@@ -161,7 +161,7 @@ def get_prompt(
     try:
         content: dict = transform_data(dtype, data)
     except Exception as e:
-        error(str(e))
+        dunst("Error", "error", str(e), 5)
 
     return format_with_template(template_path, command, dtype, content)
 
@@ -174,7 +174,7 @@ if __name__ == "__main__":
         )
         print(test)
     except Exception as ex:
-        error(str(ex))
+        dunst("Error", "error", str(ex), 5)
 
     # command = Command.SUMMARY
     # dtype = Datatype.YOUTUBE
